@@ -15,14 +15,13 @@ public class Produto
 {
     private int cod;
     private Categoria codCategoria;
-    private String nome;
-    private char tamanho;
+    private String nome, tamanho;
     private float preco;
     private String descricao;
     private Marca codMarca;
     private Colecao codColecao;
 
-    public Produto(int cod, Categoria codCategoria, String nome, char tamanho, float preco, String descricao, Marca codMarca, Colecao codColecao)
+    public Produto(int cod, Categoria codCategoria, String nome, String tamanho, float preco, String descricao, Marca codMarca, Colecao codColecao)
     {
         this.cod = cod;
         this.codCategoria = codCategoria;
@@ -67,12 +66,12 @@ public class Produto
         this.nome = nome;
     }
 
-    public char getTamanho()
+    public String getTamanho()
     {
         return tamanho;
     }
 
-    public void setTamanho(char tamanho)
+    public void setTamanho(String tamanho)
     {
         this.tamanho = tamanho;
     }

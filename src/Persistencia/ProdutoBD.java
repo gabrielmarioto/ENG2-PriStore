@@ -7,6 +7,8 @@ package Persistencia;
 
 import Model.Produto;
 import Util.Banco;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -50,4 +52,23 @@ public class ProdutoBD
     {
         return Banco.getCon().manipular("delete from produto where cod =" + p.getCod());
     }     
+    
+    public Produto get(int cod)
+    {
+        Produto p = null;
+        ResultSet rs = Banco.getCon().consultar("select * from produto where cod ="+cod);
+        try
+        {
+            if(rs.next())
+            {
+                p = new Produto(rs.getInt("cod"), new CategoriaBD().get(rs.getInt("codCategoria")), rs.getString("nome"),rs.getString("tamanho"), rs.getFloat("preco"), rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")), new ColecaoBD().get(rs.getInt("codColecao"))); 
+            }
+        }
+        catch(SQLException ex)
+        {
+            
+        }
+        
+        return p;
+    }
 }
