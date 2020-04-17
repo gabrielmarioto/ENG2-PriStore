@@ -131,6 +131,7 @@ public class FXMLCadastroColecaoController implements Initializable
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
         tb_Nome.requestFocus();
+        dtp_Inicial.setDisable(false);
     }
 
     @FXML

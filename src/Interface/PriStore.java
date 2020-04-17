@@ -6,6 +6,7 @@
 package Interface;
 
 import Util.Banco;
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -39,20 +40,20 @@ public class PriStore extends Application
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException, InterruptedException
     {
         if (!Banco.conectar())
         {
             JOptionPane.showMessageDialog(null, "Erro: " + Banco.getCon().getMensagemErro());
             if (JOptionPane.showConfirmDialog(null, "Deseja criar uma base de dados?") == JOptionPane.YES_OPTION)
             {
-                if (!Banco.criarBD("tabelaPriStore"))
+                if (!Banco.criarBD("pristoredb"))
                 {
                     JOptionPane.showMessageDialog(null, "Erro ao criar banco: " + Banco.getCon().getMensagemErro());
                     System.exit(-1);
                 } else
                 {
-                    Banco.realizaRestaure("bdutil\\restore.bat");
+                    Banco.realizaRestaure("cdutil\\restore.bat");
                     if (!Banco.conectar())
                     {
                         JOptionPane.showMessageDialog(null, "Erro ao conectar com o banco");

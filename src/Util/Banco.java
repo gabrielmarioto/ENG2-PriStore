@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,21 +21,24 @@ import javax.swing.JOptionPane;
  */
 public class Banco
 {
-     static private Conexao con = null;
 
-    static public Conexao getCon() {
+    static private Conexao con = null;
+
+    static public Conexao getCon()
+    {
         return con;
     }
 
-    private Banco() {
+    private Banco()
+    {
     } // construtor privado, ou seja, nao pode dar um new em banco, da uma segurança maior no projeto
 
-    static public boolean conectar() {
+    static public boolean conectar()
+    {
         con = new Conexao();
-        return con.conectar("jdbc:postgresql://localhost/", "tabelaPriStore", "postgres", "postgres123");
+        return con.conectar("jdbc:postgresql://localhost/", "pristoredb", "postgres", "postgres123");
 
     }
-
     public static void realizaBackup(String arq) 
     {
         String reslinha = "";
@@ -72,8 +77,10 @@ public class Banco
             JOptionPane.showMessageDialog(null, "Erro no Restore!\n" + ex.getMessage());
         }
     }
-    public static boolean criarBD(String BD) {
-        try {
+    public static boolean criarBD(String BD)
+    {
+        try
+        {
             String url = "jdbc:postgresql://localhost/";
             Connection con = DriverManager.getConnection(url, "postgres", "postgres123");
 
@@ -83,7 +90,8 @@ public class Banco
                     + "LC_CTYPE = 'Portuguese_Brazil.1252'  CONNECTION LIMIT = -1;");
             statement.close();
             con.close();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.out.println(e.getMessage());
             return false;
         }
