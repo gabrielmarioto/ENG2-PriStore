@@ -5,10 +5,13 @@
  */
 package Persistencia;
 
+import Model.Marca;
 import Model.Produto;
 import Util.Banco;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -51,24 +54,45 @@ public class ProdutoBD
     public boolean deleteProduto(Produto p)
     {
         return Banco.getCon().manipular("delete from produto where cod =" + p.getCod());
-    }     
-    
+    }
+
     public Produto get(int cod)
     {
         Produto p = null;
-        ResultSet rs = Banco.getCon().consultar("select * from produto where cod ="+cod);
+        ResultSet rs = Banco.getCon().consultar("select * from produto where cod =" + cod);
         try
         {
-            if(rs.next())
+            if (rs.next())
             {
-                p = new Produto(rs.getInt("cod"), new CategoriaBD().get(rs.getInt("codCategoria")), rs.getString("nome"),rs.getString("tamanho"), rs.getFloat("preco"), rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")), new ColecaoBD().get(rs.getInt("codColecao"))); 
+                p = new Produto(rs.getInt("cod"), new CategoriaBD().get(rs.getInt("codCategoria")), rs.getString("nome"), rs.getString("tamanho"), rs.getFloat("preco"), rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")), new ColecaoBD().get(rs.getInt("codColecao")));
             }
-        }
-        catch(SQLException ex)
+        } catch (SQLException ex)
         {
-            
+
         }
-        
+
         return p;
+    }
+
+    public List<Produto> get(String filtro)
+    {
+        String sql = "select * from produto";
+        if (!filtro.isEmpty())
+        {
+            sql += " where " + filtro;
+        }
+        List<Produto> aux = new ArrayList();
+        ResultSet rs = Banco.getCon().consultar(sql);
+        try
+        {
+            while (rs.next())
+            {
+                aux.add(new Produto(rs.getInt("cod"), new CategoriaBD().get(rs.getInt("codCategoria")), rs.getString("nome"), rs.getString("tamanho"), rs.getFloat("preco"), rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")), new ColecaoBD().get(rs.getInt("codColecao"))));
+            }
+        } catch (SQLException ex)
+        {
+
+        }
+        return aux;
     }
 }

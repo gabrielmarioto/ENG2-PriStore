@@ -8,6 +8,9 @@ package Util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 /**
@@ -27,7 +30,7 @@ public class Banco
 
     static public boolean conectar() {
         con = new Conexao();
-        return con.conectar("jdbc:postgresql://localhost/", "botecodb", "postgres", "postgres123");
+        return con.conectar("jdbc:postgresql://localhost/", "tabelaPriStore", "postgres", "postgres123");
 
     }
 
@@ -68,5 +71,22 @@ public class Banco
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro no Restore!\n" + ex.getMessage());
         }
+    }
+    public static boolean criarBD(String BD) {
+        try {
+            String url = "jdbc:postgresql://localhost/";
+            Connection con = DriverManager.getConnection(url, "postgres", "postgres123");
+
+            Statement statement = con.createStatement();
+            statement.execute("CREATE DATABASE " + BD + " WITH OWNER = postgres ENCODING = 'UTF8'  "
+                    + "TABLESPACE = pg_default LC_COLLATE = 'Portuguese_Brazil.1252'  "
+                    + "LC_CTYPE = 'Portuguese_Brazil.1252'  CONNECTION LIMIT = -1;");
+            statement.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
     }
 }

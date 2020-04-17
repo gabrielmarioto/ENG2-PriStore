@@ -11,6 +11,7 @@ import Model.Marca;
 import Util.Banco;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,23 +21,24 @@ import java.util.List;
  */
 public class ColecaoBD
 {
-     public boolean insertCategoria(Colecao c)
+
+    public boolean insertColecao(Colecao c)
     {
-        String sql = "insert into colecao (cod, nome, dataInicio) values (#1, '#2', '#3')";
-        sql = sql.replaceAll("#1", "" + c.getCod());
-        sql = sql.replaceAll("#2", "" + c.getNome());
-        sql = sql.replaceAll("#3", "" + c.getDataInicio());
+        String sql = "insert into colecao (nome, dataInicio) values ('#1', '#2')";
+        sql = sql.replaceAll("#1", "" + c.getNome());
+        sql = sql.replaceAll("#2", "" + c.getDataInicio());
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean updateCategoria(Colecao c)
+    public boolean updateColecao(Colecao c)
     {
-        String sql = "update colecao set nome = '#1' where cod = " + c.getCod();
-
+        String sql = "update colecao set nome = '#1', dataInicio = '#2' where cod = " + c.getCod();
+        sql = sql.replaceAll("#1", "" + c.getNome());
+        sql = sql.replaceAll("#2", "" + c.getDataInicio());
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean deleteCategoria(Colecao c)
+    public boolean deleteColecao(Colecao c)
     {
         return Banco.getCon().manipular("delete from colecao where cod =" + c.getCod());
     }
@@ -50,7 +52,7 @@ public class ColecaoBD
         {
             if (rs.next())
             {
-                c = new Colecao(rs.getInt("cod"), rs.getString("nome"), rs.getDate("dataInicio"));
+                c = new Colecao(rs.getInt("cod"), rs.getString("nome"), LocalDate.parse(rs.getString("dataInicio")));
             }
         } catch (SQLException ex)
         {
@@ -73,7 +75,7 @@ public class ColecaoBD
         {
             while (rs.next())
             {
-                aux.add(new Colecao(rs.getInt("cod"), rs.getString("nome"), rs.getDate("dataInicio")));
+                aux.add(new Colecao(rs.getInt("cod"), rs.getString("nome"), LocalDate.parse(rs.getString("dataInicio"))));
             }
         } catch (SQLException ex)
         {

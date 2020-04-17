@@ -6,6 +6,8 @@
 package Model;
 
 import Persistencia.ProdutoBD;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -116,20 +118,38 @@ public class Produto
         this.codColecao = codColecao;
     }
 
-    public void insert()
+    public boolean insert()
     {
         ProdutoBD prod = new ProdutoBD();        
-        prod.insertProduto(this);
+        return prod.insertProduto(this);
     }
-    public void update()
+    public boolean update()
     {
         ProdutoBD prod = new ProdutoBD();      
-        prod.updateProduto(this);
+        return prod.updateProduto(this);
     }
-    public void delete()
+    public boolean delete()
     {
         ProdutoBD prod = new ProdutoBD();      
-        prod.deleteProduto(this);
+        return prod.deleteProduto(this);
     }
-    
+    public Produto selectProduto(int cod)
+    {
+        Produto p;
+        ProdutoBD prod = new ProdutoBD();      
+        p = prod.get(cod);
+        return p;
+    }
+    public List<Produto> selectProduto(String filtro)
+    {
+        List<Produto> aux = new ArrayList();
+        ProdutoBD prod = new ProdutoBD();      
+        aux = prod.get(filtro);
+        
+        return aux;
+    }
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

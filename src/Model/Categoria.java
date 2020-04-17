@@ -5,12 +5,17 @@
  */
 package Model;
 
+import Persistencia.CategoriaBD;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Gabriel
  */
 public class Categoria
 {
+
     private int cod;
     private String nome;
 
@@ -19,10 +24,10 @@ public class Categoria
         this.cod = cod;
         this.nome = nome;
     }
-    
+
     public Categoria()
     {
-        
+
     }
 
     public int getCod()
@@ -44,6 +49,46 @@ public class Categoria
     {
         this.nome = nome;
     }
+
+    public boolean insertCategoria()
+    {
+        CategoriaBD categoria = new CategoriaBD();
+        return categoria.insertCategoria(this);
+    }
+
+    public boolean updateCategoria()
+    {
+        CategoriaBD categoria = new CategoriaBD();
+        return categoria.updateCategoria(this);
+    }
+
+    public boolean deleteCategoria()
+    {
+        CategoriaBD categoria = new CategoriaBD();
+        return categoria.deleteCategoria(this);
+    }
+
+    public Categoria selectCategoria(int codigo)
+    {
+        Categoria c;
+        CategoriaBD categoria = new CategoriaBD();
+        c = categoria.get(cod);
+
+        return c;
+    }
+
+    public List<Categoria> selectCategoria(String filtro)
+    {
+        List<Categoria> aux = new ArrayList();
+        CategoriaBD categoria = new CategoriaBD();
+        aux = categoria.get(filtro);
+
+        return aux;
+    }
     
-    
+    @Override
+    public String toString() {
+        return nome;
+    }
+
 }

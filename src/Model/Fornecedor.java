@@ -5,12 +5,17 @@
  */
 package Model;
 
+import Persistencia.FornecedorBD;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Gabriel
  */
 public class Fornecedor
 {
+
     private int cod;
     private String nome, cnpj, inscrocaoEstadual, endereco, email, telefone, rua, cidade, bairro;
     private int numRua, cep;
@@ -30,6 +35,7 @@ public class Fornecedor
         this.bairro = bairro;
         this.cep = cep;
     }
+
     public Fornecedor()
     {
     }
@@ -153,7 +159,44 @@ public class Fornecedor
     {
         this.cep = cep;
     }
-    
-    
-    
+
+    public void insertFornecedor()
+    {
+        FornecedorBD fornecedor = new FornecedorBD();
+        fornecedor.insertFornecedor(this);
+    }
+
+    public void updateFornecedor()
+    {
+        FornecedorBD fornecedor = new FornecedorBD();
+        fornecedor.updateFornecedor(this);
+    }
+
+    public void deleteFornecedor()
+    {
+        FornecedorBD fornecedor = new FornecedorBD();
+        fornecedor.deleteFornecedor(this);
+    }
+
+    public Fornecedor selectFornecedor(int codigo)
+    {
+        Fornecedor f;
+        FornecedorBD fornecedor = new FornecedorBD();
+        f = fornecedor.get(codigo);
+
+        return f;
+    }
+    public List<Fornecedor> selectFornecedor(String filtro)
+    {
+        List<Fornecedor> aux = new ArrayList();
+        FornecedorBD fornecedor = new FornecedorBD();
+        aux = fornecedor.get(filtro);
+
+        return aux;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

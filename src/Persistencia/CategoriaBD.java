@@ -21,9 +21,8 @@ public class CategoriaBD
 
     public boolean insertCategoria(Categoria c)
     {
-        String sql = "insert into categoria (cod, nome) values (#1, '#2')";
-        sql = sql.replaceAll("#1", "" + c.getCod());
-        sql = sql.replaceAll("#2", "" + c.getNome());
+        String sql = "insert into categoria (nome) values ('#1')";
+        sql = sql.replaceAll("#1", "" + c.getNome());
 
         return Banco.getCon().manipular(sql);
     }
@@ -31,7 +30,7 @@ public class CategoriaBD
     public boolean updateCategoria(Categoria c)
     {
         String sql = "update categoria set nome = '#1' where cod = " + c.getCod();
-
+        sql = sql.replaceAll("#1", "" + c.getNome());
         return Banco.getCon().manipular(sql);
     }
 

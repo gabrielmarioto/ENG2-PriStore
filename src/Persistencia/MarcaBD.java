@@ -18,23 +18,23 @@ import java.util.List;
  */
 public class MarcaBD
 {
-    public boolean insertCategoria(Marca m)
+    public boolean insertMarca(Marca m)
     {
-        String sql = "insert into marca (cod, nome) values (#1, '#2')";
-        sql = sql.replaceAll("#1", "" + m.getCod());
-        sql = sql.replaceAll("#2", "" + m.getNome());
+        String sql = "insert into marca (nome) values ('#1')";
+        sql = sql.replaceAll("#1", "" + m.getNome());
 
+        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean updateCategoria(Marca m)
+    public boolean updateMarca(Marca m)
     {
         String sql = "update marca set nome = '#1' where cod = " + m.getCod();
-
+        sql = sql.replaceAll("#1", "" + m.getNome());
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean deleteCategoria(Marca m)
+    public boolean deleteMarca(Marca m)
     {
         return Banco.getCon().manipular("delete from marca where cod =" + m.getCod());
     }
