@@ -106,13 +106,15 @@ public class TelaPrincipalController implements Initializable
     @FXML
     private void clkBackup(ActionEvent event)
     {
-        Banco.realizaBackup("bdutil\\backup.bat");
+//        Banco.backup("bkp\\copiar.bat");
+        Banco.backup();
     }
 
     @FXML
     private void clkRestauracao(ActionEvent event)
     {
-        Banco.realizaRestaure("bdutil\\restore.bat");
+//        Banco.restore("bkp\\restaurar.bat");
+        Banco.restore();
     }
 
     @FXML

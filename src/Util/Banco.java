@@ -11,8 +11,12 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,7 +25,7 @@ import javax.swing.JOptionPane;
  */
 public class Banco
 {
-
+    static private int port = 5432;
     static private Conexao con = null;
 
     static public Conexao getCon()
@@ -96,5 +100,107 @@ public class Banco
             return false;
         }
         return true;
+    }
+    
+    
+    
+    public static void backup()
+    {
+        try
+        {
+            executeBAT("copiar.bat");
+            new Alert(Alert.AlertType.INFORMATION, "Backup realizado com sucesso!", ButtonType.OK).showAndWait();
+        } catch (IOException ex)
+        {
+            new Alert(Alert.AlertType.ERROR, "Erro no backup!" + ex.getMessage(), ButtonType.OK).showAndWait();
+        }
+ 
+    }
+ 
+    public static void backup(String path)
+    {
+        try
+        {
+            DateTimeFormatter form = DateTimeFormatter.ofPattern("dd_MM_uuuu");
+ 
+            String st = ".\\bkp\\pg_dump.exe --dbname=postgresql://postgres:postgres123@localhost:" + port + 
+                    "/dbpapelaria --format custom --blobs --verbose --file \"" + path + 
+                    "\\"+form.format(LocalDate.now())+".sql\"";
+            System.out.println(st);
+            Process p = Runtime.getRuntime().exec(st);
+ 
+            if (p != null)
+            {
+                InputStreamReader str = new InputStreamReader(p.getErrorStream());
+                BufferedReader reader = new BufferedReader(str);
+                String linha;
+                while ((linha = reader.readLine()) != null)
+                {
+                    System.out.println(linha);
+                }
+            }
+            new Alert(Alert.AlertType.INFORMATION, "Backup realizado com sucesso!", ButtonType.OK).showAndWait();
+ 
+        } catch (Exception ex)
+        {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Erro no backup!" + ex.getMessage(), ButtonType.OK).showAndWait();
+        }
+    }
+ 
+ 
+    public static void restore()
+    {
+        try
+        {
+            executeBAT("restaurar.bat");
+            new Alert(Alert.AlertType.INFORMATION, "Restauração realizada com sucesso!", ButtonType.OK).showAndWait();
+        } catch (IOException ex)
+        {
+            new Alert(Alert.AlertType.ERROR, "Erro na restauração!" + ex.getMessage(), ButtonType.OK).showAndWait();
+        }
+    }
+ 
+    public static void restore(String path)
+    {
+        try
+        {
+            String st = ".\\bkp\\pg_restore --clean --exit-on-error --verbose --dbname=postgresql://postgres:postgres123@localhost:" + port + "/dbpapelaria \""+path+"\"";
+            System.out.println(st);
+            Process p = Runtime.getRuntime().exec(st);
+ 
+            if (p != null)
+            {
+                InputStreamReader str = new InputStreamReader(p.getErrorStream());
+                BufferedReader reader = new BufferedReader(str);
+                String linha;
+                while ((linha = reader.readLine()) != null)
+                {
+                    System.out.println(linha);
+                }
+            }
+            new Alert(Alert.AlertType.INFORMATION, "Backup realizado com sucesso!", ButtonType.OK).showAndWait();
+ 
+        } catch (Exception ex)
+        {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Erro no backup!" + ex.getMessage(), ButtonType.OK).showAndWait();
+        }
+    }
+    
+    private static void executeBAT(String name) throws IOException
+    {
+        Runtime r = Runtime.getRuntime();
+        Process p = r.exec("bkp\\" + name);
+        if (p != null)
+        {
+            InputStreamReader str = new InputStreamReader(p.getErrorStream());
+            BufferedReader reader = new BufferedReader(str);
+            String linha;
+            while ((linha = reader.readLine()) != null)
+            {
+                System.out.println(linha);
+            }
+        }
     }
 }
