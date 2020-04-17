@@ -46,7 +46,7 @@ public class PriStore extends Application
             JOptionPane.showMessageDialog(null, "Erro: " + Banco.getCon().getMensagemErro());
             if (JOptionPane.showConfirmDialog(null, "Deseja criar uma base de dados?") == JOptionPane.YES_OPTION)
             {
-                if (!Banco.criarBD("botecodb"))
+                if (!Banco.criarBD("tabelaPriStore"))
                 {
                     JOptionPane.showMessageDialog(null, "Erro ao criar banco: " + Banco.getCon().getMensagemErro());
                     System.exit(-1);
