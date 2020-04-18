@@ -5,6 +5,7 @@
  */
 package Interface;
 
+import Model.Funcionario;
 import Util.Banco;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -18,7 +19,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -27,6 +32,7 @@ import javafx.scene.layout.BorderPane;
 public class TelaPrincipalController implements Initializable
 {
     public static BorderPane spnprincipal = null;
+    private Funcionario usuario = null;
     @FXML
     private BorderPane pnprincipal;   
 
@@ -36,7 +42,14 @@ public class TelaPrincipalController implements Initializable
     {
         // TODO
         spnprincipal = pnprincipal;
-    }    
+       // clkLogin(null);
+
+    }
+
+    protected void setLogin(Funcionario usuario)
+    {
+        this.usuario=usuario;
+    }
 
     @FXML
     private void clkCadCategoria(ActionEvent event)
@@ -138,6 +151,23 @@ public class TelaPrincipalController implements Initializable
         } catch (Exception ex)
         {
             Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void clkLogin(ActionEvent event)
+    {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLTelaLogin.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLTelaLoginController ctr = loader.getController();
+            ctr.RecebeDados(this);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
         }
     }
     

@@ -53,7 +53,7 @@ public class PriStore extends Application
                     System.exit(-1);
                 } else
                 {
-                    Banco.realizaRestaure("cdutil\\restore.bat");
+                    Banco.realizaRestaure("bkp\\restaurar.bat");
                     if (!Banco.conectar())
                     {
                         JOptionPane.showMessageDialog(null, "Erro ao conectar com o banco");

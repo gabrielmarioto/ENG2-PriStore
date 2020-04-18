@@ -25,12 +25,19 @@
                         <MenuItem onAction="#clkCadMarca" text="_Marca" />
                         <MenuItem onAction="#clkCadProduto" text="_Produtos" />
                         <MenuItem onAction="#clkCadFornecedor" text="_Fornecedor" />
+                        <MenuItem onAction="#clkCadFornecedor" text="_Funcionario" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="_FERRAMENTAS">
                      <items>
                         <MenuItem onAction="#clkBackup" text="_BackUp" />
                         <MenuItem onAction="#clkRestauracao" text="_Restauração" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="_USUARIO">
+                     <items>
+                        <MenuItem onAction="#clkBackup" text="Alterar" />
+                        <MenuItem onAction="#clkRestauracao" text="Deslogar" />
                      </items>
                   </Menu>
                </menus>
