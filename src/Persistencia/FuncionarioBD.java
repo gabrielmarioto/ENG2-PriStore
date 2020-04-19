@@ -59,7 +59,7 @@ public class FuncionarioBD {
     public Funcionario get(int cod)
     {
         Funcionario f = null;
-        ResultSet rs = Banco.getCon().consultar("select * from Funcioonario where fun_cod =" + cod);
+        ResultSet rs = Banco.getCon().consultar("select * from Funcionario where fun_cod =" + cod);
         try
         {
             if (rs.next())

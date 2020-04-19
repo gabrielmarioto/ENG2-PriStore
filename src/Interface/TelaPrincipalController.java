@@ -6,6 +6,7 @@
 package Interface;
 
 import Model.Funcionario;
+import Persistencia.FuncionarioBD;
 import Util.Banco;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -42,7 +44,12 @@ public class TelaPrincipalController implements Initializable
     {
         // TODO
         spnprincipal = pnprincipal;
-       // clkLogin(null);
+        if(new FuncionarioBD().get("")==null)
+        {
+            clkCadFuncionario(null);
+        }
+        else
+            clkLogin(null);
 
     }
 
@@ -163,6 +170,22 @@ public class TelaPrincipalController implements Initializable
 
             FXMLTelaLoginController ctr = loader.getController();
             ctr.RecebeDados(this);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
+
+    @FXML
+    private void clkCadFuncionario(ActionEvent event)
+    {
+                   
+         try
+        {
+            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroFuncionario.fxml"));
+
             pnprincipal.setCenter(root);
 
         } catch (IOException ex)

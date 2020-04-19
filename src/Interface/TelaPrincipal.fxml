@@ -25,7 +25,7 @@
                         <MenuItem onAction="#clkCadMarca" text="_Marca" />
                         <MenuItem onAction="#clkCadProduto" text="_Produtos" />
                         <MenuItem onAction="#clkCadFornecedor" text="_Fornecedor" />
-                        <MenuItem onAction="#clkCadFornecedor" text="_Funcionario" />
+                        <MenuItem onAction="#clkCadFuncionario" text="_Funcionario" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="_FERRAMENTAS">
