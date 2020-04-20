@@ -16,6 +16,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -62,35 +63,43 @@ public class FXMLCadastroFuncionarioController implements Initializable
     @FXML
     private JFXTextField tb_Nome;
     @FXML
-    private JFXTextField tb_Descricao;
-    @FXML
-    private JFXTextField tb_Preco;
-    @FXML
-    private JFXComboBox<Colecao> cbb_Colecao;
-    @FXML
-    private JFXComboBox<Categoria> cbb_Categoria;
-    @FXML
-    private JFXTextField tb_Tamanho;
-    @FXML
-    private JFXComboBox<Marca> cbb_Marca;
-    @FXML
     private VBox pnpesquisa;
-    private JFXTextField txpesquisa;
     @FXML
-    private TableView<Produto> tabela;
+    private TableView<Funcionario> tabela;
     @FXML
     private TableColumn<Funcionario, Integer> colcod;
     @FXML
-    private TableColumn<Produto, String> colnome;
+    private TableColumn<Funcionario, String> colnome;
     @FXML
-    private TableColumn<Produto, Float> colpreco;
+    private TableColumn<Funcionario, String> coltelefone;
+    @FXML
+    private TableColumn<Funcionario, Integer> colcid;
     @FXML
     private JFXTextField tb_Codigo;
     @FXML
     private JFXTextField tb_Pesquisa;
     @FXML
     private JFXButton btn_Pesquisar;
-
+    @FXML
+    private JFXTextField tb_Salario;
+    @FXML
+    private JFXTextField tb_Endereco;
+    @FXML
+    private JFXTextField tb_cpf;
+    @FXML
+    private JFXTextField tb_Email;
+    @FXML
+    private JFXTextField tb_Telefone;
+    @FXML
+    private JFXComboBox<String> cbb_filtro;
+    @FXML
+    private JFXTextField tb_Bairro;
+    @FXML
+    private JFXTextField tb_Cidade;
+    @FXML
+    private JFXTextField tb_cep;
+    @FXML
+    private JFXComboBox<String> cbb_sexo;
     /**
      * Initializes the controller class.
      */
@@ -98,10 +107,14 @@ public class FXMLCadastroFuncionarioController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
-        colcod.setCellValueFactory(new PropertyValueFactory("cod"));
+        colcod.setCellValueFactory(new PropertyValueFactory("codigo"));
         colnome.setCellValueFactory(new PropertyValueFactory("nome"));
-        colpreco.setCellValueFactory(new PropertyValueFactory("preco"));
-        MaskFieldUtil.monetaryField(tb_Preco);
+        coltelefone.setCellValueFactory(new PropertyValueFactory("telefone"));
+        colcid.setCellValueFactory(new PropertyValueFactory("cidade"));
+        MaskFieldUtil.monetaryField(tb_Salario);
+        MaskFieldUtil.cpfField(tb_cpf);
+        MaskFieldUtil.foneField(tb_Telefone);
+        MaskFieldUtil.cepField(tb_cep);
         estadoOriginal();
     }
 
@@ -143,29 +156,30 @@ public class FXMLCadastroFuncionarioController implements Initializable
 
     private void carregaTabela(String filtro)
     {
-//        Produto p = new Produto();
-//        List<Produto> res = p.selectProduto(filtro);
-//        ObservableList<Produto> modelo;
-//        modelo = FXCollections.observableArrayList(res);
-//        tabela.setItems(modelo);
-//        List<Categoria> categorias = new Categoria().selectCategoria("");
-//        cbb_Categoria.setItems(FXCollections.observableArrayList(categorias));
-//        cbb_Colecao.setItems(FXCollections.observableArrayList(new Colecao().selectColecao("")));
-//        cbb_Marca.setItems(FXCollections.observableArrayList(new Marca().selectMarca("")));
-        Produto p = new Produto();
-        List<Produto> res = p.selectProduto(filtro);
-        ObservableList<Produto> modelo;
+
+        Funcionario f = new Funcionario();
+        List<Funcionario> res = f.selectFuncionario(filtro);
+        ObservableList<Funcionario> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
-        cbb_Categoria.setItems(FXCollections.observableArrayList(new Categoria().selectCategoria("")));
-        cbb_Colecao.setItems(FXCollections.observableArrayList(new Colecao().selectColecao("")));
-        cbb_Marca.setItems(FXCollections.observableArrayList(new Marca().selectMarca("")));
+        List<String> Sexo = new ArrayList<>();
+        Sexo.add("M");
+        Sexo.add("F");
+        List<String> Filtro= new ArrayList<>();
+        Filtro.add("Nome");
+        Filtro.add("Sexo");
+        Filtro.add("Cidade");
+        Filtro.add("CEP");
+        cbb_sexo.setItems(FXCollections.observableArrayList(Sexo));
+        cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_filtro.getSelectionModel().select(0);
 
     }
 
     @FXML
     private void clkBtNovo(ActionEvent event)
     {
+        tb_Codigo.setDisable(true);
         estadoEdicao();
     }
 
@@ -174,18 +188,16 @@ public class FXMLCadastroFuncionarioController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            Produto p = (Produto) tabela.getSelectionModel().getSelectedItem();
-            tb_Codigo.setText("" + p.getCod());
-            tb_Nome.setText(p.getNome());
-            tb_Descricao.setText(p.getDescricao());
-            tb_Preco.setText(String.format("%10.2f", p.getPreco()));
+            Funcionario f = (Funcionario) tabela.getSelectionModel().getSelectedItem();
+            tb_Codigo.setText("" + f.getCodigo());
+            tb_Nome.setText(f.getNome());
+            tb_Salario.setText(String.format("%10.2f", f.getSalario()));
+            tb_Email.setText(f.getEmail());
+            tb_Endereco.setText(f.getEndereco());
+            tb_Telefone.setText(f.getTelefone());
+            tb_cpf.setText(f.getCpf());
             estadoEdicao();
-            cbb_Categoria.getSelectionModel().select(0);// gambis
-            cbb_Colecao.getSelectionModel().select(0);// gambis
-            cbb_Marca.getSelectionModel().select(0);// gambis
-            cbb_Categoria.getSelectionModel().select(p.getCodCategoria().getCod());
-            cbb_Colecao.getSelectionModel().select(p.getCodColecao().getCod());
-            cbb_Marca.getSelectionModel().select(p.getCodMarca().getCod());
+            cbb_sexo.getSelectionModel().select(f.getSexo());// gambis
         }
     }
 
@@ -196,14 +208,14 @@ public class FXMLCadastroFuncionarioController implements Initializable
         a.setContentText("Confirma a exclusão?");
         if (a.showAndWait().get() == ButtonType.OK)
         {
-            Produto p = new Produto();
-            p = tabela.getSelectionModel().getSelectedItem();
-            if (!p.delete())
+            Funcionario f = new Funcionario();
+            f = tabela.getSelectionModel().getSelectedItem();
+            if (!f.delete())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
             }
-            carregaTabela("");
+            estadoOriginal();
         }
     }
 
@@ -211,69 +223,114 @@ public class FXMLCadastroFuncionarioController implements Initializable
     private void clkBtConfirmar(ActionEvent event)
     {
         int cod;
-        Produto p = new Produto();
+        Funcionario f = new Funcionario();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         try
         {
-            cod = Integer.parseInt(tb_Codigo.getText());
+           
+                cod = Integer.parseInt(tb_Codigo.getText());
         } catch (Exception e)
         {
             cod = 0;
         }
         if (tb_Nome.getText().length() > 0)
         {
-            if (tb_Descricao.getText().length() > 0)
+            if (tb_Salario.getText().length() > 0)
             {
-                if (tb_Preco.getText().length() > 0)
+                if (tb_Telefone.getText().length() > 0)
                 {
-                    if (tb_Tamanho.getText().length() > 0)
+                    if (tb_cpf.getText().length() >= 11)
                     {
-                        if (cbb_Categoria.getSelectionModel().getSelectedIndex() != -1)
+                        if (cbb_sexo.getSelectionModel().getSelectedIndex() != -1)
                         {
-                            if (cbb_Colecao.getSelectionModel().getSelectedIndex() != -1)
+                            if(tb_Email.getText().length()> 0 && tb_Email.getText().contains("@"))
                             {
-                                if (cbb_Marca.getSelectionModel().getSelectedIndex() != -1)
+                                if (tb_Endereco.getText().length()> 0)
                                 {
-                                    p = new Produto(cod, cbb_Categoria.getValue(), tb_Nome.getText(), tb_Tamanho.getText(), Float.parseFloat(tb_Preco.getText().replace(".", "").replace(",", ".")),
-                                            tb_Descricao.getText(), cbb_Marca.getValue(), cbb_Colecao.getValue());
-                                    if (p.getCod() == 0) // novo cadastro
+                                    if (tb_Bairro.getText().length()> 0 )
                                     {
-                                        if (!p.insert())
+                                        if(tb_Cidade.getText().length()> 0)
                                         {
-                                            a.setContentText("Problemas ao Gravar");
-                                            // a.showAndWait();
+                                            if(tb_cep.getText().length()> 0)
+                                            {
+                                                f = new Funcionario(cod, tb_Nome.getText(), tb_cpf.getText(),cbb_sexo.getValue().charAt(0),
+                                                        Double.parseDouble(tb_Salario.getText().replace(".", "").replace(",", ".")),
+                                                tb_Telefone.getText(), tb_Email.getText(), tb_Endereco.getText(),tb_Bairro.getText(),tb_Cidade.getText()
+                                                        ,tb_cep.getText());
+
+                                                if (f.getCodigo()== 0) // novo cadastro
+                                                {
+                                                    if (!f.insert())
+                                                    {
+                                                        a.setContentText("Problemas ao Gravar");
+                                                        a.showAndWait();
+                                                    }
+                                                    else
+                                                    {
+                                                        a.setContentText("Gravado com Sucesso");
+                                                        a.showAndWait();
+                                                        estadoOriginal();  
+                                                    }
+                                                    
+                                                } else //alteração de cadastro
+                                                if (!f.update())
+                                                {
+                                                    a.setContentText("Problemas ao Alterar");
+                                                    a.showAndWait();
+                                                }
+                                                else
+                                                {
+                                                    a.setContentText("Alterado com Sucesso");
+                                                    a.showAndWait();
+                                                    estadoOriginal();
+                                                }
+                                              
+                                            }else
+                                            {
+                                                a.setContentText("Informe o Cep!");
+                                                a.showAndWait();
+                                            }
+                                        }else
+                                        {
+                                            a.setContentText("Informe a Cidade!");
+                                            a.showAndWait();
                                         }
-                                    } else //alteração de cadastro
-                                    if (!p.update())
+                                    } else
                                     {
-                                        a.setContentText("Problemas ao Alterar");
+                                        a.setContentText("Informe o Bairro!");
                                         a.showAndWait();
                                     }
-                                    estadoOriginal();
                                 } else
                                 {
-                                    a.setContentText("Informe a marca!");
+                                    a.setContentText("Informe o Endereço!");
+                                    a.showAndWait();
                                 }
-                            } else
+                            }else
                             {
-                                a.setContentText("Informe a colecao!");
+                                a.setContentText("Informe o Email!");
+                                a.showAndWait();
                             }
+                            
                         } else
                         {
-                            a.setContentText("Informe a categoria!");
+                            a.setContentText("Informe o Sexo!");
+                            a.showAndWait();
                         }
                     }
                     else
                     {
-                        a.setContentText("Informe o tamanho!");
+                        a.setContentText("Informe O CPF!");
+                        a.showAndWait();
                     }
                 } else
                 {
-                    a.setContentText("Informe o preço!");
+                    a.setContentText("Informe o Telefone!");
+                    a.showAndWait();
                 }
             } else
             {
-                a.setContentText("Informe a descrição!");
+                a.setContentText("Informe a Salario!");
+                a.showAndWait();
             }
         } else
         {
@@ -298,13 +355,18 @@ public class FXMLCadastroFuncionarioController implements Initializable
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        carregaTabela("upper(prod_nome) like '%" + txpesquisa.getText().toUpperCase() + "%'");
+
+        String filtro="upper(fun_"+cbb_filtro.getValue()+") ";
+        
+        carregaTabela(filtro+ " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        carregaTabela("upper(prod_nome) like '%" + txpesquisa.getText().toUpperCase() + "%'");
+        String filtro="upper(fun_"+cbb_filtro.getValue()+") ";
+
+        carregaTabela(filtro+ " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
@@ -317,18 +379,24 @@ public class FXMLCadastroFuncionarioController implements Initializable
             btn_Novo.setDisable(true);
             btn_Apagar.setDisable(false);
 
-            tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
+            tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCodigo());
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
-            tb_Descricao.setText(tabela.getSelectionModel().getSelectedItem().getDescricao());
-            tb_Preco.setText("" + tabela.getSelectionModel().getSelectedItem().getPreco());
+            tb_cpf.setText(tabela.getSelectionModel().getSelectedItem().getCpf());
+            tb_Telefone.setText(tabela.getSelectionModel().getSelectedItem().getTelefone());
+            tb_Salario.setText(String.valueOf(tabela.getSelectionModel().getSelectedItem().getSalario()));
+            tb_Email.setText(tabela.getSelectionModel().getSelectedItem().getEmail());
+            tb_Endereco.setText(tabela.getSelectionModel().getSelectedItem().getEndereco());
+            tb_Cidade.setText(tabela.getSelectionModel().getSelectedItem().getCidade());
+            tb_Bairro.setText(tabela.getSelectionModel().getSelectedItem().getBairro());
+            tb_cep.setText(tabela.getSelectionModel().getSelectedItem().getCep());
+           // tb_Descricao.setText(tabela.getSelectionModel().getSelectedItem().getDescricao());
+           // tb_Preco.setText("" + tabela.getSelectionModel().getSelectedItem().getPreco());
 
             //FAZER COMBOBOX (GAMBIS COPIADA DO PROFESSOR)
-            cbb_Categoria.getSelectionModel().select(0);// gambis
-            cbb_Colecao.getSelectionModel().select(0);// gambis
-            cbb_Marca.getSelectionModel().select(0);// gambis
-            cbb_Categoria.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodCategoria().getCod());
-            cbb_Colecao.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodColecao().getCod());
-            cbb_Marca.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodMarca().getCod());
+            cbb_sexo.getSelectionModel().select(0);// gambis
+            cbb_sexo.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getSexo());
+          //  cbb_Colecao.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodColecao().getCod());
+           // cbb_Marca.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodMarca().getCod());
         }
     }
 

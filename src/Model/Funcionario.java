@@ -6,7 +6,8 @@
 package Model;
 
 import Persistencia.FuncionarioBD;
-import java.util.ArrayList;
+import Util.Banco;
+ import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +23,14 @@ public class Funcionario {
     private String telefone;
     private String email;
     private String endereco;
+    private String bairro;
+    private String cidade;
+    private String cep;
 
     public Funcionario() {
     }
 
-    public Funcionario(int codigo, String nome, String cpf, char sexo, double salario, String telefone, String email, String endereco) {
+    public Funcionario(int codigo, String nome, String cpf, char sexo, double salario, String telefone, String email, String endereco,String bairro, String cidade,String cep) {
         this.codigo = codigo;
         this.nome = nome;
         this.cpf = cpf;
@@ -35,6 +39,9 @@ public class Funcionario {
         this.telefone = telefone;
         this.email = email;
         this.endereco = endereco;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.cep = cep;
     }
 
     public int getCodigo() {
@@ -100,10 +107,39 @@ public class Funcionario {
     public void setEndereco(String endereco) {
         this.endereco = endereco;
     }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+    
+    
     
      public boolean insert()
     {
-        FuncionarioBD func = new FuncionarioBD();        
+        codigo= Banco.getCon().getMaxPK("Funcionario", "fun_cod")+1;
+        if(codigo==0)
+            codigo=1;
+        FuncionarioBD func = new FuncionarioBD();  
         return func.insertFuncionario(this);
     }
     public boolean update()
@@ -116,14 +152,14 @@ public class Funcionario {
         FuncionarioBD func = new FuncionarioBD();      
         return func.deleteFuncionario(this);
     }
-    public Funcionario selectProduto(int cod)
+    public Funcionario selectFuncionario(int cod)
     {
         Funcionario f;
         FuncionarioBD func = new FuncionarioBD();      
         f = func.get(cod);
         return f;
     }
-    public List<Funcionario> selectProduto(String filtro)
+    public List<Funcionario> selectFuncionario(String filtro)
     {
         List<Funcionario> aux = new ArrayList();
         FuncionarioBD func = new FuncionarioBD();      

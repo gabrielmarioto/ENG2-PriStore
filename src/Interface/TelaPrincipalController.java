@@ -44,8 +44,9 @@ public class TelaPrincipalController implements Initializable
     {
         // TODO
         spnprincipal = pnprincipal;
-        if(new FuncionarioBD().get("")==null)
+        if(new FuncionarioBD().get("").isEmpty())
         {
+            
             clkCadFuncionario(null);
         }
         else
