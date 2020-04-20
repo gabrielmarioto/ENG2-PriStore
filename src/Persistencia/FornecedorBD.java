@@ -22,26 +22,24 @@ public class FornecedorBD
 
     public boolean insertFornecedor(Fornecedor f)
     {
-        String sql = "insert into fornecedor (cod, nome, cnpj, inscricaoEstadual, endereco, email, telefone, rua, cidade, numRua, bairro, cep) values (#1, '#2', '#3', '#4', '#5', '#6', '#7', '#8', '#9', #A, '#B', #C)";
-        sql = sql.replaceAll("#1", "" + f.getCod());
+        String sql = "insert into fornecedor (nome, cnpj, inscricaoEstadual, endereco, email, tel, cidade, numRua, bairro, cep) values ('#2', '#3', '#4', '#5', '#6', '#7', '#8', #9, '#A', '#B')";
         sql = sql.replaceAll("#2", "" + f.getNome());
         sql = sql.replaceAll("#3", "" + f.getCnpj());
         sql = sql.replaceAll("#4", "" + f.getInscrocaoEstadual());
         sql = sql.replaceAll("#5", "" + f.getEndereco());
         sql = sql.replaceAll("#6", "" + f.getEmail());
         sql = sql.replaceAll("#7", "" + f.getTelefone());
-        sql = sql.replaceAll("#8", "" + f.getRua());
-        sql = sql.replaceAll("#9", "" + f.getCidade());
-        sql = sql.replaceAll("#A", "" + f.getNumRua());
-        sql = sql.replaceAll("#B", "" + f.getBairro());
-        sql = sql.replaceAll("#C", "" + f.getCep());
-
+        sql = sql.replaceAll("#8", "" + f.getCidade());
+        sql = sql.replaceAll("#9", "" + f.getNumRua());
+        sql = sql.replaceAll("#A", "" + f.getBairro());
+        sql = sql.replaceAll("#B", "" + f.getCep());
+        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 
     public boolean updateFornecedor(Fornecedor f)
     {
-        String sql = "update fornecedor set nome = '#1', cnpj = '#2', inscricaoEstadual = '#3', endereco = '#4', email = '#5', telefone = '#6', rua = '#7', cidade = '#8', numRua = #9, bairro = '#A', cep = #B where cod = " + f.getCod();
+        String sql = "update fornecedor set nome = '#1', cnpj = '#2', inscricaoEstadual = '#3', endereco = '#4', email = '#5', tel = '#6', cidade = '#7', numRua = #8, bairro = '#9', cep = '#A' where cod = " + f.getCod();
 
         sql = sql.replaceAll("#1", "" + f.getNome());
         sql = sql.replaceAll("#2", "" + f.getCnpj());
@@ -49,11 +47,10 @@ public class FornecedorBD
         sql = sql.replaceAll("#4", "" + f.getEndereco());
         sql = sql.replaceAll("#5", "" + f.getEmail());
         sql = sql.replaceAll("#6", "" + f.getTelefone());
-        sql = sql.replaceAll("#7", "" + f.getRua());
-        sql = sql.replaceAll("#8", "" + f.getCidade());
-        sql = sql.replaceAll("#9", "" + f.getNumRua());
-        sql = sql.replaceAll("#A", "" + f.getBairro());
-        sql = sql.replaceAll("#B", "" + f.getCep());
+        sql = sql.replaceAll("#7", "" + f.getCidade());
+        sql = sql.replaceAll("#8", "" + f.getNumRua());
+        sql = sql.replaceAll("#9", "" + f.getBairro());
+        sql = sql.replaceAll("#A", "" + f.getCep());
 
         return Banco.getCon().manipular(sql);
     }
@@ -71,7 +68,7 @@ public class FornecedorBD
         {
             if (rs.next())
             {
-                f = new Fornecedor(rs.getInt("cod"), rs.getString("nome"), rs.getString("cnpj"), rs.getString("inscricaoEstadual"), rs.getString("endereco"), rs.getString("email"), rs.getString("telefone"), rs.getString("rua"), rs.getString("cidade"), rs.getInt("numRua"), rs.getString("bairro"), rs.getInt("cep"));
+                f = new Fornecedor(rs.getInt("cod"), rs.getString("nome"), rs.getString("cnpj"), rs.getString("inscricaoEstadual"), rs.getString("endereco"), rs.getString("email"), rs.getString("telefone"), rs.getString("cidade"), rs.getInt("numRua"), rs.getString("bairro"), rs.getString("cep"));
             }
         } catch (SQLException ex)
         {
@@ -93,11 +90,15 @@ public class FornecedorBD
         {
             while (rs.next())
             {
-                aux.add(new Fornecedor(rs.getInt("cod"), rs.getString("nome"), rs.getString("cnpj"), rs.getString("inscricaoEstadual"), rs.getString("endereco"), rs.getString("email"), rs.getString("telefone"), rs.getString("rua"), rs.getString("cidade"), rs.getInt("numRua"), rs.getString("bairro"), rs.getInt("cep")));
+                aux.add(new Fornecedor(rs.getInt("cod"), rs.getString("nome"), rs.getString("cnpj"), rs.getString("inscricaoEstadual"), rs.getString("endereco"), rs.getString("email"), rs.getString("tel"), rs.getString("cidade"), rs.getInt("numRua"), rs.getString("bairro"), rs.getString("cep")));
             }
         } catch (SQLException ex)
         {
 
+        }
+        for (int i = 0; i < aux.size(); i++)
+        {
+            System.out.println(aux.get(i));
         }
         return aux;
     }

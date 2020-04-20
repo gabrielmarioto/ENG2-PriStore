@@ -122,6 +122,16 @@ public class TelaPrincipalController implements Initializable
     @FXML
     private void clkCadFornecedor(ActionEvent event)
     {
+        try
+        {
+            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroFornecedor.fxml"));
+
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
     }
 
     @FXML

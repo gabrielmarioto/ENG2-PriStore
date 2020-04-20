@@ -17,10 +17,11 @@ public class Fornecedor
 {
 
     private int cod;
-    private String nome, cnpj, inscrocaoEstadual, endereco, email, telefone, rua, cidade, bairro;
-    private int numRua, cep;
+    private String nome, cnpj, inscrocaoEstadual, endereco, email, telefone, cidade, bairro;
+    private int numRua;
+    private String cep;
 
-    public Fornecedor(int cod, String nome, String cnpj, String inscrocaoEstadual, String endereco, String email, String telefone, String rua, String cidade, int numRua, String bairro, int cep)
+    public Fornecedor(int cod, String nome, String cnpj, String inscrocaoEstadual, String endereco, String email, String telefone, String cidade, int numRua, String bairro, String cep)
     {
         this.cod = cod;
         this.nome = nome;
@@ -29,7 +30,6 @@ public class Fornecedor
         this.endereco = endereco;
         this.email = email;
         this.telefone = telefone;
-        this.rua = rua;
         this.cidade = cidade;
         this.numRua = numRua;
         this.bairro = bairro;
@@ -110,16 +110,6 @@ public class Fornecedor
         this.telefone = telefone;
     }
 
-    public String getRua()
-    {
-        return rua;
-    }
-
-    public void setRua(String rua)
-    {
-        this.rua = rua;
-    }
-
     public String getCidade()
     {
         return cidade;
@@ -150,32 +140,32 @@ public class Fornecedor
         this.numRua = numRua;
     }
 
-    public int getCep()
+    public String getCep()
     {
         return cep;
     }
 
-    public void setCep(int cep)
+    public void setCep(String cep)
     {
         this.cep = cep;
     }
 
-    public void insertFornecedor()
+    public boolean insertFornecedor()
     {
         FornecedorBD fornecedor = new FornecedorBD();
-        fornecedor.insertFornecedor(this);
+        return fornecedor.insertFornecedor(this);
     }
 
-    public void updateFornecedor()
+    public boolean updateFornecedor()
     {
         FornecedorBD fornecedor = new FornecedorBD();
-        fornecedor.updateFornecedor(this);
+        return fornecedor.updateFornecedor(this);
     }
 
-    public void deleteFornecedor()
+    public boolean deleteFornecedor()
     {
         FornecedorBD fornecedor = new FornecedorBD();
-        fornecedor.deleteFornecedor(this);
+        return fornecedor.deleteFornecedor(this);
     }
 
     public Fornecedor selectFornecedor(int codigo)
