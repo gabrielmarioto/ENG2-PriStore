@@ -214,5 +214,19 @@ public class TelaPrincipalController implements Initializable
             System.out.println(ex);
         }
     }
+
+    @FXML
+    private void clkCadCliente(ActionEvent event) {
+        try
+        {
+            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroCliente.fxml"));
+
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
     
 }

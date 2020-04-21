@@ -415,14 +415,8 @@ public class FXMLCadastroFuncionarioController implements Initializable
             tb_Cidade.setText(tabela.getSelectionModel().getSelectedItem().getCidade());
             tb_Bairro.setText(tabela.getSelectionModel().getSelectedItem().getBairro());
             tb_cep.setText(tabela.getSelectionModel().getSelectedItem().getCep());
-           // tb_Descricao.setText(tabela.getSelectionModel().getSelectedItem().getDescricao());
-           // tb_Preco.setText("" + tabela.getSelectionModel().getSelectedItem().getPreco());
-
-            //FAZER COMBOBOX (GAMBIS COPIADA DO PROFESSOR)
             cbb_sexo.getSelectionModel().select(0);// gambis
             cbb_sexo.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getSexo());
-          //  cbb_Colecao.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodColecao().getCod());
-           // cbb_Marca.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodMarca().getCod());
         }
     }
 
