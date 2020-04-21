@@ -12,19 +12,25 @@ import Model.Colecao;
 import Model.Funcionario;
 import Model.Marca;
 import Model.Produto;
+import Persistencia.UsuarioBD;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -37,6 +43,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -220,7 +229,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
     }
 
     @FXML
-    private void clkBtConfirmar(ActionEvent event)
+    private void clkBtConfirmar(ActionEvent event) throws IOException
     {
         int cod;
         Funcionario f = new Funcionario();
@@ -269,7 +278,24 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                                     {
                                                         a.setContentText("Gravado com Sucesso");
                                                         a.showAndWait();
-                                                        estadoOriginal();  
+                                                        estadoOriginal();
+                                                        Alert b = new Alert(Alert.AlertType.CONFIRMATION,"Deseja criar uma Usuario para este Funcionario?", ButtonType.YES);
+                                                        Optional<ButtonType> result = b.showAndWait();
+                                                        if(result.get()==ButtonType.YES)
+                                                        {
+                                                            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastraUsuario.fxml"));
+                                                            Parent root = (Parent) loader.load();
+
+                                                            FXMLCadastraUsuarioController ctr = loader.getController();
+                                                            ctr.RecebeDados(f);
+
+                                                            Stage stage = new Stage();
+                                                            Scene scene = new Scene(root);
+                                                            stage.initStyle(StageStyle.UNDECORATED);
+                                                            stage.initModality(Modality.APPLICATION_MODAL);
+                                                            stage.setScene(scene);
+                                                            stage.showAndWait();
+                                                        }
                                                     }
                                                     
                                                 } else //alteração de cadastro

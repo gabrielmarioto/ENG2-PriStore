@@ -5,12 +5,15 @@
  */
 package Interface;
 
+import Model.Usuario;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 
 /**
@@ -23,12 +26,13 @@ public class FXMLTelaLoginController implements Initializable {
     @FXML
     private JFXTextField tb_Nome;
     @FXML
-    private JFXTextField tb_senha;
-    @FXML
     private Button btn_logar;
     @FXML
     private Button btn_Sair;
-
+    @FXML
+    private JFXPasswordField pf_senha;
+    
+        private TelaPrincipalController ctr;
     /**
      * Initializes the controller class.
      */
@@ -39,11 +43,24 @@ public class FXMLTelaLoginController implements Initializable {
     
     public void RecebeDados(TelaPrincipalController ctr){
         
+       this.ctr = ctr;
+        
         //ctr.setLogin(usuario);
     }
 
     @FXML
     private void clkLogar(ActionEvent event) {
+        Usuario u= new Usuario(0,tb_Nome.getText(),pf_senha.getText(),0);
+        if(u.isValido())
+        {
+            ctr.setLogin(u);
+        }
+        else
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText("Usuario ou senha incorretos ou inexistente!");
+            a.showAndWait();
+        }
     }
 
     @FXML

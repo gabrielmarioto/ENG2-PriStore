@@ -33,7 +33,6 @@ public class FornecedorBD
         sql = sql.replaceAll("#9", "" + f.getNumRua());
         sql = sql.replaceAll("#A", "" + f.getBairro());
         sql = sql.replaceAll("#B", "" + f.getCep());
-        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 

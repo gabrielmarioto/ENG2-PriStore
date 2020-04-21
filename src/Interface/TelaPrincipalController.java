@@ -6,7 +6,9 @@
 package Interface;
 
 import Model.Funcionario;
+import Model.Usuario;
 import Persistencia.FuncionarioBD;
+import Persistencia.UsuarioBD;
 import Util.Banco;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -23,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -34,9 +37,11 @@ import javafx.stage.StageStyle;
 public class TelaPrincipalController implements Initializable
 {
     public static BorderPane spnprincipal = null;
-    private Funcionario usuario = null;
+    private Usuario usuario = null;
     @FXML
     private BorderPane pnprincipal;   
+    @FXML
+    private VBox topo;
 
     
     @Override
@@ -44,19 +49,24 @@ public class TelaPrincipalController implements Initializable
     {
         // TODO
         spnprincipal = pnprincipal;
-        if(new FuncionarioBD().get("").isEmpty())
+        topo.setDisable(true);
+        if(new UsuarioBD().get("").isEmpty())
         {
-            
-            clkCadFuncionario(null);
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setContentText("Nenhum Usuario cadastrado, Por favor cadastre um");
+            a.showAndWait();
+            clkCadFuncionario(null);    
         }
         else
             clkLogin(null);
 
     }
 
-    protected void setLogin(Funcionario usuario)
+    protected void setLogin(Usuario usuario)
     {
+        topo.setDisable(false);
         this.usuario=usuario;
+        pnprincipal.setCenter(null);
     }
 
     @FXML
