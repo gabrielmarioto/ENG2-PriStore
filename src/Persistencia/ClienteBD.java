@@ -56,6 +56,7 @@ public class ClienteBD {
         sql = sql.replaceAll("#6", "" + c.getSexo());
         sql = sql.replaceAll("#7", "" + c.getSaldo());
         sql = sql.replaceAll("#8", "" + c.getDtNascimento());
+       
         return Banco.getCon().manipular(sql);
     }
 
@@ -63,7 +64,7 @@ public class ClienteBD {
     {
         String sql = "update cliente set cli_nome = '#1', cli_cpf = '#2', cli_end = '#3' "
                 + ", cli_email = '#4', cli_telefone = '#5', cli_sexo = '#6' , cli_saldo = #7"
-                + ", cli_dtNasc = '#8' where cod = " + c.getCod();
+                + ", cli_dtNasc = '#8' where cli_cod = " + c.getCod();
         sql = sql.replaceAll("#1", "" + c.getNome());
         sql = sql.replaceAll("#2", "" + c.getCpf());
         sql = sql.replaceAll("#3", "" + c.getEnd());
@@ -72,6 +73,7 @@ public class ClienteBD {
         sql = sql.replaceAll("#6", "" + c.getSexo());
         sql = sql.replaceAll("#7", "" + c.getSaldo());
         sql = sql.replaceAll("#8", "" + c.getDtNascimento());
+         System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 

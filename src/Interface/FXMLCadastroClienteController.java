@@ -16,7 +16,9 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
+import com.sun.javafx.scene.layout.region.Margins;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -91,6 +93,8 @@ public class FXMLCadastroClienteController implements Initializable
     private TableColumn<Cliente, String> colnome;
     @FXML
     private TableColumn<Cliente, String> colcpf;
+    @FXML
+    private JFXTextField tb_Saldo;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,8 +102,13 @@ public class FXMLCadastroClienteController implements Initializable
         colnome.setCellValueFactory(new PropertyValueFactory("nome"));
         colcpf.setCellValueFactory(new PropertyValueFactory("cpf"));
         
+        MaskFieldUtil.maxField(tb_Email, 40);
+        MaskFieldUtil.maxField(tb_End, 40);
+        MaskFieldUtil.maxField(tb_Nome, 40);
+        
         MaskFieldUtil.cpfField(tb_Cpf);
         MaskFieldUtil.foneField(tb_Telefone);
+        MaskFieldUtil.monetaryField(tb_Saldo);
         
         estadoOriginal();
     }
@@ -178,7 +187,7 @@ public class FXMLCadastroClienteController implements Initializable
         {
             Cliente c = new Cliente();
             c = tabela.getSelectionModel().getSelectedItem();
-            if (!c.deleteCategoria())
+            if (!c.deleteCliente())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
@@ -190,12 +199,12 @@ public class FXMLCadastroClienteController implements Initializable
 
     @FXML
     private void clkBtConfirmar(ActionEvent event) {
-        /*int cod;
-        Fornecedor f = new Fornecedor();
+        int cod;
+        Cliente c = new Cliente();
+        LocalDate dataAtual = LocalDate.now();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         try
         {
-
             cod = Integer.parseInt(tb_Codigo.getText());
         } catch (Exception e)
         {
@@ -203,86 +212,64 @@ public class FXMLCadastroClienteController implements Initializable
         }
         if (tb_Nome.getText().length() > 0)
         {
-            if (tb_Numero.getText().length() > 0)
+            if (tb_Cpf.getText().length() > 0)
             {
                 if (tb_Telefone.getText().length() > 0)
                 {
-                    if (tb_Cnpj.getText().length() >= 14)
+                    if (tb_End.getText().length() > 0)
                     {
-                        if (tb_InscricaoEstadual.getText().length() == 9)
+                        if (tb_Email.getText().length() > 0)
                         {
-                            if (tb_Email.getText().length() > 0 && tb_Email.getText().contains("@"))
+                            
+                            if (cbb_Sexo.getSelectionModel().getSelectedIndex()!= -1)
                             {
-                                if (tb_Endereco.getText().length() > 0)
+                                if (dtp_nascimento.getValue().isBefore(dataAtual))
                                 {
-                                    if (tb_Bairro.getText().length() > 0)
+                                    c = new Cliente(cod, tb_Nome.getText(), tb_Cpf.getText().replace(".", "").replace("-", ""), tb_End.getText(), tb_Email.getText(), tb_Telefone.getText(), cbb_Sexo.getValue().charAt(0), Float.parseFloat(tb_Saldo.getText().replace(".", "").replace(",", ".")), dtp_nascimento.getValue());
+
+                                    if (c.getCod() == 0) // novo cadastro
                                     {
-                                        if (tb_Cidade.getText().length() > 0)
+                                        if (!c.insertCliente())
                                         {
-                                            if (tb_cep.getText().length() > 0)
-                                            {
-//                                           
-                                                f = new Fornecedor(cod, tb_Nome.getText(), tb_Cnpj.getText(), tb_InscricaoEstadual.getText(), tb_Endereco.getText(), tb_Email.getText(), tb_Telefone.getText(), tb_Cidade.getText(), Integer.parseInt(tb_Numero.getText()), tb_Bairro.getText(), tb_cep.getText());
-
-                                                if (f.getCod() == 0) // novo cadastro
-                                                {
-                                                    if (!f.insertFornecedor())
-                                                    {
-                                                        a.setContentText("Problemas ao Gravar");
-                                                        a.showAndWait();
-                                                    } else
-                                                    {
-                                                        a.setContentText("Gravado com Sucesso");
-                                                        a.showAndWait();
-                                                        estadoOriginal();
-                                                    }
-
-                                                } else //alteração de cadastro
-                                                if (!f.updateFornecedor())
-                                                {
-                                                    a.setContentText("Problemas ao Alterar");
-                                                    a.showAndWait();
-                                                } else
-                                                {
-                                                    a.setContentText("Alterado com Sucesso");
-                                                    a.showAndWait();
-                                                    estadoOriginal();
-                                                }
-
-                                            } else
-                                            {
-                                                a.setContentText("Informe o Cep!");
-                                                a.showAndWait();
-                                            }
+                                            a.setContentText("Problemas ao Gravar");
+                                            a.showAndWait();
                                         } else
                                         {
-                                            a.setContentText("Informe a Cidade!");
+                                            a.setContentText("Gravado com Sucesso");
                                             a.showAndWait();
+                                            estadoOriginal();
                                         }
+
+                                    } else //alteração de cadastro
+                                    if (!c.updateCliente())
+                                    {
+                                        a.setContentText("Problemas ao Alterar");
+                                        a.showAndWait();
                                     } else
                                     {
-                                        a.setContentText("Informe o Bairro!");
+                                        a.setContentText("Alterado com Sucesso");
                                         a.showAndWait();
+                                        estadoOriginal();
                                     }
                                 } else
                                 {
-                                    a.setContentText("Informe o Endereço!");
+                                    a.setContentText("Corrija a Data de Nascimento!");
                                     a.showAndWait();
                                 }
                             } else
                             {
-                                a.setContentText("Informe o Email!");
+                                a.setContentText("Informe o Sexo!");
                                 a.showAndWait();
                             }
                         }
                         else
                         {
-                             a.setContentText("Informe a Inscricao Estadual!");
+                             a.setContentText("Informe o Email!");
                             a.showAndWait();
                         }
                     } else
                     {
-                        a.setContentText("Informe O CNPJ!");
+                        a.setContentText("Informe o Endereço!");
                         a.showAndWait();
                     }
                 } else
@@ -292,7 +279,7 @@ public class FXMLCadastroClienteController implements Initializable
                 }
             } else
             {
-                a.setContentText("Informe a Salario!");
+                a.setContentText("Informe o CPF!");
                 a.showAndWait();
             }
         } else
@@ -300,7 +287,7 @@ public class FXMLCadastroClienteController implements Initializable
             a.setContentText("Informe o nome!");
             a.showAndWait();
         }
-        carregaTabela("");*/
+        carregaTabela("");
     }
 
     @FXML
@@ -322,6 +309,25 @@ public class FXMLCadastroClienteController implements Initializable
 
     @FXML
     private void clkTabela(MouseEvent event) {
+        if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            pndados.setDisable(true);
+            btn_Alterar.setDisable(false);
+            btn_Novo.setDisable(true);
+            btn_Apagar.setDisable(false);
+
+            tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
+            tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
+            tb_Cpf.setText(tabela.getSelectionModel().getSelectedItem().getCpf());
+            tb_End.setText(tabela.getSelectionModel().getSelectedItem().getEnd());
+            tb_Email.setText(tabela.getSelectionModel().getSelectedItem().getEmail());
+            tb_Telefone.setText(tabela.getSelectionModel().getSelectedItem().getTelefone());
+            dtp_nascimento.setValue(tabela.getSelectionModel().getSelectedItem().getDtNascimento());
+            tb_Saldo.setText(tabela.getSelectionModel().getSelectedItem().getSaldo()+"");
+            
+            cbb_Sexo.getSelectionModel().select(0);// gambis
+            cbb_Sexo.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getSexo());
+        }
     }
 
     

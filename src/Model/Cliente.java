@@ -123,25 +123,25 @@ public class Cliente {
     public String toString() {
         return nome;
     }    
-    public boolean insertCategoria()
+    public boolean insertCliente()
     {
         ClienteBD cliente = new ClienteBD();
         return cliente.insertCliente(this);
     }
 
-    public boolean updateCategoria()
+    public boolean updateCliente()
     {
         ClienteBD cliente = new ClienteBD();
         return cliente.updateCliente(this);
     }
 
-    public boolean deleteCategoria()
+    public boolean deleteCliente()
     {
         ClienteBD cliente = new ClienteBD();
         return cliente.deleteCliente(this);
     }
 
-    public Cliente selectCategoria(int codigo)
+    public Cliente selectCliente(int codigo)
     {
         Cliente c;
         ClienteBD categoria = new ClienteBD();
