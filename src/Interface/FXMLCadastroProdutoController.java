@@ -15,6 +15,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -89,6 +90,8 @@ public class FXMLCadastroProdutoController implements Initializable
     private JFXTextField tb_Pesquisa;
     @FXML
     private JFXButton btn_Pesquisar;
+    @FXML
+    private JFXComboBox<String> cbb_Filtro;
 
     /**
      * Initializes the controller class.
@@ -159,6 +162,14 @@ public class FXMLCadastroProdutoController implements Initializable
         cbb_Categoria.setItems(FXCollections.observableArrayList(new Categoria().selectCategoria("")));
         cbb_Colecao.setItems(FXCollections.observableArrayList(new Colecao().selectColecao("")));
         cbb_Marca.setItems(FXCollections.observableArrayList(new Marca().selectMarca("")));
+        
+        List<String> Filtro = new ArrayList<>();
+        Filtro.add("Nome");
+        Filtro.add("Tamanho");
+        Filtro.add("Preco");
+        Filtro.add("Descricao");
+        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_Filtro.getSelectionModel().select(0);
 
     }
 
@@ -166,6 +177,7 @@ public class FXMLCadastroProdutoController implements Initializable
     private void clkBtNovo(ActionEvent event)
     {
         estadoEdicao();
+        tb_Codigo.setDisable(true);
     }
 
     @FXML
@@ -297,13 +309,18 @@ public class FXMLCadastroProdutoController implements Initializable
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        carregaTabela("upper(prod_nome) like '%" + txpesquisa.getText().toUpperCase() + "%'");
+        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
+        
+        System.out.println(filtro);
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        carregaTabela("upper(prod_nome) like '%" + txpesquisa.getText().toUpperCase() + "%'");
+        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+
+        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");        
     }
 
     @FXML

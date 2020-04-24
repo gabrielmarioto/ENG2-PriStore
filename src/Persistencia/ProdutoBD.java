@@ -24,8 +24,7 @@ public class ProdutoBD
     //'#1' = STRING
     public boolean insertProduto(Produto p)
     {
-        String sql = "insert into produto (cod, codCategoria, nome, tamanho, preco, descricao, codMarca, codColecao) values (#1, #2, '#3', '#4', #5, '#6', #7, #8)";
-        sql = sql.replaceAll("#1", "" + p.getCod());
+        String sql = "insert into produto (codCategoria, nome, tamanho, preco, descricao, codMarca, codColecao) values (#2, '#3', '#4', #5, '#6', #7, #8)";
         sql = sql.replaceAll("#2", "" + p.getCodCategoria().getCod());
         sql = sql.replaceAll("#3", "" + p.getNome());
         sql = sql.replaceAll("#4", "" + p.getTamanho());
@@ -33,7 +32,8 @@ public class ProdutoBD
         sql = sql.replaceAll("#6", "" + p.getDescricao());
         sql = sql.replaceAll("#7", "" + p.getCodMarca().getCod());
         sql = sql.replaceAll("#8", "" + p.getCodColecao().getCod());
-
+        
+        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 

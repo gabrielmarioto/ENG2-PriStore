@@ -56,11 +56,17 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
+                  <JFXTextField fx:id="tb_Tamanho" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="69.0" prefHeight="27.0" prefWidth="392.0" promptText="Tamanho">
+                     <font>
+                        <Font name="Century Gothic" size="12.0" />
+                     </font>
+                  </JFXTextField>
                   <JFXTextField fx:id="tb_Descricao" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="346.0" promptText="Descrição">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
+                  <JFXComboBox fx:id="cbb_Marca" focusColor="ORANGE" labelFloat="true" layoutX="407.0" layoutY="118.0" prefHeight="29.0" prefWidth="392.0" promptText="Marca" />
                   <JFXTextField fx:id="tb_Preco" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="163.0" prefHeight="25.0" prefWidth="787.0" promptText="Preço">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
@@ -68,12 +74,6 @@
                   </JFXTextField>
                   <JFXComboBox fx:id="cbb_Colecao" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="214.0" prefHeight="29.0" prefWidth="346.0" promptText="Coleção" />
                   <JFXComboBox fx:id="cbb_Categoria" focusColor="ORANGE" labelFloat="true" layoutX="413.0" layoutY="214.0" prefHeight="29.0" prefWidth="392.0" promptText="Categoria" />
-                  <JFXTextField fx:id="tb_Tamanho" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="69.0" prefHeight="27.0" prefWidth="392.0" promptText="Tamanho">
-                     <font>
-                        <Font name="Century Gothic" size="12.0" />
-                     </font>
-                  </JFXTextField>
-                  <JFXComboBox fx:id="cbb_Marca" focusColor="ORANGE" labelFloat="true" layoutX="407.0" layoutY="118.0" prefHeight="29.0" prefWidth="392.0" promptText="Marca" />
                </children>
             </AnchorPane>
          </children>
@@ -82,7 +82,8 @@
          <children>
             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="696.0" spacing="40.0" style="-fx-background-color: #DDDDDD;">
                <children>
-                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="503.0" promptText="Informe o nome do produto" />
+                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="313.0" promptText="Informe o nome do produto" />
+                  <JFXComboBox fx:id="cbb_Filtro" prefHeight="25.0" prefWidth="131.0" promptText="Filtro" />
                   <JFXButton fx:id="btn_Pesquisar" onAction="#clkBtPesquisar" text="Pesquisar">
                      <font>
                         <Font name="Century Gothic" size="12.0" />

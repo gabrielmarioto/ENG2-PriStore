@@ -9,11 +9,13 @@ import static Interface.TelaPrincipalController.spnprincipal;
 import Model.Categoria;
 import Model.Colecao;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -75,6 +77,8 @@ public class FXMLCadastroColecaoController implements Initializable
     private TableColumn<Colecao, String> colnome;
     @FXML
     private JFXDatePicker dtp_Inicial;
+    @FXML
+    private JFXComboBox<String> cbb_Filtro;
 
     /**
      * Initializes the controller class.
@@ -121,6 +125,10 @@ public class FXMLCadastroColecaoController implements Initializable
         ObservableList<Colecao> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
+        List<String> Filtro = new ArrayList<>();
+        Filtro.add("Nome");
+        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_Filtro.getSelectionModel().select(0);
     }
 
     private void estadoEdicao()
@@ -230,13 +238,17 @@ public class FXMLCadastroColecaoController implements Initializable
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        carregaTabela("upper(nome) like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
+        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+
+        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        carregaTabela("upper(nome) like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
+        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+
+        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML

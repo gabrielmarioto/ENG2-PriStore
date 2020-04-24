@@ -345,7 +345,7 @@ public class FXMLCadastroFornecedorController implements Initializable
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        String filtro = "upper(fun_" + cbb_filtro.getValue() + ") ";
+        String filtro = "upper(" + cbb_filtro.getValue() + ") ";
 
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
@@ -353,7 +353,7 @@ public class FXMLCadastroFornecedorController implements Initializable
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        String filtro = "upper(fun_" + cbb_filtro.getValue() + ") ";
+        String filtro = "upper(" + cbb_filtro.getValue() + ") ";
 
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }

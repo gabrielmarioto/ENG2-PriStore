@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -55,7 +56,8 @@
          <children>
             <HBox alignment="CENTER" prefHeight="25.0" prefWidth="0.0" spacing="40.0" style="-fx-background-color: #DDDDDD;">
                <children>
-                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="410.0" promptText="Informe o nome da marca" />
+                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="276.0" promptText="Informe o nome da marca" />
+                  <JFXComboBox fx:id="cbb_Filtro" prefHeight="25.0" prefWidth="110.0" promptText="Filtro" />
                   <JFXButton fx:id="btn_Pesquisa" onAction="#clkBtPesquisar" prefHeight="25.0" prefWidth="80.0" text="Pesquisar">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
