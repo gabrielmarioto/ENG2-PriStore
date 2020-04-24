@@ -18,8 +18,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -49,19 +52,26 @@ public class FXMLTelaLoginController implements Initializable {
     public void RecebeDados(TelaPrincipalController ctr){
         
        this.ctr = ctr;
-        
+       tb_Nome.requestFocus();
         //ctr.setLogin(usuario);
     }
 
     @FXML
-    private void clkLogar(ActionEvent event) throws IOException 
+    private void clkLogar(ActionEvent event) throws IOException, Throwable 
     {
         Usuario u= new Usuario(0,tb_Nome.getText(),pf_senha.getText(),0);
         if(u.isValido())
         {
-            ctr.setLogin(u);
-//            Parent root = FXMLLoader.load(getClass().getResource("TelaPrincipal.fxml"));
-//            spnprincipal.setCenter(root);
+            //ctr.setLogin(u);
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("TelaPrincipal.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setMaximized(true);
+            stage.setTitle("SGPS - PriStore");
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/camiseta.png"))); // SETAR ICONE NA JANELA
+            stage.show();           
+            clkSair(event);
         }
         else
         {

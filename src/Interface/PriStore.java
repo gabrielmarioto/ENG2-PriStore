@@ -25,14 +25,12 @@ public class PriStore extends Application
     @Override
     public void start(Stage stage) throws Exception
     {
-        Parent root = FXMLLoader.load(getClass().getResource("TelaPrincipal.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("FXMLTelaLogin.fxml"));
 
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
-
-        stage.setMaximized(true);
-        stage.setTitle("SGPS - PriStore");
+        stage.setTitle("SGPS - LOGIN");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/camiseta.png"))); // SETAR ICONE NA JANELA
         stage.show();
     }

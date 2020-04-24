@@ -49,16 +49,16 @@ public class TelaPrincipalController implements Initializable
     {
         // TODO
         spnprincipal = pnprincipal;
-        topo.setDisable(true);
-        if(new UsuarioBD().get("").isEmpty())
-        {
-            Alert a = new Alert(Alert.AlertType.WARNING);
-            a.setContentText("Nenhum Usuario cadastrado, Por favor cadastre um");
-            a.showAndWait();
-            clkCadFuncionario(null);    
-        }
-        else
-            clkLogin(null);
+//        topo.setDisable(true);
+//        if(new UsuarioBD().get("").isEmpty())
+//        {
+//            Alert a = new Alert(Alert.AlertType.WARNING);
+//            a.setContentText("Nenhum Usuario cadastrado, Por favor cadastre um");
+//            a.showAndWait();
+//            clkCadFuncionario(null);    
+//        }
+//        else
+//            clkLogin(null);
 
     }
 
