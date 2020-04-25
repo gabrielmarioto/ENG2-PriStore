@@ -9,6 +9,7 @@ import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
 import Model.Fornecedor;
 import Model.Funcionario;
+import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -98,6 +99,7 @@ public class FXMLCadastroFornecedorController implements Initializable
     @FXML
     private TableColumn<Fornecedor, Integer> colcid;
 
+    private Usuario u;
     /**
      * Initializes the controller class.
      */
@@ -117,6 +119,10 @@ public class FXMLCadastroFornecedorController implements Initializable
         estadoOriginal();
     }
 
+     public void RecebeDados(Usuario u){
+       this.u=u;
+    }
+     
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
@@ -364,9 +370,11 @@ public class FXMLCadastroFornecedorController implements Initializable
         if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
-            btn_Alterar.setDisable(false);
+            if(u.getNivel()>1)
+                btn_Alterar.setDisable(false);
             btn_Novo.setDisable(true);
-            btn_Apagar.setDisable(false);
+            if(u.getNivel()>2)
+                btn_Apagar.setDisable(false);
 
             tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());

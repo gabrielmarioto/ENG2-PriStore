@@ -12,6 +12,7 @@ import Model.Colecao;
 import Model.Funcionario;
 import Model.Marca;
 import Model.Produto;
+import Model.Usuario;
 import Persistencia.UsuarioBD;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -109,6 +110,8 @@ public class FXMLCadastroFuncionarioController implements Initializable
     private JFXTextField tb_cep;
     @FXML
     private JFXComboBox<String> cbb_sexo;
+    
+    private Usuario u;
     /**
      * Initializes the controller class.
      */
@@ -127,6 +130,10 @@ public class FXMLCadastroFuncionarioController implements Initializable
         estadoOriginal();
     }
 
+     public void RecebeDados(Usuario u){
+       this.u=u;
+    }
+     
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
@@ -287,7 +294,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                                             Parent root = (Parent) loader.load();
 
                                                             FXMLCadastraUsuarioController ctr = loader.getController();
-                                                            ctr.RecebeDados(f);
+                                                            ctr.RecebeDados(f,u);
 
                                                             Stage stage = new Stage();
                                                             Scene scene = new Scene(root);
@@ -401,9 +408,11 @@ public class FXMLCadastroFuncionarioController implements Initializable
         if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
-            btn_Alterar.setDisable(false);
+            if(u.getNivel()>1)
+                btn_Alterar.setDisable(false);
             btn_Novo.setDisable(true);
-            btn_Apagar.setDisable(false);
+            if(u.getNivel()>2)
+                btn_Apagar.setDisable(false);
 
             tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCodigo());
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());

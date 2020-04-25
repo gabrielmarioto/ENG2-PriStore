@@ -25,7 +25,7 @@
                         <MenuItem onAction="#clkCadMarca" text="_Marca" />
                         <MenuItem onAction="#clkCadProduto" text="_Produtos" />
                         <MenuItem onAction="#clkCadFornecedor" text="_Fornecedor" />
-                        <MenuItem onAction="#clkCadFuncionario" text="_Funcionario" />
+                        <MenuItem fx:id="miFun" onAction="#clkCadFuncionario" text="_Funcionario" />
                         <MenuItem onAction="#clkCadCliente" text="_Cliente" />
                      </items>
                   </Menu>
@@ -35,10 +35,10 @@
                         <MenuItem onAction="#clkRestauracao" text="_Restauração" />
                      </items>
                   </Menu>
-                  <Menu mnemonicParsing="false" text="_USUARIO">
+                  <Menu fx:id="mnUsu" mnemonicParsing="false" text="_USUARIO">
                      <items>
-                        <MenuItem onAction="#clkBackup" text="Alterar" />
-                        <MenuItem onAction="#clkRestauracao" text="Deslogar" />
+                        <MenuItem disable="true" onAction="#ClkAlterarUsu" text="Alterar" />
+                        <MenuItem onAction="#clkDeslogar" text="Deslogar" />
                      </items>
                   </Menu>
                </menus>

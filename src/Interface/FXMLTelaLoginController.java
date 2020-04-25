@@ -53,7 +53,6 @@ public class FXMLTelaLoginController implements Initializable {
         
        this.ctr = ctr;
        tb_Nome.requestFocus();
-        //ctr.setLogin(usuario);
     }
 
     @FXML
@@ -62,16 +61,7 @@ public class FXMLTelaLoginController implements Initializable {
         Usuario u= new Usuario(0,tb_Nome.getText(),pf_senha.getText(),0);
         if(u.isValido())
         {
-            //ctr.setLogin(u);
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("TelaPrincipal.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setMaximized(true);
-            stage.setTitle("SGPS - PriStore");
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/camiseta.png"))); // SETAR ICONE NA JANELA
-            stage.show();           
-            clkSair(event);
+            ctr.setLogin(u);
         }
         else
         {

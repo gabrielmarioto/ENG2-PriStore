@@ -12,6 +12,7 @@ import Model.Cliente;
 import Model.Colecao;
 import Model.Marca;
 import Model.Produto;
+import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -96,6 +97,8 @@ public class FXMLCadastroClienteController implements Initializable
     @FXML
     private JFXTextField tb_Saldo;
 
+    private Usuario u;
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colcod.setCellValueFactory(new PropertyValueFactory("cod"));
@@ -111,6 +114,10 @@ public class FXMLCadastroClienteController implements Initializable
         MaskFieldUtil.monetaryField(tb_Saldo);
         
         estadoOriginal();
+    }
+    
+     protected void RecebeDados(Usuario u){
+       this.u=u;
     }
     private void estadoOriginal()
     {
@@ -312,9 +319,12 @@ public class FXMLCadastroClienteController implements Initializable
         if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
-            btn_Alterar.setDisable(false);
+            if(u.getNivel()>1)
+                btn_Alterar.setDisable(false);
             btn_Novo.setDisable(true);
-            btn_Apagar.setDisable(false);
+            if(u.getNivel()>2)
+                btn_Apagar.setDisable(false);
+          
 
             tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());

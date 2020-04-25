@@ -8,6 +8,7 @@ package Interface;
 import static Interface.TelaPrincipalController.spnprincipal;
 import Model.Categoria;
 import Model.Marca;
+import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -74,7 +75,9 @@ public class FXMLCadastroCategoriaController implements Initializable
     private TableColumn<Categoria, String> colnome;
     @FXML
     private JFXComboBox<String> cbb_Filtro;
-
+    
+    private TelaPrincipalController ctr;
+    private Usuario u;
     /**
      * Initializes the controller class.
      */
@@ -87,6 +90,10 @@ public class FXMLCadastroCategoriaController implements Initializable
         estadoOriginal();
     }
 
+     protected void RecebeDados(Usuario u){
+       this.u=u;
+    }
+     
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
@@ -247,8 +254,10 @@ public class FXMLCadastroCategoriaController implements Initializable
         if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
+            if(u.getNivel()>1)
             btn_Alterar.setDisable(false);
             btn_Novo.setDisable(true);
+            if(u.getNivel()>2)
             btn_Apagar.setDisable(false);
 
             tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());

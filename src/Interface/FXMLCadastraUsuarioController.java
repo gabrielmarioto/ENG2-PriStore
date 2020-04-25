@@ -47,6 +47,7 @@ public class FXMLCadastraUsuarioController implements Initializable {
     private JFXComboBox<Integer> cbb_nivel;
     
     private Funcionario f;
+    private Usuario u;
     /**
      * Initializes the controller class.
      */
@@ -57,14 +58,23 @@ public class FXMLCadastraUsuarioController implements Initializable {
         nivel.add(2);
         nivel.add(3);
         cbb_nivel.setItems(FXCollections.observableArrayList(nivel));
+        if(u==null)
+        {
+            cbb_nivel.getSelectionModel().select(2);
+            cbb_nivel.setDisable(true);
+            btn_Sair.setDisable(true);
+        }
         MaskFieldUtil.maxField(tb_Nome, 20);
         MaskFieldUtil.maxField(pf_senha, 8);
         MaskFieldUtil.maxField(pf_senha2, 8);
     }    
     
-    public void RecebeDados(Funcionario f){
+    
+    
+    public void RecebeDados(Funcionario f,Usuario u){
         
        this.f=f;
+       this.u=u;
        txtFun.setText("Funcionario:"+f.getNome());
     }
 
@@ -88,13 +98,20 @@ public class FXMLCadastraUsuarioController implements Initializable {
                         if(pf_senha.getText().equals(pf_senha.getText()))
                         {
                             Usuario u = new Usuario(f.getCodigo(), tb_Nome.getText(), pf_senha.getText(), cbb_nivel.getValue());
-                            if(!u.insert())
+                            if(u.selectUsuario("usu_login="+u.getLogin()).isEmpty())
                             {
-                                a.setContentText("Falha na gravação");
-                                a.showAndWait();
+                                if(!u.insert())
+                                {
+                                    a.setContentText("Falha na gravação");
+                                    a.showAndWait();
+                                }
+                                else
+                                  clkSair(null);  
                             }
                             else
-                              clkSair(null);  
+                            a.setContentText("Nome de Usuario já existente!");
+                            a.showAndWait();
+                            
                         }
                         else
                         {

@@ -24,6 +24,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -42,6 +44,10 @@ public class TelaPrincipalController implements Initializable
     private BorderPane pnprincipal;   
     @FXML
     private VBox topo;
+    @FXML
+    private Menu mnUsu;
+    @FXML
+    private MenuItem miFun;
 
     
     @Override
@@ -49,16 +55,16 @@ public class TelaPrincipalController implements Initializable
     {
         // TODO
         spnprincipal = pnprincipal;
-//        topo.setDisable(true);
-//        if(new UsuarioBD().get("").isEmpty())
-//        {
-//            Alert a = new Alert(Alert.AlertType.WARNING);
-//            a.setContentText("Nenhum Usuario cadastrado, Por favor cadastre um");
-//            a.showAndWait();
-//            clkCadFuncionario(null);    
-//        }
-//        else
-//            clkLogin(null);
+        topo.setDisable(true);
+        if(new UsuarioBD().get("").isEmpty())
+        {
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setContentText("Nenhum Usuario cadastrado, Por favor cadastre um");
+            a.showAndWait();
+            clkCadFuncionario(null);    
+        }
+        else
+            clkLogin(null);
 
     }
 
@@ -67,6 +73,11 @@ public class TelaPrincipalController implements Initializable
         topo.setDisable(false);
         this.usuario=usuario;
         pnprincipal.setCenter(null);
+        mnUsu.setText(usuario.getLogin());
+        if(usuario.getNivel()<3)
+            miFun.setDisable(true);
+        else
+            miFun.setDisable(false);
     }
 
     @FXML
@@ -74,8 +85,11 @@ public class TelaPrincipalController implements Initializable
     {
         try
         {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroCategoria.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroCategoria.fxml"));
+            Parent root = (Parent) loader.load();
 
+            FXMLCadastroCategoriaController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
 
         } catch (IOException ex)
@@ -89,8 +103,11 @@ public class TelaPrincipalController implements Initializable
     {
         try
         {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroColecao.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroColecao.fxml"));
+            Parent root = (Parent) loader.load();
 
+            FXMLCadastroColecaoController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
 
         } catch (IOException ex)
@@ -104,8 +121,12 @@ public class TelaPrincipalController implements Initializable
     {
         try
         {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroMarca.fxml"));
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroMarca.fxml"));
+            Parent root = (Parent) loader.load();
 
+            FXMLCadastroMarcaController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
 
         } catch (IOException ex)
@@ -119,8 +140,11 @@ public class TelaPrincipalController implements Initializable
     {
         try
         {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroProduto.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroProduto.fxml"));
+            Parent root = (Parent) loader.load();
 
+           FXMLCadastroProdutoController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
 
         } catch (IOException ex)
@@ -134,8 +158,12 @@ public class TelaPrincipalController implements Initializable
     {
         try
         {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroFornecedor.fxml"));
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroFornecedor.fxml"));
+            Parent root = (Parent) loader.load();
 
+            FXMLCadastroFornecedorController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
 
         } catch (IOException ex)
@@ -144,6 +172,42 @@ public class TelaPrincipalController implements Initializable
         }
     }
 
+    @FXML
+    private void clkCadFuncionario(ActionEvent event)
+    {
+                   
+         try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroFuncionario.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLCadastroFuncionarioController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
+
+    @FXML
+    private void clkCadCliente(ActionEvent event) {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroCliente.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLCadastroClienteController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
+    
     @FXML
     private void clkBackup(ActionEvent event)
     {
@@ -199,34 +263,20 @@ public class TelaPrincipalController implements Initializable
         }
     }
 
+    
+
     @FXML
-    private void clkCadFuncionario(ActionEvent event)
-    {
-                   
-         try
-        {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroFuncionario.fxml"));
-
-            pnprincipal.setCenter(root);
-
-        } catch (IOException ex)
-        {
-            System.out.println(ex);
-        }
+    private void ClkAlterarUsu(ActionEvent event) {
+        
     }
 
     @FXML
-    private void clkCadCliente(ActionEvent event) {
-        try
-        {
-            Parent root = FXMLLoader.load(getClass().getResource("FXMLCadastroCliente.fxml"));
-
-            pnprincipal.setCenter(root);
-
-        } catch (IOException ex)
-        {
-            System.out.println(ex);
-        }
+    private void clkDeslogar(ActionEvent event) {
+        topo.setDisable(true);
+        this.usuario=null;
+        mnUsu.setText("USUARIO");
+        clkLogin(event);
+        
     }
     
 }
