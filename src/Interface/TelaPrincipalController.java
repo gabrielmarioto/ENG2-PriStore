@@ -278,5 +278,22 @@ public class TelaPrincipalController implements Initializable
         clkLogin(event);
         
     }
+
+    @FXML
+    private void clkParametrizacao(ActionEvent event) {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLParametrizacao.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLParametrizacaoController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
     
 }

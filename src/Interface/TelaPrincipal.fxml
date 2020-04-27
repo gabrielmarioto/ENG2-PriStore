@@ -33,6 +33,7 @@
                      <items>
                         <MenuItem onAction="#clkBackup" text="_BackUp" />
                         <MenuItem onAction="#clkRestauracao" text="_Restauração" />
+                        <MenuItem onAction="#clkParametrizacao" text="_Parametrização" />
                      </items>
                   </Menu>
                   <Menu fx:id="mnUsu" mnemonicParsing="false" text="_USUARIO">
