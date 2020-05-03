@@ -17,13 +17,13 @@
       </JFXTextField>
       <JFXButton fx:id="btn_logar" buttonType="RAISED" layoutX="184.0" layoutY="309.0" onAction="#ClkRegistra" prefHeight="27.0" prefWidth="74.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Confirmar" textFill="ORANGE" />
       <JFXPasswordField fx:id="pf_senha" focusColor="ORANGE" labelFloat="true" layoutX="189.0" layoutY="200.0" prefHeight="25.0" prefWidth="182.0" promptText="Digite sua senha" />
-      <Label layoutX="184.0" layoutY="14.0" prefHeight="50.0" prefWidth="233.0" text="Cadastro de Usuario">
+      <Label layoutX="164.0" layoutY="14.0" prefHeight="50.0" prefWidth="233.0" text="Cadastro de Usuario">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
       <JFXPasswordField fx:id="pf_senha2" focusColor="ORANGE" labelFloat="true" layoutX="189.0" layoutY="252.0" prefHeight="25.0" prefWidth="182.0" promptText="Confirme sua senha" />
-      <Label fx:id="txtFun" alignment="CENTER" contentDisplay="CENTER" layoutX="258.0" layoutY="64.0" text="Funcionario" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.leftAnchor="258.0" AnchorPane.rightAnchor="280.0" />
+      <Label fx:id="txtFun" alignment="CENTER" contentDisplay="CENTER" layoutX="204.0" layoutY="64.0" prefHeight="17.0" prefWidth="153.0" text="Funcionario" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.leftAnchor="204.0" AnchorPane.rightAnchor="243.0" />
       <JFXComboBox fx:id="cbb_nivel" focusColor="ORANGE" labelFloat="true" layoutX="189.0" layoutY="152.0" prefHeight="25.0" prefWidth="182.0" promptText="Nível de Acesso" />
       <JFXButton fx:id="btn_Sair" buttonType="RAISED" layoutX="316.0" layoutY="309.0" onAction="#clkSair" prefHeight="27.0" prefWidth="74.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Cancelar" textFill="ORANGE" />
    </children>

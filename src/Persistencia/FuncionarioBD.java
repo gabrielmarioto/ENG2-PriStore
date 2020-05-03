@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -58,9 +60,24 @@ public class FuncionarioBD {
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean deleteFuncionario(Funcionario f)
+    public boolean deleteFuncionario(Funcionario f) throws SQLException
     {
-        return Banco.getCon().manipular("delete from funcionario where fun_cod =" + f.getCodigo());
+        boolean ok = true;
+        try {
+            Banco.getCon().getConnect().setAutoCommit(false);
+            ok = Banco.getCon().manipular("delete from usuario where fun_cod ="+f.getCodigo());
+            if(ok)
+                ok = Banco.getCon().manipular("delete from funcionario where fun_cod =" + f.getCodigo());
+            
+        } catch (SQLException ex) {
+            ok=false;
+        }
+        if(ok)
+            Banco.getCon().getConnect().commit();
+        else
+             Banco.getCon().getConnect().rollback();
+        Banco.getCon().getConnect().setAutoCommit(true);
+        return ok;
     }
 
     public Funcionario get(int cod)

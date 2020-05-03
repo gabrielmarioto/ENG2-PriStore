@@ -114,7 +114,7 @@
                   </JFXButton>
                </children>
             </HBox>
-            <TableView fx:id="tabela" onMouseClicked="#clkTabela">
+            <TableView fx:id="tabela" onContextMenuRequested="#clkDTabela" onMouseClicked="#clkTabela">
                <columns>
                   <TableColumn fx:id="colcod" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="Código" />
                   <TableColumn fx:id="colnome" maxWidth="1.7976931348623157E308" minWidth="403.0" prefWidth="446.0" text="Nome" />

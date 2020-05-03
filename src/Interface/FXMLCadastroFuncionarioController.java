@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,11 +37,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -112,6 +117,12 @@ public class FXMLCadastroFuncionarioController implements Initializable
     private JFXComboBox<String> cbb_sexo;
     
     private Usuario u;
+    private ContextMenu contextMenu;
+    private MenuItem cria;
+    private MenuItem altera;
+    private MenuItem deleta;
+    private Funcionario f;
+    
     /**
      * Initializes the controller class.
      */
@@ -128,6 +139,22 @@ public class FXMLCadastroFuncionarioController implements Initializable
         MaskFieldUtil.foneField(tb_Telefone);
         MaskFieldUtil.cepField(tb_cep);
         estadoOriginal();
+        contextMenu = new ContextMenu();
+
+        cria = new MenuItem("Criar Usuario");
+        cria.setOnAction((event) -> {
+            CriaUsuario();
+        });
+        
+        altera = new MenuItem("Alterar Usuario");
+        altera.setOnAction((event) -> {
+            AlteraUsuario();
+        });
+        deleta = new MenuItem("Deletar Usuario");
+        deleta.setOnAction((event) -> {
+            DeletaUsuario();
+        });
+        contextMenu.getItems().addAll(cria,altera,deleta);
     }
 
      public void RecebeDados(Usuario u){
@@ -294,7 +321,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                                             Parent root = (Parent) loader.load();
 
                                                             FXMLCadastraUsuarioController ctr = loader.getController();
-                                                            ctr.RecebeDados(f,u);
+                                                            ctr.RecebeDados(f,this.u);
 
                                                             Stage stage = new Stage();
                                                             Scene scene = new Scene(root);
@@ -429,4 +456,57 @@ public class FXMLCadastroFuncionarioController implements Initializable
         }
     }
 
+    @FXML
+    private void clkDTabela(ContextMenuEvent event) {
+        this.f =(Funcionario) tabela.getSelectionModel().getSelectedItem();
+        Usuario u = new Usuario().selectUsuario(f.getCodigo());
+        
+        if(u==null)
+        {
+              contextMenu.getItems().get(0).setDisable(false);
+              contextMenu.getItems().get(1).setDisable(true);
+              contextMenu.getItems().get(2).setDisable(true);
+        }
+        else
+        {
+            contextMenu.getItems().get(0).setDisable(true);
+            contextMenu.getItems().get(1).setDisable(false);
+            contextMenu.getItems().get(2).setDisable(false);
+        }
+      
+        tabela.setContextMenu(contextMenu);
+    }
+    
+    private void CriaUsuario()
+    {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastraUsuario.fxml"));
+            Parent root;
+            try {
+                root = (Parent) loader.load();
+                FXMLCadastraUsuarioController ctr = loader.getController();
+                ctr.RecebeDados(this.f,this.u);
+
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.initStyle(StageStyle.UNDECORATED);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setScene(scene);
+            stage.showAndWait();
+            } catch (IOException ex) {
+                
+            }
+    }
+    
+    private void AlteraUsuario()
+    {
+        //fazer
+    } 
+    private void DeletaUsuario()
+    {
+        Usuario u = new Usuario().selectUsuario(f.getCodigo());
+        u.delete();
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+        a.setContentText("Usuario deletado com sucesso!");
+        a.showAndWait();
+    } 
 }

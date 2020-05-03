@@ -58,12 +58,7 @@ public class FXMLCadastraUsuarioController implements Initializable {
         nivel.add(2);
         nivel.add(3);
         cbb_nivel.setItems(FXCollections.observableArrayList(nivel));
-        if(u==null)
-        {
-            cbb_nivel.getSelectionModel().select(2);
-            cbb_nivel.setDisable(true);
-            btn_Sair.setDisable(true);
-        }
+        
         MaskFieldUtil.maxField(tb_Nome, 20);
         MaskFieldUtil.maxField(pf_senha, 8);
         MaskFieldUtil.maxField(pf_senha2, 8);
@@ -75,7 +70,13 @@ public class FXMLCadastraUsuarioController implements Initializable {
         
        this.f=f;
        this.u=u;
-       txtFun.setText("Funcionario:"+f.getNome());
+       txtFun.setText("Funcionario: " + f.getNome());
+       if(u==null)
+        {
+            cbb_nivel.getSelectionModel().select(2);
+            cbb_nivel.setDisable(true);
+            btn_Sair.setDisable(true);
+        }
     }
 
     @FXML
@@ -85,7 +86,7 @@ public class FXMLCadastraUsuarioController implements Initializable {
 
     @FXML
     private void ClkRegistra(ActionEvent event) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
+       Alert a = new Alert(Alert.AlertType.ERROR);
         
        if(tb_Nome.getText().length()>0)
        {
@@ -98,7 +99,7 @@ public class FXMLCadastraUsuarioController implements Initializable {
                         if(pf_senha.getText().equals(pf_senha.getText()))
                         {
                             Usuario u = new Usuario(f.getCodigo(), tb_Nome.getText(), pf_senha.getText(), cbb_nivel.getValue());
-                            if(u.selectUsuario("usu_login="+u.getLogin()).isEmpty())
+                            if(u.selectUsuario("usu_login= '"+u.getLogin()+"'").isEmpty())
                             {
                                 if(!u.insert())
                                 {
@@ -106,11 +107,19 @@ public class FXMLCadastraUsuarioController implements Initializable {
                                     a.showAndWait();
                                 }
                                 else
-                                  clkSair(null);  
+                                {
+                                    a.setAlertType(Alert.AlertType.INFORMATION);
+                                    a.setContentText("Usuario cadastro com sucesso!");
+                                    a.showAndWait();
+                                    clkSair(event);  
+                                }   
                             }
                             else
-                            a.setContentText("Nome de Usuario já existente!");
-                            a.showAndWait();
+                            {
+                                a.setContentText("Nome de Usuario já existente!");
+                                a.showAndWait();
+                            }
+                            
                             
                         }
                         else
@@ -122,7 +131,7 @@ public class FXMLCadastraUsuarioController implements Initializable {
                     else
                     {
                         a.setContentText("Informe o Nivel de Acesso!");
-                    a.showAndWait();
+                        a.showAndWait();
                     }
                 }
                 else
