@@ -14,6 +14,8 @@ import Persistencia.UsuarioBD;
 import Util.Banco;
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -31,8 +33,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -64,20 +66,27 @@ public class TelaPrincipalController implements Initializable
         // TODO
         spnprincipal = pnprincipal;
         topo.setDisable(true);
-        
         ParametrizacaoBD bd = new ParametrizacaoBD();
         InputStream img = bd.getFoto();
         Alert a = new Alert(Alert.AlertType.WARNING);
+        Image image = null;
         if(img != null)
         {
-            BufferedImage bimg = null;
-            try {
-                bimg = ImageIO.read(img);
-            } catch (IOException ex) {}
-            SwingFXUtils.toFXImage(bimg, null);
-            //pnprincipal.setBackground(img);
+            //try {
+                //BufferedImage bimg = null;
+                //try {
+                //bimg = ImageIO.read(img);
+                //} catch (IOException ex) {}
+                
+                //image = new Image(img);
+                //File outFile = outFile = new File("icons/logo.png"); 
+                
+                //ImageIO.write(bimg, "png",outFile);
+                //ImageIO.write(SwingFXUtils.fromFXImage(image,null),"png", outFile);
+            //} catch (Exception ex) {System.out.println("deu merda aqui");}
         }
 
+        
         if(new UsuarioBD().get("").isEmpty())
         {
             

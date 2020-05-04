@@ -19,6 +19,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -245,7 +246,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
     }
 
     @FXML
-    private void clkBtApagar(ActionEvent event)
+    private void clkBtApagar(ActionEvent event) throws SQLException
     {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setContentText("Confirma a exclusão?");
