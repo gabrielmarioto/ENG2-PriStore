@@ -94,5 +94,10 @@ public class Parametros {
 
         return p;
     }
+    public boolean insertParametros()
+    {
+        ParametrizacaoBD par = new ParametrizacaoBD();
+        return par.insertParametros(this);
+    }
     
 }

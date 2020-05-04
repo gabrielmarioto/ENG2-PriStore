@@ -6,17 +6,22 @@
 package Interface;
 
 import Model.Funcionario;
+import Model.Parametros;
 import Model.Usuario;
 import Persistencia.FuncionarioBD;
+import Persistencia.ParametrizacaoBD;
 import Persistencia.UsuarioBD;
 import Util.Banco;
 import java.awt.Desktop;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,11 +31,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -48,7 +56,7 @@ public class TelaPrincipalController implements Initializable
     private Menu mnUsu;
     @FXML
     private MenuItem miFun;
-
+    private ImageView imgvFoto;
     
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -56,15 +64,31 @@ public class TelaPrincipalController implements Initializable
         // TODO
         spnprincipal = pnprincipal;
         topo.setDisable(true);
+        
+        ParametrizacaoBD bd = new ParametrizacaoBD();
+        InputStream img = bd.getFoto();
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        if(img != null)
+        {
+            BufferedImage bimg = null;
+            try {
+                bimg = ImageIO.read(img);
+            } catch (IOException ex) {}
+            SwingFXUtils.toFXImage(bimg, null);
+            //pnprincipal.setBackground(img);
+        }
+
         if(new UsuarioBD().get("").isEmpty())
         {
-            Alert a = new Alert(Alert.AlertType.WARNING);
+            
             a.setContentText("Nenhum Usuario cadastrado, Por favor cadastre um");
             a.showAndWait();
             clkCadFuncionario(null);    
         }
         else
+        {
             clkLogin(null);
+        }
 
     }
 
@@ -78,6 +102,15 @@ public class TelaPrincipalController implements Initializable
             miFun.setDisable(true);
         else
             miFun.setDisable(false);
+        ActionEvent event = null;
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        Parametros p = new Parametros();
+        p = p.selectParametro();
+        if(p == null)
+        {
+            a.setContentText("Realize a parametrização!");
+            clkParametrizacao(event); 
+        } 
     }
 
     @FXML
@@ -252,15 +285,17 @@ public class TelaPrincipalController implements Initializable
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLTelaLogin.fxml"));
             Parent root = (Parent) loader.load();
-
+            
             FXMLTelaLoginController ctr = loader.getController();
             ctr.RecebeDados(this);
             pnprincipal.setCenter(root);
-
+            
+             
         } catch (IOException ex)
         {
             System.out.println(ex);
         }
+          
     }
 
     

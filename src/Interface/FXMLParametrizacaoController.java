@@ -10,11 +10,21 @@ import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
 import Model.Parametros;
 import Model.Usuario;
+import Persistencia.ParametrizacaoBD;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,7 +33,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -59,21 +73,28 @@ public class FXMLParametrizacaoController implements Initializable
     private JFXTextField tb_Telefone;
     @FXML
     private JFXButton btn_Confirmar;
+    @FXML
+    private ImageView imgvFoto;
+    FileChooser arquivo;
     
-  
+    File arq;
     @Override
     
     public void initialize(URL location, ResourceBundle resources) {
 
         MaskFieldUtil.maxField(tb_Telefone, 40);
         MaskFieldUtil.foneField(tb_Telefone);
-        estadoOriginal();
+        try {
+            estadoOriginal();
+        } catch (IOException ex) {
+
+        }
     }
     
     protected void RecebeDados(Usuario u){
        this.u=u;
     }
-    private void estadoOriginal()
+    private void estadoOriginal() throws IOException
     {
         pndados.setDisable(true);
         btn_Confirmar.setDisable(true);
@@ -95,14 +116,25 @@ public class FXMLParametrizacaoController implements Initializable
         
         Parametros p = new Parametros();
         p = p.selectParametro();
-               
-        tb_Email.setText(p.getEmail());
-        tb_Nome.setText(p.getNomeF());
-        tb_End.setText(p.getEndereco());
-        tb_RazaoSocial.setText(p.getRazaoSocial());
-        tb_Site.setText(p.getSite());
-        tb_Telefone.setText(p.getTelefone());
-           
+        if(p != null)
+        {
+            tb_Email.setText(p.getEmail());
+            tb_Nome.setText(p.getNomeF());
+            tb_End.setText(p.getEndereco());
+            tb_RazaoSocial.setText(p.getRazaoSocial());
+            tb_Site.setText(p.getSite());
+            tb_Telefone.setText(p.getTelefone());
+
+            ParametrizacaoBD bd = new ParametrizacaoBD();
+            InputStream img = bd.getFoto();
+            if(img != null)
+            {
+                BufferedImage bimg = ImageIO.read(img);
+                SwingFXUtils.toFXImage(bimg, null);
+                imgvFoto.setImage(SwingFXUtils.toFXImage(bimg, null));
+            }
+        }   
+ 
     }
 
     private void estadoEdicao()
@@ -114,8 +146,10 @@ public class FXMLParametrizacaoController implements Initializable
         btn_Alterar.setDisable(true);
     }
     @FXML
-    private void clkBtConfirmar(ActionEvent event) {
+    private void clkBtConfirmar(ActionEvent event) throws IOException {
         Parametros p = new Parametros();
+        Parametros teste = new Parametros();
+        ParametrizacaoBD par = new ParametrizacaoBD();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         if (tb_Nome.getText().length() > 0)
         {
@@ -129,14 +163,33 @@ public class FXMLParametrizacaoController implements Initializable
                         {
                             if (tb_Site.getText().length() > 0)
                             {
-                                p = new Parametros(tb_Nome.getText(), tb_RazaoSocial.getText(), tb_End.getText(), tb_Site.getText(), tb_Email.getText(), tb_Telefone.getText());
+                                
 
-                                if (!p.updateParametros())
+                                teste = teste.selectParametro();
+                                p = new Parametros(tb_Nome.getText(), tb_RazaoSocial.getText(), tb_End.getText(), tb_Site.getText(), tb_Email.getText(), tb_Telefone.getText());
+                                
+                                if(teste == null)
+                                {
+                                   
+                                    if (!p.insertParametros())
+                                    {
+                                        a.setContentText("Problemas ao Gravar");
+                                        a.showAndWait();
+                                    }
+                                    else
+                                    {
+                                        a.setContentText("Parametros Gravados Com Sucesso!");
+                                        gravaFoto();
+                                        a.showAndWait();
+                                        estadoOriginal();
+                                    }    
+                                }else if (!p.updateParametros())
                                 {
                                     a.setContentText("Problemas ao Alterar");
                                     a.showAndWait();
                                 } else
                                 {
+                                    gravaFoto();
                                     a.setContentText("Alterado com Sucesso");
                                     a.showAndWait();
                                     estadoOriginal();
@@ -174,8 +227,30 @@ public class FXMLParametrizacaoController implements Initializable
         }
     }
 
+    private void gravaFoto() throws IOException
+    {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        ParametrizacaoBD par = new ParametrizacaoBD();
+        if(imgvFoto.getImage() != null)
+        {                 
+            BufferedImage bimg = SwingFXUtils.fromFXImage(imgvFoto.getImage(), null);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] imageInByte;
+            ImageIO.write(bimg, "jpg", baos);
+            baos.flush();
+            imageInByte = baos.toByteArray();
+            baos.close();
+            InputStream in = new ByteArrayInputStream(imageInByte);
+            if(par.gravarFoto(in, baos.toByteArray().length))
+                a.setContentText("Foto Alterada!");
+            else
+            {
+                a.setContentText("Problemas ao Alterar Foto!");
+            }   
+        }
+    }
     @FXML
-    private void clkBtCancelar(ActionEvent event) {
+    private void clkBtCancelar(ActionEvent event) throws IOException {
         if (!pndados.isDisabled()) // encontra em estado de edição
         {
             estadoOriginal();
@@ -190,6 +265,13 @@ public class FXMLParametrizacaoController implements Initializable
 
         estadoEdicao();
        
+    }
+
+    @FXML
+    private void btnLocalizar(ActionEvent event) {
+        arquivo = new FileChooser();
+        arq = arquivo.showOpenDialog(null);
+        imgvFoto.setImage(new Image(arq.toURI().toString()));
     }
 
 }

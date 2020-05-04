@@ -7,6 +7,7 @@ package Model;
 
 import Persistencia.FuncionarioBD;
 import Util.Banco;
+import java.sql.SQLException;
  import java.util.ArrayList;
 import java.util.List;
 
@@ -147,7 +148,7 @@ public class Funcionario {
         FuncionarioBD func = new FuncionarioBD();      
         return func.updateFuncionario(this);
     }
-    public boolean delete()
+    public boolean delete() throws SQLException
     {
         FuncionarioBD func = new FuncionarioBD();      
         return func.deleteFuncionario(this);
