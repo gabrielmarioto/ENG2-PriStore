@@ -38,7 +38,7 @@
                   </Menu>
                   <Menu fx:id="mnUsu" mnemonicParsing="false" text="_USUARIO">
                      <items>
-                        <MenuItem disable="true" onAction="#ClkAlterarUsu" text="Alterar" />
+                        <MenuItem onAction="#ClkAlterarUsu" text="Alterar" />
                         <MenuItem onAction="#clkDeslogar" text="Deslogar" />
                      </items>
                   </Menu>

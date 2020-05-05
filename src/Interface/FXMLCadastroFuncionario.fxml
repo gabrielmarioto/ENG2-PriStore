@@ -56,22 +56,28 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Salario" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Salario">
-                     <font>
-                        <Font name="Century Gothic" size="12.0" />
-                     </font>
-                  </JFXTextField>
-                  <JFXTextField fx:id="tb_Endereco" focusColor="ORANGE" labelFloat="true" layoutX="13.0" layoutY="156.0" prefHeight="25.0" prefWidth="363.0" promptText="Endereço">
-                     <font>
-                        <Font name="Century Gothic" size="12.0" />
-                     </font>
-                  </JFXTextField>
                   <JFXTextField fx:id="tb_cpf" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="69.0" prefHeight="27.0" prefWidth="115.0" promptText="CPF">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
+                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="555.0" layoutY="69.0" prefHeight="27.0" prefWidth="144.0" promptText="Telefone">
+                     <font>
+                        <Font name="Century Gothic" size="12.0" />
+                     </font>
+                  </JFXTextField>
+                  <JFXComboBox fx:id="cbb_sexo" focusColor="ORANGE" labelFloat="true" layoutX="715.0" layoutY="71.0" promptText="Sexo" />
+                  <JFXTextField fx:id="tb_Salario" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Salario">
+                     <font>
+                        <Font name="Century Gothic" size="12.0" />
+                     </font>
+                  </JFXTextField>
                   <JFXTextField fx:id="tb_Email" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Email">
+                     <font>
+                        <Font name="Century Gothic" size="12.0" />
+                     </font>
+                  </JFXTextField>
+                  <JFXTextField fx:id="tb_Endereco" focusColor="ORANGE" labelFloat="true" layoutX="13.0" layoutY="156.0" prefHeight="25.0" prefWidth="363.0" promptText="Endereço">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
@@ -86,17 +92,11 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="555.0" layoutY="69.0" prefHeight="27.0" prefWidth="144.0" promptText="Telefone">
-                     <font>
-                        <Font name="Century Gothic" size="12.0" />
-                     </font>
-                  </JFXTextField>
                   <JFXTextField fx:id="tb_cep" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="201.0" prefHeight="25.0" prefWidth="363.0" promptText="Cep">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXComboBox fx:id="cbb_sexo" focusColor="ORANGE" labelFloat="true" layoutX="715.0" layoutY="71.0" promptText="Sexo" />
                </children>
             </AnchorPane>
          </children>
@@ -105,7 +105,7 @@
          <children>
             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="696.0" spacing="40.0" style="-fx-background-color: #DDDDDD;">
                <children>
-                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="313.0" promptText="Informe o nome do funcionario" />
+                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="313.0" promptText="Informe os dados para busca" />
                   <JFXComboBox fx:id="cbb_filtro" focusColor="ORANGE" labelFloat="true" prefHeight="25.0" prefWidth="161.0" promptText="Filtro" />
                   <JFXButton fx:id="btn_Pesquisar" onAction="#clkBtPesquisar" text="Pesquisar">
                      <font>

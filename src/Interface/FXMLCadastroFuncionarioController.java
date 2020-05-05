@@ -118,6 +118,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
     private JFXComboBox<String> cbb_sexo;
     
     private Usuario u;
+    private TelaPrincipalController ctr;
     private ContextMenu contextMenu;
     private MenuItem cria;
     private MenuItem altera;
@@ -156,12 +157,26 @@ public class FXMLCadastroFuncionarioController implements Initializable
             DeletaUsuario();
         });
         contextMenu.getItems().addAll(cria,altera,deleta);
+        List<String> Sexo = new ArrayList<>();
+        Sexo.add("M");
+        Sexo.add("F");
+        List<String> Filtro= new ArrayList<>();
+        Filtro.add("Nome");
+        Filtro.add("Sexo");
+        Filtro.add("Cidade");
+        Filtro.add("CEP");
+        cbb_sexo.setItems(FXCollections.observableArrayList(Sexo));
+        cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_filtro.getSelectionModel().select(0);
     }
 
-     public void RecebeDados(Usuario u){
+     protected void RecebeDados(Usuario u,TelaPrincipalController ctr){
        this.u=u;
+       this.ctr=ctr;
     }
      
+     
+    
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
@@ -206,17 +221,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
         ObservableList<Funcionario> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
-        List<String> Sexo = new ArrayList<>();
-        Sexo.add("M");
-        Sexo.add("F");
-        List<String> Filtro= new ArrayList<>();
-        Filtro.add("Nome");
-        Filtro.add("Sexo");
-        Filtro.add("Cidade");
-        Filtro.add("CEP");
-        cbb_sexo.setItems(FXCollections.observableArrayList(Sexo));
-        cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
-        cbb_filtro.getSelectionModel().select(0);
+        
 
     }
 
@@ -254,11 +259,29 @@ public class FXMLCadastroFuncionarioController implements Initializable
         {
             Funcionario f = new Funcionario();
             f = tabela.getSelectionModel().getSelectedItem();
-            if (!f.delete())
+            Usuario u = new UsuarioBD().get(f.getCodigo());
+            if(this.u.getCodigo()==f.getCodigo())
             {
-                a.setContentText("Erro ao excluir!");
+                a.setAlertType(Alert.AlertType.ERROR);
+                a.setContentText("Não é possivel excluir a si mesmo!");
                 a.showAndWait();
             }
+            else
+            {
+                if(u.getNivel()==3 && u.selectUsuario("usu_nivel=3").size()==1)
+                {
+                    a.setAlertType(Alert.AlertType.ERROR);
+                    a.setContentText("Não é possivel excluir este Funcionario, \n pois ele é o unico com Nivel de Usuario 3");
+                    a.showAndWait();
+                }
+                else
+                if (!f.delete())
+                {
+                    a.setContentText("Erro ao excluir!");
+                    a.showAndWait();
+                }
+            }
+            
             estadoOriginal();
         }
     }
@@ -301,7 +324,11 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                                         Double.parseDouble(tb_Salario.getText().replace(".", "").replace(",", ".")),
                                                 tb_Telefone.getText(), tb_Email.getText(), tb_Endereco.getText(),tb_Bairro.getText(),tb_Cidade.getText()
                                                         ,tb_cep.getText());
-
+                                                boolean flag= false;
+                                                if(f.selectFuncionario("").isEmpty())
+                                                {
+                                                    flag=true;
+                                                }
                                                 if (f.getCodigo()== 0) // novo cadastro
                                                 {
                                                     if (!f.insert())
@@ -314,7 +341,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                                         a.setContentText("Gravado com Sucesso");
                                                         a.showAndWait();
                                                         estadoOriginal();
-                                                        Alert b = new Alert(Alert.AlertType.CONFIRMATION,"Deseja criar uma Usuario para este Funcionario?", ButtonType.YES);
+                                                        Alert b = new Alert(Alert.AlertType.CONFIRMATION,"Deseja criar uma Usuario para este Funcionario?", ButtonType.YES,ButtonType.NO);
                                                         Optional<ButtonType> result = b.showAndWait();
                                                         if(result.get()==ButtonType.YES)
                                                         {
@@ -330,6 +357,10 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                                             stage.initModality(Modality.APPLICATION_MODAL);
                                                             stage.setScene(scene);
                                                             stage.showAndWait();
+                                                        }
+                                                        if(flag)
+                                                        {
+                                                            ctr.VoltaLogin();
                                                         }
                                                     }
                                                     
@@ -404,7 +435,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
     @FXML
     private void clkBtCancelar(ActionEvent event)
     {
-        if (!pndados.isDisabled()) // encontra em estado de edição
+        if (!pndados.isDisabled() || btn_Novo.isDisable()) // encontra em estado de edição
         {
             estadoOriginal();
         } else
@@ -500,14 +531,48 @@ public class FXMLCadastroFuncionarioController implements Initializable
     
     private void AlteraUsuario()
     {
-        //fazer
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAlteraUsuario.fxml"));
+            Parent root;
+            try {
+                root = (Parent) loader.load();
+                FXMLAlteraUsuarioController ctr = loader.getController();
+                ctr.RecebeDados(this.f,this.u,false);
+
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.initStyle(StageStyle.UNDECORATED);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setScene(scene);
+            stage.showAndWait();
+            } catch (IOException ex) {
+                
+            }
     } 
     private void DeletaUsuario()
     {
-        Usuario u = new Usuario().selectUsuario(f.getCodigo());
-        u.delete();
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
-        a.setContentText("Usuario deletado com sucesso!");
-        a.showAndWait();
-    } 
+        Usuario u = new Usuario().selectUsuario(f.getCodigo());
+        if(this.u.getLogin().equals(u.getLogin()))
+        {
+            a.setAlertType(Alert.AlertType.ERROR);
+            a.setContentText("Não é possivel excluir o proprio Usuario");
+            a.showAndWait();
+        }
+        else
+        {
+            if(u.getNivel()==3 && u.selectUsuario("usu_nivel=3").size()==1)
+            {
+                a.setAlertType(Alert.AlertType.ERROR);
+                a.setContentText("Não é possivel excluir este Usuario, \n pois ele é o unico com Nivel de Usuario 3");
+                a.showAndWait();
+            }
+            else
+            {
+                u.delete();
+                a.setContentText("Usuario deletado com sucesso!");
+                a.showAndWait();
+            }
+        }
+        
+} 
 }
