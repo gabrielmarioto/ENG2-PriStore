@@ -168,7 +168,6 @@ public class FXMLCadastroFornecedorController implements Initializable
         tabela.setItems(modelo);
         List<String> Filtro = new ArrayList<>();
         Filtro.add("Nome");
-        Filtro.add("Sexo");
         Filtro.add("Cidade");
         Filtro.add("CEP");
         cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
@@ -197,6 +196,8 @@ public class FXMLCadastroFornecedorController implements Initializable
             tb_Cnpj.setText(f.getCnpj());
             tb_Numero.setText(Character.toString((char) f.getNumRua()));
             tb_cep.setText(f.getCep());
+            tb_InscricaoEstadual.setText(f.getInscrocaoEstadual());
+            tb_Numero.setText(""+f.getNumRua());
             estadoEdicao();
         }
     }
@@ -216,6 +217,7 @@ public class FXMLCadastroFornecedorController implements Initializable
                 a.showAndWait();
             }
             estadoOriginal();
+            carregaTabela("");
         }
     }
 
@@ -263,25 +265,14 @@ public class FXMLCadastroFornecedorController implements Initializable
                                                     {
                                                         a.setContentText("Problemas ao Gravar");
                                                         a.showAndWait();
-                                                    } else
-                                                    {
-                                                        a.setContentText("Gravado com Sucesso");
-                                                        a.showAndWait();
-                                                        estadoOriginal();
-                                                    }
-
+                                                    } 
                                                 } else //alteração de cadastro
                                                 if (!f.updateFornecedor())
                                                 {
                                                     a.setContentText("Problemas ao Alterar");
                                                     a.showAndWait();
-                                                } else
-                                                {
-                                                    a.setContentText("Alterado com Sucesso");
-                                                    a.showAndWait();
-                                                    estadoOriginal();
-                                                }
-
+                                                } 
+                                                estadoOriginal();
                                             } else
                                             {
                                                 a.setContentText("Informe o Cep!");
@@ -325,12 +316,12 @@ public class FXMLCadastroFornecedorController implements Initializable
                 }
             } else
             {
-                a.setContentText("Informe a Salario!");
+                a.setContentText("Informe o Numero!");
                 a.showAndWait();
             }
         } else
         {
-            a.setContentText("Informe o nome!");
+            a.setContentText("Informe o Nome!");
             a.showAndWait();
         }
         carregaTabela("");
@@ -386,6 +377,8 @@ public class FXMLCadastroFornecedorController implements Initializable
             tb_Cnpj.setText(tabela.getSelectionModel().getSelectedItem().getCnpj());
             tb_Numero.setText(Character.toString((char) tabela.getSelectionModel().getSelectedItem().getNumRua()));
             tb_cep.setText(tabela.getSelectionModel().getSelectedItem().getCep());
+            tb_InscricaoEstadual.setText(tabela.getSelectionModel().getSelectedItem().getInscrocaoEstadual());
+            tb_Numero.setText(""+tabela.getSelectionModel().getSelectedItem().getNumRua());
         }
 
     }

@@ -95,6 +95,7 @@ public class FXMLCadastroProdutoController implements Initializable
     private JFXComboBox<String> cbb_Filtro;
 
     private Usuario u;
+
     /**
      * Initializes the controller class.
      */
@@ -109,10 +110,11 @@ public class FXMLCadastroProdutoController implements Initializable
         estadoOriginal();
     }
 
-     public void RecebeDados(Usuario u){
-       this.u=u;
+    public void RecebeDados(Usuario u)
+    {
+        this.u = u;
     }
-     
+
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
@@ -168,7 +170,7 @@ public class FXMLCadastroProdutoController implements Initializable
         cbb_Categoria.setItems(FXCollections.observableArrayList(new Categoria().selectCategoria("")));
         cbb_Colecao.setItems(FXCollections.observableArrayList(new Colecao().selectColecao("")));
         cbb_Marca.setItems(FXCollections.observableArrayList(new Marca().selectMarca("")));
-        
+
         List<String> Filtro = new ArrayList<>();
         Filtro.add("Nome");
         Filtro.add("Tamanho");
@@ -203,6 +205,7 @@ public class FXMLCadastroProdutoController implements Initializable
             cbb_Categoria.getSelectionModel().select(p.getCodCategoria().getCod());
             cbb_Colecao.getSelectionModel().select(p.getCodColecao().getCod());
             cbb_Marca.getSelectionModel().select(p.getCodMarca().getCod());
+            tb_Tamanho.setText(p.getTamanho());
         }
     }
 
@@ -222,6 +225,7 @@ public class FXMLCadastroProdutoController implements Initializable
             }
             carregaTabela("");
         }
+        estadoOriginal();
     }
 
     @FXML
@@ -261,10 +265,12 @@ public class FXMLCadastroProdutoController implements Initializable
                                             // a.showAndWait();
                                         }
                                     } else //alteração de cadastro
-                                    if (!p.update())
                                     {
-                                        a.setContentText("Problemas ao Alterar");
-                                        a.showAndWait();
+                                        if (!p.update())
+                                        {
+                                            a.setContentText("Problemas ao Alterar");
+                                            a.showAndWait();
+                                        }
                                     }
                                     estadoOriginal();
                                 } else
@@ -279,8 +285,7 @@ public class FXMLCadastroProdutoController implements Initializable
                         {
                             a.setContentText("Informe a categoria!");
                         }
-                    }
-                    else
+                    } else
                     {
                         a.setContentText("Informe o tamanho!");
                     }
@@ -315,18 +320,18 @@ public class FXMLCadastroProdutoController implements Initializable
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+        String filtro = "upper(" + cbb_Filtro.getValue() + ") ";
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
-        
+
         System.out.println(filtro);
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+        String filtro = "upper(" + cbb_Filtro.getValue() + ") ";
 
-        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");        
+        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
@@ -335,17 +340,21 @@ public class FXMLCadastroProdutoController implements Initializable
         if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
-            if(u.getNivel()>1)
+            if (u.getNivel() > 1)
+            {
                 btn_Alterar.setDisable(false);
+            }
             btn_Novo.setDisable(true);
-            if(u.getNivel()>2)
+            if (u.getNivel() > 2)
+            {
                 btn_Apagar.setDisable(false);
+            }
 
             tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
             tb_Descricao.setText(tabela.getSelectionModel().getSelectedItem().getDescricao());
             tb_Preco.setText("" + tabela.getSelectionModel().getSelectedItem().getPreco());
-
+            tb_Tamanho.setText(tabela.getSelectionModel().getSelectedItem().getTamanho());
             //FAZER COMBOBOX (GAMBIS COPIADA DO PROFESSOR)
             cbb_Categoria.getSelectionModel().select(0);// gambis
             cbb_Colecao.getSelectionModel().select(0);// gambis

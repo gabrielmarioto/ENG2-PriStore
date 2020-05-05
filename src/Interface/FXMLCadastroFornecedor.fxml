@@ -51,52 +51,52 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Nome" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="69.0" prefHeight="27.0" prefWidth="363.0" promptText="Nome">
+                  <JFXTextField fx:id="tb_Nome" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="69.0" prefHeight="27.0" prefWidth="363.0" promptText="Nome *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Cnpj" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="69.0" prefHeight="27.0" prefWidth="173.0" promptText="CNPJ">
+                  <JFXTextField fx:id="tb_Cnpj" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="69.0" prefHeight="27.0" prefWidth="173.0" promptText="CNPJ *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="610.0" layoutY="69.0" prefHeight="27.0" prefWidth="173.0" promptText="Telefone">
+                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="610.0" layoutY="69.0" prefHeight="27.0" prefWidth="173.0" promptText="Telefone *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_InscricaoEstadual" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Inscrição Estadual">
+                  <JFXTextField fx:id="tb_InscricaoEstadual" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Inscrição Estadual *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Email" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Email">
+                  <JFXTextField fx:id="tb_Email" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Email *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Endereco" focusColor="ORANGE" labelFloat="true" layoutX="13.0" layoutY="156.0" prefHeight="25.0" prefWidth="231.0" promptText="Endereço">
+                  <JFXTextField fx:id="tb_Endereco" focusColor="ORANGE" labelFloat="true" layoutX="13.0" layoutY="156.0" prefHeight="25.0" prefWidth="231.0" promptText="Endereço *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Numero" focusColor="ORANGE" labelFloat="true" layoutX="261.0" layoutY="156.0" prefHeight="25.0" prefWidth="115.0" promptText="Numero">
+                  <JFXTextField fx:id="tb_Numero" focusColor="ORANGE" labelFloat="true" layoutX="261.0" layoutY="156.0" prefHeight="25.0" prefWidth="115.0" promptText="Numero *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Bairro" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="156.0" prefHeight="25.0" prefWidth="363.0" promptText="Bairro">
+                  <JFXTextField fx:id="tb_Bairro" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="156.0" prefHeight="25.0" prefWidth="363.0" promptText="Bairro *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Cidade" focusColor="ORANGE" labelFloat="true" layoutX="13.0" layoutY="201.0" prefHeight="25.0" prefWidth="363.0" promptText="Cidade">
+                  <JFXTextField fx:id="tb_Cidade" focusColor="ORANGE" labelFloat="true" layoutX="13.0" layoutY="201.0" prefHeight="25.0" prefWidth="363.0" promptText="Cidade *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_cep" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="201.0" prefHeight="25.0" prefWidth="363.0" promptText="Cep">
+                  <JFXTextField fx:id="tb_cep" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="201.0" prefHeight="25.0" prefWidth="363.0" promptText="Cep *">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
@@ -109,7 +109,7 @@
          <children>
             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="696.0" spacing="40.0" style="-fx-background-color: #DDDDDD;">
                <children>
-                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="313.0" promptText="Informe o nome do funcionario" />
+                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="313.0" promptText="Informe o nome do fornecedor" />
                   <JFXComboBox fx:id="cbb_filtro" focusColor="ORANGE" labelFloat="true" prefHeight="25.0" prefWidth="161.0" promptText="Filtro" />
                   <JFXButton fx:id="btn_Pesquisar" onAction="#clkBtPesquisar" text="Pesquisar">
                      <font>
