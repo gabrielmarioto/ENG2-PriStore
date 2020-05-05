@@ -34,12 +34,12 @@
             </HBox>
             <AnchorPane fx:id="pndados" prefHeight="440.0" prefWidth="811.0" style="-fx-background-color: white;">
                <children>
-                  <JFXTextField fx:id="tb_Nome" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="69.0" prefHeight="27.0" prefWidth="346.0" promptText="Nome Fantasia">
+                  <JFXTextField fx:id="tb_Nome" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="69.0" prefHeight="27.0" prefWidth="346.0" promptText="Nome Fantasia (*)">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_End" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="346.0" promptText="Endereço">
+                  <JFXTextField fx:id="tb_End" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="346.0" promptText="Endereço (*)">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
@@ -49,17 +49,17 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_RazaoSocial" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="69.0" prefHeight="27.0" prefWidth="392.0" promptText="Razão Social">
+                  <JFXTextField fx:id="tb_RazaoSocial" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="69.0" prefHeight="27.0" prefWidth="392.0" promptText="Razão Social (*)">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Email" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="120.0" prefHeight="25.0" prefWidth="392.0" promptText="Email">
+                  <JFXTextField fx:id="tb_Email" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="120.0" prefHeight="25.0" prefWidth="392.0" promptText="Email (*)">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="163.0" prefHeight="25.0" prefWidth="346.0" promptText="Telefone">
+                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="163.0" prefHeight="25.0" prefWidth="346.0" promptText="Telefone (*)">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>

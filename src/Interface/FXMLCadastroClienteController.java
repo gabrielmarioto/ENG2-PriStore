@@ -98,6 +98,8 @@ public class FXMLCadastroClienteController implements Initializable
     private JFXTextField tb_Saldo;
 
     private Usuario u;
+    @FXML
+    private JFXComboBox<String> cbb_Filtro;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -109,10 +111,16 @@ public class FXMLCadastroClienteController implements Initializable
         MaskFieldUtil.maxField(tb_End, 40);
         MaskFieldUtil.maxField(tb_Nome, 40);
         
+        List<String> Filtro = new ArrayList<>();
+        Filtro.add("Nome");
+        Filtro.add("Endereco");
+        
+        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_Filtro.getSelectionModel().select(0);
+        
         MaskFieldUtil.cpfField(tb_Cpf);
         MaskFieldUtil.foneField(tb_Telefone);
         MaskFieldUtil.monetaryField(tb_Saldo);
-        
         estadoOriginal();
     }
     
@@ -141,12 +149,11 @@ public class FXMLCadastroClienteController implements Initializable
                 ((ComboBox) n).getItems().clear();
             }
         }
-
+        
         carregaTabela("");
     }
     private void carregaTabela(String filtro)
     {
-
         Cliente c = new Cliente();
         List<Cliente> res = c.selectCliente(filtro);
         ObservableList<Cliente> modelo;
@@ -156,9 +163,8 @@ public class FXMLCadastroClienteController implements Initializable
         List<String> Sexo = new ArrayList<>();
         Sexo.add("M");
         Sexo.add("F");
-       
-        cbb_Sexo.setItems(FXCollections.observableArrayList(Sexo));
-        
+
+        cbb_Sexo.setItems(FXCollections.observableArrayList(Sexo));       
     }
     private void estadoEdicao()
     {
@@ -232,8 +238,9 @@ public class FXMLCadastroClienteController implements Initializable
                             {
                                 if (dtp_nascimento.getValue().isBefore(dataAtual))
                                 {
-                                    c = new Cliente(cod, tb_Nome.getText(), tb_Cpf.getText().replace(".", "").replace("-", ""), tb_End.getText(), tb_Email.getText(), tb_Telefone.getText(), cbb_Sexo.getValue().charAt(0), Float.parseFloat(tb_Saldo.getText().replace(".", "").replace(",", ".")), dtp_nascimento.getValue());
-
+                                    c = new Cliente(cod, tb_Nome.getText(), tb_Cpf.getText().replace(".", "").replace("-", ""), tb_End.getText(), tb_Email.getText(), tb_Telefone.getText(), cbb_Sexo.getValue().charAt(0), Float.parseFloat(tb_Saldo.getText().replace(",", ".")), dtp_nascimento.getValue());
+                                    if(tb_Saldo.getText().length() == 0)
+                                        c.setSaldo(0);
                                     if (c.getCod() == 0) // novo cadastro
                                     {
                                         if (!c.insertCliente())
@@ -310,8 +317,14 @@ public class FXMLCadastroClienteController implements Initializable
 
     @FXML
     private void clkBtPesquisar(ActionEvent event) {
-        String filtro="upper(fun_"+tb_Pesquisa.getText()+") ";
-        carregaTabela(filtro+ " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
+        String fil;
+        if(cbb_Filtro.getValue() == "Endereco")
+            fil = "cli_end";
+        else
+            fil = "cli_nome";
+        
+        String filtro = "upper(" + fil + ") ";
+        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
@@ -335,9 +348,25 @@ public class FXMLCadastroClienteController implements Initializable
             dtp_nascimento.setValue(tabela.getSelectionModel().getSelectedItem().getDtNascimento());
             tb_Saldo.setText(tabela.getSelectionModel().getSelectedItem().getSaldo()+"");
             
+            System.out.println(tabela.getSelectionModel().getSelectedItem().getSaldo());
+            
             cbb_Sexo.getSelectionModel().select(0);// gambis
             cbb_Sexo.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getSexo());
         }
+    }
+
+
+
+    @FXML
+    private void clkTxPesquisa(KeyEvent event) {
+        String fil;
+        if(cbb_Filtro.getValue() == "Endereco")
+            fil = "cli_end";
+        else
+            fil = "cli_nome";
+        
+        String filtro = "upper(" + fil + ") ";
+        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     

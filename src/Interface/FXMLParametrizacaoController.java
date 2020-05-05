@@ -84,6 +84,10 @@ public class FXMLParametrizacaoController implements Initializable
 
         MaskFieldUtil.maxField(tb_Telefone, 40);
         MaskFieldUtil.foneField(tb_Telefone);
+        Parametros teste = new Parametros();
+        teste = teste.selectParametro();
+        if(teste == null)
+            btn_Alterar.setText("Inserir");
         try {
             estadoOriginal();
         } catch (IOException ex) {
@@ -161,44 +165,38 @@ public class FXMLParametrizacaoController implements Initializable
                     {
                         if (tb_Email.getText().length() > 0 && tb_Email.getText().contains("@"))
                         {
-                            if (tb_Site.getText().length() > 0)
+                            teste = teste.selectParametro();
+                            p = new Parametros(tb_Nome.getText(), tb_RazaoSocial.getText(), tb_End.getText(), tb_Site.getText(), tb_Email.getText(), tb_Telefone.getText());
+                            if (tb_Site.getText().length() == 0)
+                                p.setSite("-");
+                            if(teste == null)
                             {
-                                
 
-                                teste = teste.selectParametro();
-                                p = new Parametros(tb_Nome.getText(), tb_RazaoSocial.getText(), tb_End.getText(), tb_Site.getText(), tb_Email.getText(), tb_Telefone.getText());
-                                
-                                if(teste == null)
+                                if (!p.insertParametros())
                                 {
-                                   
-                                    if (!p.insertParametros())
-                                    {
-                                        a.setContentText("Problemas ao Gravar");
-                                        a.showAndWait();
-                                    }
-                                    else
-                                    {
-                                        a.setContentText("Parametros Gravados Com Sucesso!");
-                                        gravaFoto();
-                                        a.showAndWait();
-                                        estadoOriginal();
-                                    }    
-                                }else if (!p.updateParametros())
-                                {
-                                    a.setContentText("Problemas ao Alterar");
+                                    a.setContentText("Problemas ao Gravar");
                                     a.showAndWait();
-                                } else
-                                {
-                                    gravaFoto();
-                                    a.setContentText("Alterado com Sucesso");
-                                    a.showAndWait();
-                                    estadoOriginal();
                                 }
+                                else
+                                {
+                                    a.setContentText("Parametros Gravados Com Sucesso!");
+                                    gravaFoto();
+                                    a.showAndWait();
+                                    btn_Alterar.setText("Inserir");
+                                    estadoOriginal();
+                                }    
+                            }else if (!p.updateParametros())
+                            {
+                                a.setContentText("Problemas ao Alterar");
+                                a.showAndWait();
                             } else
                             {
-                                a.setContentText("Informe o Site");
+                                gravaFoto();
+                                a.setContentText("Alterado com Sucesso");
                                 a.showAndWait();
+                                estadoOriginal();
                             }
+                            
                         }
                         else
                         {

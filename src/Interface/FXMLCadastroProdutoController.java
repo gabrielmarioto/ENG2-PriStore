@@ -322,8 +322,6 @@ public class FXMLCadastroProdutoController implements Initializable
     {
         String filtro = "upper(" + cbb_Filtro.getValue() + ") ";
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
-
-        System.out.println(filtro);
     }
 
     @FXML

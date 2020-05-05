@@ -31,6 +31,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  *
@@ -53,29 +54,9 @@ public class TelaPrincipalController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        // TODO
         spnprincipal = pnprincipal;
         topo.setDisable(true);
-        ParametrizacaoBD bd = new ParametrizacaoBD();
-        InputStream img = bd.getFoto();
         Alert a = new Alert(Alert.AlertType.WARNING);
-        Image image = null;
-        if(img != null)
-        {
-            //try {
-                //BufferedImage bimg = null;
-                //try {
-                //bimg = ImageIO.read(img);
-                //} catch (IOException ex) {}
-                
-                //image = new Image(img);
-                //File outFile = outFile = new File("icons/logo.png"); 
-                
-                //ImageIO.write(bimg, "png",outFile);
-                //ImageIO.write(SwingFXUtils.fromFXImage(image,null),"png", outFile);
-            //} catch (Exception ex) {System.out.println("deu merda aqui");}
-        }
-
         
         if(new UsuarioBD().get("").isEmpty())
         {
@@ -88,9 +69,40 @@ public class TelaPrincipalController implements Initializable
         {
             clkLogin(null);
         }
-
+        //pegaParametros();
     }
-
+    private void pegaParametros()
+    {
+        Parametros par = new Parametros();
+        par = par.selectParametro();
+        
+        // insere a razão social da empresa
+        Stage stage = new Stage();
+        stage =(Stage) pnprincipal.getScene().getWindow();
+        stage.setTitle("aaaaaa");
+        
+        // insere a foto
+        
+        /*
+        InputStream img = bd.getFoto();
+        
+        Image image = null;
+        if(img != null)
+        {
+            try {
+                BufferedImage bimg = null;
+                try {
+                bimg = ImageIO.read(img);
+                } catch (IOException ex) {}
+                
+                image = new Image(img);
+                File outFile = outFile = new File("icons/logo.png"); 
+                
+                ImageIO.write(bimg, "png",outFile);
+                ImageIO.write(SwingFXUtils.fromFXImage(image,null),"png", outFile);
+            } catch (Exception ex) {System.out.println("deu merda aqui");}
+        }*/
+    }
     protected void setLogin(Usuario usuario)
     {
         topo.setDisable(false);
@@ -109,7 +121,7 @@ public class TelaPrincipalController implements Initializable
         {
             a.setContentText("Realize a parametrização!");
             clkParametrizacao(event); 
-        } 
+        }
     }
 
     @FXML

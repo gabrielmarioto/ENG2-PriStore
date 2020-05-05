@@ -22,6 +22,7 @@ public class ClienteBD {
     public List<Cliente> get(String filtro)
     {
         String sql = "select * from cliente";
+        System.out.println(filtro);
         if (!filtro.isEmpty())
         {
             sql += " where " + filtro;
@@ -41,7 +42,7 @@ public class ClienteBD {
         {
 
         }
-
+        System.out.println(sql);
         return aux;
     }
     public boolean insertCliente(Cliente c)
