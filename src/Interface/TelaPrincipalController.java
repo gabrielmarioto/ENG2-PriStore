@@ -110,9 +110,9 @@ public class TelaPrincipalController implements Initializable
         pnprincipal.setCenter(null);
         mnUsu.setText(usuario.getLogin());
         if(usuario.getNivel()<3)
-            miFun.setDisable(true);
+            miFun.setVisible(false);
         else
-            miFun.setDisable(false);
+            miFun.setVisible(true);
         ActionEvent event = null;
         Alert a = new Alert(Alert.AlertType.WARNING);
         Parametros p = new Parametros();
@@ -327,6 +327,7 @@ public class TelaPrincipalController implements Initializable
             FXMLAlteraUsuarioController ctr = loader.getController();
             ctr.RecebeDados(new Funcionario().selectFuncionario(usuario.getCodigo()),usuario,true);
             pnprincipal.setCenter(root); 
+            this.usuario = this.usuario.selectUsuario(this.usuario.getCodigo());
          }   catch (IOException ex)
         {
             System.out.println(ex);

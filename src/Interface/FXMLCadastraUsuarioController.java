@@ -118,6 +118,7 @@ public class FXMLCadastraUsuarioController implements Initializable {
                             {
                                 a.setContentText("Nome de Usuario já existente!");
                                 a.showAndWait();
+                                tb_Nome.setFocusTraversable(true);
                             }
                             
                             
@@ -126,30 +127,35 @@ public class FXMLCadastraUsuarioController implements Initializable {
                         {
                             a.setContentText("Senha e Confirmação diferentes!");
                             a.showAndWait();
+                            pf_senha.setFocusTraversable(true);
                         }
                     }
                     else
                     {
                         a.setContentText("Informe o Nivel de Acesso!");
                         a.showAndWait();
+                        cbb_nivel.setFocusTraversable(true);
                     }
                 }
                 else
                 {
                     a.setContentText("Confirmação de senha incorreta!");
                     a.showAndWait();
+                    pf_senha2.setFocusTraversable(true);
                 }
            }
            else
            {
                a.setContentText("Senha Invalida!");
                a.showAndWait();
+               pf_senha.setFocusTraversable(true);
            }
        }
        else
        {
             a.setContentText("Nome de Usuario Invalido!");
             a.showAndWait();
+            tb_Nome.setFocusTraversable(true);
        }
         
     }

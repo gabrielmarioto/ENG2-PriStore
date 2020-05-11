@@ -133,12 +133,14 @@ public class FXMLAlteraUsuarioController implements Initializable {
                                     {
                                         a.setContentText("Senha antiga ou do Usuario incorreta ou invalida!");
                                         a.showAndWait();
+                                        pf_senhaU.requestFocus();
                                     }
                                 }
                                 else
                                 {
                                     a.setContentText("Informe senha antiga ou do Usuario atual!");
                                     a.showAndWait();
+                                    pf_senhaU.requestFocus();
                                 }
                                         
                                 
@@ -147,6 +149,7 @@ public class FXMLAlteraUsuarioController implements Initializable {
                             {
                                 a.setContentText("Nome de Usuario já existente!");
                                 a.showAndWait();
+                                tb_Nome.requestFocus();
                             }
                             
                             
@@ -155,30 +158,35 @@ public class FXMLAlteraUsuarioController implements Initializable {
                         {
                             a.setContentText("Senha e Confirmação diferentes!");
                             a.showAndWait();
+                            pf_senha.requestFocus();
                         }
                     }
                     else
                     {
                         a.setContentText("Informe o Nivel de Acesso!");
                         a.showAndWait();
+                        cbb_nivel.requestFocus();
                     }
                 }
                 else
                 {
                     a.setContentText("Confirmação de senha incorreta!");
                     a.showAndWait();
+                    cbb_nivel.requestFocus();
                 }
            }
            else
            {
                a.setContentText("Senha Invalida!");
                a.showAndWait();
+               pf_senha.requestFocus();
            }
        }
        else
        {
             a.setContentText("Nome de Usuario Invalido!");
             a.showAndWait();
+            tb_Nome.requestFocus();
        }
         
     }

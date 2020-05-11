@@ -124,6 +124,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
     private MenuItem altera;
     private MenuItem deleta;
     private Funcionario f;
+    private Usuario UsuAlt;
     
     /**
      * Initializes the controller class.
@@ -157,17 +158,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
             DeletaUsuario();
         });
         contextMenu.getItems().addAll(cria,altera,deleta);
-        List<String> Sexo = new ArrayList<>();
-        Sexo.add("M");
-        Sexo.add("F");
-        List<String> Filtro= new ArrayList<>();
-        Filtro.add("Nome");
-        Filtro.add("Sexo");
-        Filtro.add("Cidade");
-        Filtro.add("CEP");
-        cbb_sexo.setItems(FXCollections.observableArrayList(Sexo));
-        cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
-        cbb_filtro.getSelectionModel().select(0);
+        
     }
 
      protected void RecebeDados(Usuario u,TelaPrincipalController ctr){
@@ -199,7 +190,18 @@ public class FXMLCadastroFuncionarioController implements Initializable
                 ((ComboBox) n).getItems().clear();
             }
         }
-
+        List<String> Sexo = new ArrayList<>();
+        Sexo.add("M");
+        Sexo.add("F");
+        List<String> Filtro= new ArrayList<>();
+        Filtro.add("Nome");
+        Filtro.add("Sexo");
+        Filtro.add("Cidade");
+        Filtro.add("CEP");
+        cbb_sexo.setItems(FXCollections.observableArrayList(Sexo));
+        cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_filtro.getSelectionModel().select(0);
+        
         carregaTabela("");
     }
 
@@ -381,53 +383,64 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                             {
                                                 a.setContentText("Informe o Cep!");
                                                 a.showAndWait();
+                                                
+                                                tb_cep.requestFocus();
                                             }
                                         }else
                                         {
                                             a.setContentText("Informe a Cidade!");
                                             a.showAndWait();
+                                            tb_Cidade.requestFocus();
                                         }
                                     } else
                                     {
                                         a.setContentText("Informe o Bairro!");
                                         a.showAndWait();
+                                        tb_Bairro.requestFocus();
                                     }
                                 } else
                                 {
                                     a.setContentText("Informe o Endereço!");
                                     a.showAndWait();
+                                    tb_Endereco.requestFocus();
                                 }
                             }else
                             {
                                 a.setContentText("Informe o Email!");
                                 a.showAndWait();
+                                tb_Email.requestFocus();
                             }
                             
                         } else
                         {
                             a.setContentText("Informe o Sexo!");
                             a.showAndWait();
+                            cbb_sexo.requestFocus();
                         }
                     }
                     else
                     {
                         a.setContentText("Informe O CPF!");
                         a.showAndWait();
+                        tb_cpf.requestFocus();
                     }
                 } else
                 {
                     a.setContentText("Informe o Telefone!");
                     a.showAndWait();
+                    tb_Telefone.requestFocus();
                 }
             } else
             {
                 a.setContentText("Informe a Salario!");
                 a.showAndWait();
+                tb_Salario.requestFocus();
             }
         } else
         {
             a.setContentText("Informe o nome!");
             a.showAndWait();
+            tb_Nome.requestFocus();
         }
         carregaTabela("");
     }
@@ -483,8 +496,8 @@ public class FXMLCadastroFuncionarioController implements Initializable
             tb_Cidade.setText(tabela.getSelectionModel().getSelectedItem().getCidade());
             tb_Bairro.setText(tabela.getSelectionModel().getSelectedItem().getBairro());
             tb_cep.setText(tabela.getSelectionModel().getSelectedItem().getCep());
-            cbb_sexo.getSelectionModel().select(0);// gambis
-            cbb_sexo.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getSexo());
+            //cbb_sexo.getSelectionModel().select(0);// gambis
+            cbb_sexo.getSelectionModel().select(String.valueOf(tabela.getSelectionModel().getSelectedItem().getSexo()));
         }
     }
 
@@ -501,6 +514,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
         }
         else
         {
+            this.UsuAlt=u;
             contextMenu.getItems().get(0).setDisable(true);
             contextMenu.getItems().get(1).setDisable(false);
             contextMenu.getItems().get(2).setDisable(false);
@@ -536,7 +550,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
             try {
                 root = (Parent) loader.load();
                 FXMLAlteraUsuarioController ctr = loader.getController();
-                ctr.RecebeDados(this.f,this.u,false);
+                ctr.RecebeDados(this.f,this.UsuAlt,false);
 
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
