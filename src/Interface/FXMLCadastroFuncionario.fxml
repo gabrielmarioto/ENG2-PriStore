@@ -51,23 +51,23 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Nome" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="69.0" prefHeight="27.0" prefWidth="363.0" promptText="Nome">
+                  <JFXTextField fx:id="tb_Nome" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="69.0" prefHeight="27.0" prefWidth="363.0" promptText="Nome*">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_cpf" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="69.0" prefHeight="27.0" prefWidth="115.0" promptText="CPF">
+                  <JFXTextField fx:id="tb_cpf" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="69.0" prefHeight="27.0" prefWidth="115.0" promptText="CPF*">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="555.0" layoutY="69.0" prefHeight="27.0" prefWidth="144.0" promptText="Telefone">
+                  <JFXTextField fx:id="tb_Telefone" focusColor="ORANGE" labelFloat="true" layoutX="555.0" layoutY="69.0" prefHeight="27.0" prefWidth="144.0" promptText="Telefone*">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXComboBox fx:id="cbb_sexo" focusColor="ORANGE" labelFloat="true" layoutX="715.0" layoutY="71.0" promptText="Sexo" />
-                  <JFXTextField fx:id="tb_Salario" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Salario">
+                  <JFXComboBox fx:id="cbb_sexo" focusColor="ORANGE" labelFloat="true" layoutX="715.0" layoutY="71.0" promptText="Sexo*" />
+                  <JFXTextField fx:id="tb_Salario" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="363.0" promptText="Salario*">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
@@ -92,7 +92,7 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXTextField fx:id="tb_cep" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="201.0" prefHeight="25.0" prefWidth="363.0" promptText="Cep">
+                  <JFXTextField fx:id="tb_cep" focusColor="ORANGE" labelFloat="true" layoutX="420.0" layoutY="201.0" prefHeight="25.0" prefWidth="363.0" promptText="Cep*">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>

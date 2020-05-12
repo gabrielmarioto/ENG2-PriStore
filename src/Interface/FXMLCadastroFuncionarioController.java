@@ -304,27 +304,28 @@ public class FXMLCadastroFuncionarioController implements Initializable
         }
         if (tb_Nome.getText().length() > 0)
         {
-            if (tb_Salario.getText().length() > 0)
+            if(tb_cpf.getText().length() >= 11)
             {
                 if (tb_Telefone.getText().length() > 0)
                 {
-                    if (tb_cpf.getText().length() >= 11)
+                    if (cbb_sexo.getSelectionModel().getSelectedIndex() != -1)
                     {
-                        if (cbb_sexo.getSelectionModel().getSelectedIndex() != -1)
+                        if (tb_Salario.getText().length() > 0)
                         {
-                            if(tb_Email.getText().length()> 0 && tb_Email.getText().contains("@"))
+                            if(tb_cep.getText().length()> 0)
                             {
+                                String email="", endereco="", bairro="", cidade="";
                                 if (tb_Endereco.getText().length()> 0)
                                 {
-                                    if (tb_Bairro.getText().length()> 0 )
-                                    {
-                                        if(tb_Cidade.getText().length()> 0)
-                                        {
-                                            if(tb_cep.getText().length()> 0)
-                                            {
-                                                f = new Funcionario(cod, tb_Nome.getText(), tb_cpf.getText(),cbb_sexo.getValue().charAt(0),
+                                    endereco=tb_Endereco.getText();
+                                }
+                                if (tb_Bairro.getText().length()> 0 )
+                                {
+                                    bairro=tb_Bairro.getText();
+                                }
+                                f = new Funcionario(cod, tb_Nome.getText(), tb_cpf.getText(),cbb_sexo.getValue().charAt(0),
                                                         Double.parseDouble(tb_Salario.getText().replace(".", "").replace(",", ".")),
-                                                tb_Telefone.getText(), tb_Email.getText(), tb_Endereco.getText(),tb_Bairro.getText(),tb_Cidade.getText()
+                                                tb_Telefone.getText(), email, endereco, bairro, cidade
                                                         ,tb_cep.getText());
                                                 boolean flag= false;
                                                 if(f.selectFuncionario("").isEmpty())
@@ -378,64 +379,41 @@ public class FXMLCadastroFuncionarioController implements Initializable
                                                     a.showAndWait();
                                                     estadoOriginal();
                                                 }
-                                              
-                                            }else
-                                            {
-                                                a.setContentText("Informe o Cep!");
-                                                a.showAndWait();
-                                                
-                                                tb_cep.requestFocus();
-                                            }
-                                        }else
-                                        {
-                                            a.setContentText("Informe a Cidade!");
-                                            a.showAndWait();
-                                            tb_Cidade.requestFocus();
-                                        }
-                                    } else
-                                    {
-                                        a.setContentText("Informe o Bairro!");
-                                        a.showAndWait();
-                                        tb_Bairro.requestFocus();
-                                    }
-                                } else
-                                {
-                                    a.setContentText("Informe o Endereço!");
-                                    a.showAndWait();
-                                    tb_Endereco.requestFocus();
-                                }
-                            }else
-                            {
-                                a.setContentText("Informe o Email!");
-                                a.showAndWait();
-                                tb_Email.requestFocus();
                             }
-                            
-                        } else
+                            else
+                            {
+                                a.setContentText("Informe o Cep!");
+                                a.showAndWait();
+                                tb_cep.requestFocus();
+                            }                        
+                        }
+                        else
                         {
-                            a.setContentText("Informe o Sexo!");
+                            a.setContentText("Informe o Email!");
                             a.showAndWait();
-                            cbb_sexo.requestFocus();
+                            tb_Email.requestFocus();
                         }
                     }
                     else
                     {
-                        a.setContentText("Informe O CPF!");
+                        a.setContentText("Informe o Sexo!");
                         a.showAndWait();
-                        tb_cpf.requestFocus();
+                        cbb_sexo.requestFocus();
                     }
-                } else
+                }
+                else
                 {
                     a.setContentText("Informe o Telefone!");
                     a.showAndWait();
                     tb_Telefone.requestFocus();
                 }
-            } else
-            {
-                a.setContentText("Informe a Salario!");
-                a.showAndWait();
-                tb_Salario.requestFocus();
             }
+            else
+            {
+                a.setContentText("Informe O CPF!");
+                a.showAndWait();
+                tb_cpf.requestFocus();
+            } 
         } else
         {
             a.setContentText("Informe o nome!");
