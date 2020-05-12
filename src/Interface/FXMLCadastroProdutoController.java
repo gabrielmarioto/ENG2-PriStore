@@ -71,8 +71,6 @@ public class FXMLCadastroProdutoController implements Initializable
     @FXML
     private JFXComboBox<Categoria> cbb_Categoria;
     @FXML
-    private JFXTextField tb_Tamanho;
-    @FXML
     private JFXComboBox<Marca> cbb_Marca;
     @FXML
     private VBox pnpesquisa;
@@ -205,7 +203,6 @@ public class FXMLCadastroProdutoController implements Initializable
             cbb_Categoria.getSelectionModel().select(p.getCodCategoria().getCod());
             cbb_Colecao.getSelectionModel().select(p.getCodColecao().getCod());
             cbb_Marca.getSelectionModel().select(p.getCodMarca().getCod());
-            tb_Tamanho.setText(p.getTamanho());
         }
     }
 
@@ -247,48 +244,44 @@ public class FXMLCadastroProdutoController implements Initializable
             {
                 if (tb_Preco.getText().length() > 0)
                 {
-                    if (tb_Tamanho.getText().length() > 0)
+
+                    if (cbb_Categoria.getSelectionModel().getSelectedIndex() != -1)
                     {
-                        if (cbb_Categoria.getSelectionModel().getSelectedIndex() != -1)
+                        if (cbb_Colecao.getSelectionModel().getSelectedIndex() != -1)
                         {
-                            if (cbb_Colecao.getSelectionModel().getSelectedIndex() != -1)
+                            if (cbb_Marca.getSelectionModel().getSelectedIndex() != -1)
                             {
-                                if (cbb_Marca.getSelectionModel().getSelectedIndex() != -1)
+                                p = new Produto(cod, cbb_Categoria.getValue(), tb_Nome.getText(), Float.parseFloat(tb_Preco.getText().replace(".", "").replace(",", ".")),
+                                        tb_Descricao.getText(), cbb_Marca.getValue(), cbb_Colecao.getValue());
+                                if (p.getCod() == 0) // novo cadastro
                                 {
-                                    p = new Produto(cod, cbb_Categoria.getValue(), tb_Nome.getText(), tb_Tamanho.getText(), Float.parseFloat(tb_Preco.getText().replace(".", "").replace(",", ".")),
-                                            tb_Descricao.getText(), cbb_Marca.getValue(), cbb_Colecao.getValue());
-                                    if (p.getCod() == 0) // novo cadastro
+                                    if (!p.insert())
                                     {
-                                        if (!p.insert())
-                                        {
-                                            a.setContentText("Problemas ao Gravar");
-                                            // a.showAndWait();
-                                        }
-                                    } else //alteração de cadastro
-                                    {
-                                        if (!p.update())
-                                        {
-                                            a.setContentText("Problemas ao Alterar");
-                                            a.showAndWait();
-                                        }
+                                        a.setContentText("Problemas ao Gravar");
+                                        // a.showAndWait();
                                     }
-                                    estadoOriginal();
-                                } else
+                                } else //alteração de cadastro
                                 {
-                                    a.setContentText("Informe a marca!");
+                                    if (!p.update())
+                                    {
+                                        a.setContentText("Problemas ao Alterar");
+                                        a.showAndWait();
+                                    }
                                 }
+                                estadoOriginal();
                             } else
                             {
-                                a.setContentText("Informe a colecao!");
+                                a.setContentText("Informe a marca!");
                             }
                         } else
                         {
-                            a.setContentText("Informe a categoria!");
+                            a.setContentText("Informe a colecao!");
                         }
                     } else
                     {
-                        a.setContentText("Informe o tamanho!");
+                        a.setContentText("Informe a categoria!");
                     }
+
                 } else
                 {
                     a.setContentText("Informe o preço!");
@@ -352,7 +345,6 @@ public class FXMLCadastroProdutoController implements Initializable
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
             tb_Descricao.setText(tabela.getSelectionModel().getSelectedItem().getDescricao());
             tb_Preco.setText("" + tabela.getSelectionModel().getSelectedItem().getPreco());
-            tb_Tamanho.setText(tabela.getSelectionModel().getSelectedItem().getTamanho());
             //FAZER COMBOBOX (GAMBIS COPIADA DO PROFESSOR)
             cbb_Categoria.getSelectionModel().select(0);// gambis
             cbb_Colecao.getSelectionModel().select(0);// gambis

@@ -17,18 +17,17 @@ public class Produto
 {
     private int cod;
     private Categoria codCategoria;
-    private String nome, tamanho;
+    private String nome;
     private float preco;
     private String descricao;
     private Marca codMarca;
     private Colecao codColecao;
 
-    public Produto(int cod, Categoria codCategoria, String nome, String tamanho, float preco, String descricao, Marca codMarca, Colecao codColecao)
+    public Produto(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao)
     {
         this.cod = cod;
         this.codCategoria = codCategoria;
         this.nome = nome;
-        this.tamanho = tamanho;
         this.preco = preco;
         this.descricao = descricao;
         this.codMarca = codMarca;
@@ -66,17 +65,7 @@ public class Produto
     public void setNome(String nome)
     {
         this.nome = nome;
-    }
-
-    public String getTamanho()
-    {
-        return tamanho;
-    }
-
-    public void setTamanho(String tamanho)
-    {
-        this.tamanho = tamanho;
-    }
+    }   
 
     public float getPreco()
     {
