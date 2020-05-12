@@ -55,6 +55,8 @@ public class TelaPrincipalController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         spnprincipal = pnprincipal;
+        pnprincipal.setStyle("-fx-background-image: url('icons/logo.png')");
+        
         topo.setDisable(true);
         Alert a = new Alert(Alert.AlertType.WARNING);
         
@@ -69,40 +71,9 @@ public class TelaPrincipalController implements Initializable
         {
             clkLogin(null);
         }
-        //pegaParametros();
+        
     }
-    private void pegaParametros()
-    {
-        Parametros par = new Parametros();
-        par = par.selectParametro();
-        
-        // insere a razão social da empresa
-        Stage stage = new Stage();
-        stage =(Stage) pnprincipal.getScene().getWindow();
-        stage.setTitle("aaaaaa");
-        
-        // insere a foto
-        
-        /*
-        InputStream img = bd.getFoto();
-        
-        Image image = null;
-        if(img != null)
-        {
-            try {
-                BufferedImage bimg = null;
-                try {
-                bimg = ImageIO.read(img);
-                } catch (IOException ex) {}
-                
-                image = new Image(img);
-                File outFile = outFile = new File("icons/logo.png"); 
-                
-                ImageIO.write(bimg, "png",outFile);
-                ImageIO.write(SwingFXUtils.fromFXImage(image,null),"png", outFile);
-            } catch (Exception ex) {System.out.println("deu merda aqui");}
-        }*/
-    }
+   
     protected void setLogin(Usuario usuario)
     {
         topo.setDisable(false);

@@ -37,6 +37,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
 
@@ -104,7 +105,7 @@ public class FXMLParametrizacaoController implements Initializable
         btn_Confirmar.setDisable(true);
         btn_Cancelar.setDisable(false);
         btn_Alterar.setDisable(false);
-        
+        pegaParametros();
         ObservableList<Node> componentes = pndados.getChildren(); //”limpa” os componentes
         for (Node n : componentes)
         {
@@ -140,7 +141,17 @@ public class FXMLParametrizacaoController implements Initializable
         }   
  
     }
-
+    private void pegaParametros()
+    {
+        Parametros par = new Parametros();
+        par = par.selectParametro();
+        
+        // insere a razão social da empresa
+        Stage stage = new Stage();
+        stage =(Stage) spnprincipal.getScene().getWindow();
+        stage.setTitle(par.getRazaoSocial());
+        spnprincipal.setStyle("-fx-background-image: url('icons/logo.png')");
+    }
     private void estadoEdicao()
     {
         pndados.setDisable(false);
@@ -240,7 +251,12 @@ public class FXMLParametrizacaoController implements Initializable
             baos.close();
             InputStream in = new ByteArrayInputStream(imageInByte);
             if(par.gravarFoto(in, baos.toByteArray().length))
+            {
                 a.setContentText("Foto Alterada!");
+                File outputFile = new File("C:\\Users\\BRUNO\\Desktop\\PriStore\\src\\icons\\logo.png");
+                ImageIO.write(SwingFXUtils.fromFXImage(imgvFoto.getImage(),null),
+                                "png", outputFile);
+            }
             else
             {
                 a.setContentText("Problemas ao Alterar Foto!");

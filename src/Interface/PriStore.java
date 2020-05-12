@@ -5,6 +5,7 @@
  */
 package Interface;
 
+import Model.Parametros;
 import Util.Banco;
 import java.io.IOException;
 import javafx.application.Application;
@@ -30,10 +31,20 @@ public class PriStore extends Application
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setMaximized(true);
+            stage.setTitle(pegaParametros());
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/camiseta.png"))); // SETAR ICONE NA JANELA
+            //pegaParametros();
             stage.show();           
     }
-
+    private String pegaParametros()
+    {
+        Parametros par = new Parametros();
+        par = par.selectParametro();
+        
+        if(par != null)
+            return par.getRazaoSocial();
+        return "Controle";
+    }
     /**
      * @param args the command line arguments
      */
