@@ -330,5 +330,9 @@ public class TelaPrincipalController implements Initializable
             System.out.println(ex);
         }
     }
+
+    @FXML
+    private void clkEfetuarPromocao(ActionEvent event) {
+    }
     
 }

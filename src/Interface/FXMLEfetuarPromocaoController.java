@@ -6,12 +6,18 @@
 package Interface;
 
 import static Interface.TelaPrincipalController.spnprincipal;
+import Mask.MaskFieldUtil;
 import Model.Marca;
+import Model.Produto;
+import Model.Promocao;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
+import com.sun.javafx.collections.ElementObservableListDecorator;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -62,26 +68,52 @@ public class FXMLEfetuarPromocaoController implements Initializable
     private VBox pnpesquisa;
     @FXML
     private JFXTextField tb_Pesquisa;
-    private TableView<Marca> tabela;
-    private TableColumn<Marca, Integer> colcod;
-    private TableColumn<Marca, String> colnome;
-    private JFXComboBox<String> cbb_Filtro;
-
-    private Usuario u;
     @FXML
-    private JFXTextField tb_Nome1;
-    @FXML
-    private JFXComboBox<?> cbb_filtro;
+    private JFXComboBox<String> cbb_filtro;
     @FXML
     private JFXButton btn_Pesquisar;
-    @FXML
-    private JFXButton btn_logar;
-    @FXML
-    private JFXButton btn_logar1;
     @FXML
     private JFXTextField tb_Pesquisa1;
     @FXML
     private JFXButton btn_Pesquisar1;
+    @FXML
+    private JFXDatePicker dt_inicial;
+    @FXML
+    private JFXDatePicker dt_final;
+    @FXML
+    private JFXComboBox<String> cbb_tipo;
+    @FXML
+    private JFXTextField tb_valor;
+    @FXML
+    private JFXButton btn_selecionar;
+    @FXML
+    private TableColumn<Produto, Integer> codcol;
+    @FXML
+    private TableColumn<Produto, String> colproduto;
+    @FXML
+    private TableColumn<Produto, Double > colpreco;
+    @FXML
+    private TableColumn<Double, Double> colprecopromo;
+    @FXML
+    private JFXButton btn_adicionar;
+    @FXML
+    private JFXButton btn_remover;
+    @FXML
+    private TableColumn<Promocao, Integer> colcodp;
+    @FXML
+    private TableColumn<Promocao, String> colpromo;
+    @FXML
+    private TableColumn<Promocao, Date> coldata;
+    @FXML
+    private TableView<Double> tabela2;
+    @FXML
+    private TableView<Produto> tabela;
+     @FXML
+    private TableView<Promocao> TabelaPromo;
+    
+    
+    private Usuario u;
+   
     /**
      * Initializes the controller class.
      */
@@ -89,8 +121,16 @@ public class FXMLEfetuarPromocaoController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
-        colcod.setCellValueFactory(new PropertyValueFactory("cod"));
-        colnome.setCellValueFactory(new PropertyValueFactory("nome"));
+        codcol.setCellValueFactory(new PropertyValueFactory("cod"));
+        colproduto.setCellValueFactory(new PropertyValueFactory("nome"));
+        colpreco.setCellValueFactory(new PropertyValueFactory("preco"));
+        
+        colprecopromo.setCellValueFactory(new PropertyValueFactory("valor"));
+        
+        colcodp.setCellValueFactory(new PropertyValueFactory("codigo"));
+        colpromo.setCellValueFactory(new PropertyValueFactory("nome"));
+        coldata.setCellValueFactory(new PropertyValueFactory("fim"));
+        MaskFieldUtil.monetaryField(tb_valor);
         estadoOriginal();
     }
 
@@ -108,6 +148,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
         btn_Alterar.setDisable(true);
         btn_Novo.setDisable(false);
 
+        
         ObservableList<Node> componentes = pndados.getChildren(); //”limpa” os componentes
         for (Node n : componentes)
         {
@@ -120,21 +161,70 @@ public class FXMLEfetuarPromocaoController implements Initializable
                 ((ComboBox) n).getItems().clear();
             }
         }
+        
+        List<String> Tipo = new ArrayList<>();
+        Tipo.add("Desconto em Quantia fixa");
+        Tipo.add("Desconto em porcentagem");
+        
+        List<String> Filtro= new ArrayList<>();
+        Filtro.add("Nome");
+        Filtro.add("Categoria");
+        Filtro.add("Coleção");
+        cbb_tipo.setItems(FXCollections.observableArrayList(Tipo));
+        cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_filtro.getSelectionModel().select(0);
 
-        carregaTabela("");
+        carregaTabelaPromo("");
     }
 
-    private void carregaTabela(String filtro)
+    private void carregaTabelaPromo(String filtro)
     {
-        Marca m = new Marca();
-        List<Marca> res = m.selectMarca(filtro);
-        ObservableList<Marca> modelo;
+        Promocao p = new Promocao();
+        List<Promocao> res = p.selectPromocao(filtro);
+        ObservableList<Promocao> modelo;
+        modelo = FXCollections.observableArrayList(res);
+        TabelaPromo.setItems(modelo);
+    }
+    
+    private String verificatipo(JFXComboBox<String> cbb_tipo )
+    {   
+        if(cbb_tipo.getSelectionModel().getSelectedIndex()==0 && tb_valor.getText().length()>0)
+            return "DF";
+        if(cbb_tipo.getSelectionModel().getSelectedIndex()==1)
+            return "DP";
+        
+        return "";
+    }
+    
+    private void carregaTabelaProd(String filtro)
+    {
+        Produto p = new Produto();
+        List<Produto> res = p.selectProduto(filtro);
+        ObservableList<Produto> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
-        List<String> Filtro = new ArrayList<>();
-        Filtro.add("Nome");
-        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
-        cbb_Filtro.getSelectionModel().select(0);
+        String tipo = verificatipo(cbb_tipo);
+        double valor =0;  
+        
+        ObservableList<Double> modelo2 = null;
+        if(!tipo.isEmpty() && !tb_valor.getText().isEmpty())   
+        {
+            valor = Double.parseDouble(tb_valor.getText());
+            List<Double> res2 = new ArrayList<>();
+            if(tipo=="DF")
+            {
+                for(int i=0;i<res.size();i++)  
+                    res2.add(res.get(i).getPreco()-valor);
+            }
+            else
+                for(int i=0;i<res.size();i++)  
+                    res2.add(res.get(i).getPreco()-res.get(i).getPreco()*valor/100);
+            
+            modelo2 = FXCollections.observableArrayList(res2);
+            tabela2.setItems(modelo2);
+        }
+        else
+        tabela2.setItems(modelo2);
     }
 
     private void estadoEdicao()
@@ -158,9 +248,9 @@ public class FXMLEfetuarPromocaoController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            Marca m = (Marca) tabela.getSelectionModel().getSelectedItem();
-            tb_Codigo.setText("" + m.getCod());
-            tb_Nome.setText(m.getNome());
+            Promocao p = (Promocao) TabelaPromo.getSelectionModel().getSelectedItem();
+            tb_Codigo.setText("" + p.getCodigo());
+            tb_Nome.setText(p.getNome());
             estadoEdicao();
         }
     }
@@ -172,14 +262,14 @@ public class FXMLEfetuarPromocaoController implements Initializable
         a.setContentText("Confirma a exclusão?");
         if (a.showAndWait().get() == ButtonType.OK)
         {
-            Marca m = new Marca();
-            m = tabela.getSelectionModel().getSelectedItem();
-            if (!m.deleteMarca())
+            Promocao p = new Promocao();
+             p = TabelaPromo.getSelectionModel().getSelectedItem();
+            if (!p.deletePromocao())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
             }
-            carregaTabela("");
+            carregaTabelaPromo("");
         }
         estadoOriginal();
     }
@@ -221,7 +311,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
             a.showAndWait();
         }
 
-        carregaTabela("");
+        carregaTabelaPromo("");
     }
 
     private void clkbtcancelar(ActionEvent event)
@@ -235,20 +325,19 @@ public class FXMLEfetuarPromocaoController implements Initializable
         }
     }
 
-    @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+        String filtro = "upper("+ cbb_filtro.getValue() + ") ";
 
-        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
+        carregaTabelaPromo(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+        String filtro = "upper("+ cbb_filtro.getValue() + ") ";
 
-        carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
+        carregaTabelaPromo(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     private void clkTabela(MouseEvent event)
@@ -272,7 +361,23 @@ public class FXMLEfetuarPromocaoController implements Initializable
     }
 
     @FXML
-    private void clkLogar(ActionEvent event) {
+    private void clkseleciona(ActionEvent event) {
+    }
+
+    @FXML
+    private void clkTxPesquisaPromo(KeyEvent event) {
+    }
+
+    @FXML
+    private void clkadicionar(ActionEvent event) {
+    }
+
+    @FXML
+    private void clkremover(ActionEvent event) {
+    }
+
+    @FXML
+    private void clkBtPesquisarPromo(ActionEvent event) {
     }
 
 }

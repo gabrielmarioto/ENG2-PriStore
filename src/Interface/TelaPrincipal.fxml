@@ -29,6 +29,11 @@
                         <MenuItem onAction="#clkCadCliente" text="_Cliente" />
                      </items>
                   </Menu>
+                  <Menu mnemonicParsing="false" text="_FUNDAMENTAIS">
+                     <items>
+                        <MenuItem onAction="#clkEfetuarPromocao" text="Efetuar Promoção" />
+                     </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="_FERRAMENTAS">
                      <items>
                         <MenuItem onAction="#clkBackup" text="_BackUp" />
