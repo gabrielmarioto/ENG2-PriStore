@@ -224,6 +224,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
         
+        
 
     }
 

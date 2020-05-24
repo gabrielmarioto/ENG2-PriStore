@@ -15,8 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="529.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="529.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Interface.FXMLEfetuarPromocaoController">
    <children>
       <HBox alignment="CENTER" prefHeight="43.0" prefWidth="1110.0" spacing="50.0" style="-fx-background-color: #4c4c4c;">
          <children>
@@ -63,19 +62,24 @@
                               <Font name="Century Gothic" size="12.0" />
                            </font>
                         </JFXTextField>
-                        <JFXDatePicker layoutX="360.0" layoutY="67.0" promptText="Data Inicial" />
-                        <JFXDatePicker layoutX="531.0" layoutY="67.0" promptText="Data Final" />
-                        <JFXComboBox layoutX="14.0" layoutY="133.0" prefHeight="25.0" prefWidth="187.0" promptText="Coleção" />
-                        <JFXComboBox layoutX="14.0" layoutY="178.0" prefHeight="25.0" prefWidth="187.0" promptText="Categoria" />
+                        <JFXDatePicker layoutX="331.0" layoutY="67.0" promptText="Data Inicial" />
+                        <JFXDatePicker layoutX="511.0" layoutY="67.0" promptText="Data Final" />
+                        <JFXComboBox layoutX="14.0" layoutY="168.0" prefHeight="25.0" prefWidth="187.0" promptText="Coleção" />
+                        <JFXComboBox layoutX="14.0" layoutY="202.0" prefHeight="25.0" prefWidth="187.0" promptText="Categoria" />
                         <JFXComboBox layoutX="466.0" layoutY="133.0" prefHeight="25.0" prefWidth="187.0" promptText="Tipo de Promoção" />
                         <JFXTextField fx:id="tb_Nome1" focusColor="ORANGE" labelFloat="true" layoutX="466.0" layoutY="177.0" prefHeight="27.0" prefWidth="187.0" promptText="Valor promocional">
                            <font>
                               <Font name="Century Gothic" size="12.0" />
                            </font>
                         </JFXTextField>
-                        <JFXCheckBox layoutX="14.0" layoutY="105.0" text="Por Coleção e/ou Cateogoria" />
-                        <JFXCheckBox layoutX="258.0" layoutY="105.0" text="Por Produtos" />
-                        <JFXButton buttonType="RAISED" layoutX="258.0" layoutY="133.0" prefHeight="25.0" prefWidth="132.0" text="Selecionar Produtos" />
+                        <JFXCheckBox layoutX="14.0" layoutY="138.0" text="Por Coleção e/ou Cateogoria" />
+                        <JFXCheckBox layoutX="245.0" layoutY="138.0" text="Por Produtos" />
+                        <JFXButton buttonType="RAISED" layoutX="228.0" layoutY="168.0" prefHeight="25.0" prefWidth="132.0" text="Selecionar Produtos" />
+                        <Label layoutX="14.0" layoutY="112.0" prefHeight="17.0" prefWidth="39.0" text="Filtro:">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
                   <VBox fx:id="pnpesquisa" prefHeight="266.0" prefWidth="903.0">
@@ -97,14 +101,16 @@
                                     </JFXButton>
                                  </children>
                               </HBox>
-                              <TableView layoutX="-1.0" layoutY="37.0" prefHeight="217.0" prefWidth="702.0">
+                              <TableView layoutX="-1.0" layoutY="37.0" prefHeight="161.0" prefWidth="702.0">
                                  <columns>
                                     <TableColumn prefWidth="83.0" text="Codigo" />
-                                    <TableColumn prefWidth="349.0" text="Nome Promoção" />
-                                    <TableColumn prefWidth="155.0" text="Tipo Promoção" />
-                                    <TableColumn prefWidth="114.0" text="Data Final" />
+                                    <TableColumn prefWidth="325.0" text="Produto" />
+                                    <TableColumn prefWidth="145.0" text="Preço" />
+                                    <TableColumn prefWidth="148.0" text="Preço em promoção" />
                                  </columns>
                               </TableView>
+                              <JFXButton fx:id="btn_logar" layoutX="196.0" layoutY="206.0" onAction="#clkLogar" prefHeight="25.0" prefWidth="122.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Adicionar Produto" textFill="ORANGE" />
+                              <JFXButton fx:id="btn_logar1" layoutX="370.0" layoutY="207.0" onAction="#clkLogar" prefHeight="25.0" prefWidth="132.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Remover Produto" textFill="ORANGE" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -113,21 +119,21 @@
             </SplitPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Label layoutX="96.0" layoutY="14.0" prefHeight="28.0" prefWidth="208.0" text="Produtos na Promoção">
+                  <Label layoutX="145.0" layoutY="14.0" prefHeight="28.0" prefWidth="208.0" text="Promoções">
                      <font>
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <TableView layoutX="-6.0" layoutY="142.0" prefHeight="306.0" prefWidth="407.0">
+                  <TableView layoutX="-6.0" layoutY="142.0" prefHeight="347.0" prefWidth="407.0">
                     <columns>
                       <TableColumn prefWidth="65.0" text="Codigo" />
-                      <TableColumn prefWidth="228.0" text="Produto" />
-                        <TableColumn prefWidth="112.0" text="Preço" />
+                      <TableColumn prefWidth="228.0" text="Nome da Promoção" />
+                        <TableColumn prefWidth="112.0" text="Data Final" />
                     </columns>
                   </TableView>
                   <HBox alignment="CENTER" layoutY="105.0" prefHeight="37.0" prefWidth="400.0" spacing="40.0" style="-fx-background-color: #DDDDDD;">
                      <children>
-                        <JFXTextField fx:id="tb_Pesquisa1" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="157.0" promptText="Informe o Produto" />
+                        <JFXTextField fx:id="tb_Pesquisa1" focusColor="ORANGE" onKeyTyped="#clkTxPesquisa" prefHeight="25.0" prefWidth="157.0" promptText="Informe a promoção" />
                         <JFXButton fx:id="btn_Pesquisar1" onAction="#clkBtPesquisar" text="Pesquisar">
                            <font>
                               <Font name="Century Gothic" size="12.0" />
@@ -135,8 +141,6 @@
                         </JFXButton>
                      </children>
                   </HBox>
-                  <JFXButton fx:id="btn_logar" layoutX="53.0" layoutY="453.0" onAction="#clkLogar" prefHeight="25.0" prefWidth="122.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Adicionar Produto" textFill="ORANGE" />
-                  <JFXButton fx:id="btn_logar1" layoutX="221.0" layoutY="453.0" onAction="#clkLogar" prefHeight="25.0" prefWidth="132.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Remover Produto" textFill="ORANGE" />
                </children>
             </AnchorPane>
         </items>
