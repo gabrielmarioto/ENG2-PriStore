@@ -21,8 +21,7 @@ public class Produto
     private float preco;
     private String descricao;
     private Marca codMarca;
-    private Colecao codColecao;
-
+    private Colecao codColecao;    
     public Produto(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao)
     {
         this.cod = cod;

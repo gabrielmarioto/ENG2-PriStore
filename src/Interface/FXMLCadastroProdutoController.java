@@ -151,15 +151,6 @@ public class FXMLCadastroProdutoController implements Initializable
 
     private void carregaTabela(String filtro)
     {
-//        Produto p = new Produto();
-//        List<Produto> res = p.selectProduto(filtro);
-//        ObservableList<Produto> modelo;
-//        modelo = FXCollections.observableArrayList(res);
-//        tabela.setItems(modelo);
-//        List<Categoria> categorias = new Categoria().selectCategoria("");
-//        cbb_Categoria.setItems(FXCollections.observableArrayList(categorias));
-//        cbb_Colecao.setItems(FXCollections.observableArrayList(new Colecao().selectColecao("")));
-//        cbb_Marca.setItems(FXCollections.observableArrayList(new Marca().selectMarca("")));
         Produto p = new Produto();
         List<Produto> res = p.selectProduto(filtro);
         ObservableList<Produto> modelo;
