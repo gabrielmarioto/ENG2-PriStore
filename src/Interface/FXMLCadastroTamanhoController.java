@@ -78,7 +78,7 @@ public class FXMLCadastroTamanhoController implements Initializable
     @FXML
     private TableView<Tamanho> tabela;
     @FXML
-    private TableColumn<Produto, String> colproduto;
+    private TableColumn<Tamanho, Integer> colproduto;
     @FXML
     private TableColumn<Tamanho, String> coltamanho;
     @FXML
@@ -93,7 +93,7 @@ public class FXMLCadastroTamanhoController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
-        colproduto.setCellValueFactory(new PropertyValueFactory("nome"));
+        colproduto.setCellValueFactory(new PropertyValueFactory("codProduto"));
         coltamanho.setCellValueFactory(new PropertyValueFactory("tamanho"));
         colqtde.setCellValueFactory(new PropertyValueFactory("qtde"));
         estadoOriginal();

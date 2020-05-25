@@ -334,5 +334,23 @@ public class TelaPrincipalController implements Initializable
     @FXML
     private void clkEfetuarPromocao(ActionEvent event) {
     }
+
+    @FXML
+    private void clkEfetuarCompra(ActionEvent event)
+    {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLEfetuarCompra.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLEfetuarCompraController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
     
 }

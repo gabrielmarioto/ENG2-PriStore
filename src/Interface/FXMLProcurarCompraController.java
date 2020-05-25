@@ -11,8 +11,10 @@ import Model.Categoria;
 import Model.Colecao;
 import Model.Compra;
 import Model.Fornecedor;
+import Model.ItensCompra;
 import Model.Marca;
 import Model.Produto;
+import Model.Tamanho;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -44,6 +46,7 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -76,13 +79,15 @@ public class FXMLProcurarCompraController implements Initializable
     @FXML
     private TableColumn<Compra, Integer> colcod;
     @FXML
-    private TableColumn<Fornecedor, String> colfornecedor;
+    private TableColumn<Compra, Integer> colfornecedor;
     @FXML
     private TableColumn<Compra, Double> colvalor;
     @FXML
     private TableColumn<Compra, LocalDate> coldata;
 
     private Usuario u;
+
+    private static Object compra;
 
     /**
      * Initializes the controller class.
@@ -92,10 +97,11 @@ public class FXMLProcurarCompraController implements Initializable
     {
         // TODO
         colcod.setCellValueFactory(new PropertyValueFactory("codCompra"));
-        colfornecedor.setCellValueFactory(new PropertyValueFactory("nome"));
+        colfornecedor.setCellValueFactory(new PropertyValueFactory("codForn"));
         colvalor.setCellValueFactory(new PropertyValueFactory("valorTotal"));
         coldata.setCellValueFactory(new PropertyValueFactory("dataCompra"));
         estadoOriginal();
+
     }
 
     public void RecebeDados(Usuario u)
@@ -106,10 +112,10 @@ public class FXMLProcurarCompraController implements Initializable
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
-        btn_Selecionar.setDisable(true);
+        btn_Selecionar.setDisable(false);
         btn_Cancelar.setDisable(false);
-        btn_Apagar.setDisable(true);
-        btn_Alterar.setDisable(true);
+        btn_Apagar.setDisable(false);
+        btn_Alterar.setDisable(false);
 
         carregaTabela("");
     }
@@ -132,22 +138,14 @@ public class FXMLProcurarCompraController implements Initializable
     @FXML
     private void clkBtAlterar(ActionEvent event)
     {
-        try
+        if (tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLEfetuarCompra.fxml"));
-            Parent root = (Parent) loader.load();
-
             Compra c = new Compra(tabela.getSelectionModel().getSelectedItem().getCodCompra(), new Fornecedor().selectFornecedor(tabela.getSelectionModel().getSelectedItem().getCodForn().getCod()), tabela.getSelectionModel().getSelectedItem().getValorTotal(), tabela.getSelectionModel().getSelectedItem().getDesconto(), tabela.getSelectionModel().getSelectedItem().getDataCompra());
+            compra = c;
 
-            FXMLEfetuarCompraController ctr = loader.getController();
-            ctr.recebeInfo(c);
-            spnprincipal.setCenter(root);
-
-        } catch (IOException ex)
-        {
-            System.out.println(ex);
+            Stage stage = (Stage) painel.getScene().getWindow();
+            stage.close();
         }
-        carregaTabela("");
     }
 
     @FXML
@@ -159,6 +157,20 @@ public class FXMLProcurarCompraController implements Initializable
         {
             Compra c = new Compra();
             c = tabela.getSelectionModel().getSelectedItem();
+            List<ItensCompra> aux = new ArrayList();
+            ItensCompra item = new ItensCompra();
+            aux = item.selectItensCompra("codCompra=" + c.getCodCompra());
+            Tamanho t;
+            Tamanho temp = new Tamanho();
+            for (int i = 0; i < aux.size(); i++)
+            {
+                item = aux.get(i);
+                item.setCodCompra(c);
+                item.deleteItensCompra();
+                temp = temp.select(item.getTamanho().getTamanho(), item.getCodProduto().getCod());
+                t = new Tamanho(item.getCodProduto(), item.getTamanho().getTamanho(), item.getQntd() + temp.getQtde());
+                t.updateTamanho();
+            }
             if (!c.deleteCompra())
             {
                 a.setContentText("Erro ao excluir!");
@@ -171,41 +183,37 @@ public class FXMLProcurarCompraController implements Initializable
     @FXML
     private void clkBtSelecionar(ActionEvent event)
     {
-        try
+        if (tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLEfetuarCompra.fxml"));
-            Parent root = (Parent) loader.load();
-
             Compra c = new Compra(tabela.getSelectionModel().getSelectedItem().getCodCompra(), new Fornecedor().selectFornecedor(tabela.getSelectionModel().getSelectedItem().getCodForn().getCod()), tabela.getSelectionModel().getSelectedItem().getValorTotal(), tabela.getSelectionModel().getSelectedItem().getDesconto(), tabela.getSelectionModel().getSelectedItem().getDataCompra());
+            compra = c;
 
-            FXMLEfetuarCompraController ctr = loader.getController();
-            ctr.recebeInfo(c);
-            spnprincipal.setCenter(root);
-
-        } catch (IOException ex)
-        {
-            System.out.println(ex);
+            Stage stage = (Stage) painel.getScene().getWindow();
+            stage.close();
         }
-        ((Button) event.getSource()).getScene().getWindow().hide();
+    }
+
+    public static Object getCompra()
+    {
+        return compra;
     }
 
     @FXML
     private void clkBtCancelar(ActionEvent event)
     {
-        spnprincipal.setCenter(null);
+        ((Button) event.getSource()).getScene().getWindow().hide();
     }
 
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        carregaTabela("select * from Compra where codCompra = "+tb_Pesquisa.getText());
+        carregaTabela("select * from Compra where codCompra = " + tb_Pesquisa.getText());
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        carregaTabela("select * from Compra where codCompra = "+tb_Pesquisa.getText());
+        carregaTabela("select * from Compra where codCompra = " + tb_Pesquisa.getText());
     }
-
 
 }

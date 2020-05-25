@@ -67,7 +67,7 @@ public class FornecedorBD
         {
             if (rs.next())
             {
-                f = new Fornecedor(rs.getInt("cod"), rs.getString("nome"), rs.getString("cnpj"), rs.getString("inscricaoEstadual"), rs.getString("endereco"), rs.getString("email"), rs.getString("telefone"), rs.getString("cidade"), rs.getInt("numRua"), rs.getString("bairro"), rs.getString("cep"));
+                f = new Fornecedor(rs.getInt("cod"), rs.getString("nome"), rs.getString("cnpj"), rs.getString("inscricaoEstadual"), rs.getString("endereco"), rs.getString("email"), rs.getString("tel"), rs.getString("cidade"), rs.getInt("numRua"), rs.getString("bairro"), rs.getString("cep"));
             }
         } catch (SQLException ex)
         {

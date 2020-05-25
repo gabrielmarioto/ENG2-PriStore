@@ -8,6 +8,7 @@ package Model;
 import Persistencia.ItensCompraBD;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -31,6 +32,13 @@ public class ItensCompra
         this.qntd = qntd;
     }
 
+     public ItensCompra(Produto codProduto, Tamanho tamanho, double valorProduto, int qntd)
+    {
+        this.codProduto = codProduto;
+        this.tamanho = tamanho;
+        this.valorProduto = valorProduto;
+        this.qntd = qntd;
+    }
     public ItensCompra()
     {
 
@@ -121,4 +129,42 @@ public class ItensCompra
 
         return aux;
     }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final ItensCompra other = (ItensCompra) obj;
+        if (!Objects.equals(this.codProduto.getCod(), other.codProduto.getCod()))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.tamanho.getTamanho(), other.tamanho.getTamanho()))
+        {
+            return false;
+        }
+        return true;
+    }
+
+   
+    
+    
 }

@@ -78,11 +78,11 @@ public class Tamanho
         return t.deleteTamanho(this);
     }
     
-    public Tamanho select(String tamanho)
+    public Tamanho select(String tamanho, int cod)
     {
         Tamanho td;
         TamanhoBD t = new TamanhoBD();
-        td = t.getTamanho(tamanho);
+        td = t.getTamanho(tamanho, cod);
         return td;
     }
     
@@ -93,4 +93,12 @@ public class Tamanho
         aux = t.get(filtro);
         return aux;
     }
+
+    @Override
+    public String toString()
+    {
+        return tamanho;
+    }
+    
+    
 }

@@ -25,12 +25,17 @@
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="btn_Apagar" layoutX="62.0" layoutY="10.0" onAction="#clkBtApagar" text="Apagar" textFill="ORANGE">
+                  <JFXButton fx:id="btn_Confirmar" layoutX="114.0" layoutY="10.0" onAction="#clkBtConfirmar" text="Confirmar" textFill="ORANGE">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="btn_Confirmar" layoutX="114.0" layoutY="10.0" onAction="#clkBtConfirmar" text="Confirmar" textFill="ORANGE">
+                  <JFXButton fx:id="btn_ProcurarCompra" layoutX="62.0" layoutY="10.0" onAction="#clkBtProcurarCompra" text="Procurar Compra" textFill="ORANGE">
+                     <font>
+                        <Font name="Century Gothic" size="12.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="btn_GerarParcelas" onAction="#clkBtGerarParcelas" prefHeight="25.0" prefWidth="157.0" text="Gerar Parcelas" textFill="ORANGE">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>
@@ -51,7 +56,7 @@
                   </JFXTextField>
                   <JFXComboBox fx:id="cbb_Fornecedor" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="68.0" prefHeight="29.0" prefWidth="346.0" promptText="Fornecedor *" />
                   <JFXDatePicker fx:id="dtp_Data" defaultColor="ORANGE" layoutX="411.0" layoutY="70.0" prefHeight="25.0" prefWidth="392.0" promptText="Data da Compra" />
-                  <JFXComboBox fx:id="cbb_Produto" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="124.0" prefHeight="29.0" prefWidth="346.0" promptText="Produto *" />
+                  <JFXComboBox fx:id="cbb_Produto" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="124.0" onHidden="#clkColocaTamanho" prefHeight="29.0" prefWidth="346.0" promptText="Produto *" />
                   <Button fx:id="btn_NovoProduto" alignment="CENTER" layoutX="371.0" layoutY="127.0" maxWidth="16.0" minHeight="24.0" minWidth="24.0" mnemonicParsing="false" onAction="#clkBtNovoP" prefHeight="16.0" prefWidth="16.0" style="-fx-background-image: url('icons/+.png'); -fx-background-position: center center; -fx-background-repeat: no-repeat; -fx-background-color: transparent;" />
                   <JFXComboBox fx:id="cbb_Tamanho" focusColor="ORANGE" labelFloat="true" layoutX="406.0" layoutY="124.0" prefHeight="29.0" prefWidth="364.0" promptText="Tamanho *" />
                   <Button fx:id="btn_NovoTamanho" layoutX="778.0" layoutY="127.0" maxWidth="16.0" minHeight="24.0" minWidth="24.0" mnemonicParsing="false" onAction="#clkBtNovoT" prefHeight="16.0" prefWidth="16.0" style="-fx-background-image: url('icons/+.png'); -fx-background-position: center center; -fx-background-repeat: no-repeat; -fx-background-color: transparent;" />
@@ -71,16 +76,6 @@
                      </font>
                   </JFXButton>
                   <JFXButton fx:id="btn_RemoverItem" layoutX="510.0" layoutY="239.0" onAction="#clkBtRemoverItem" prefHeight="25.0" prefWidth="157.0" text="Remover Item">
-                     <font>
-                        <Font name="Century Gothic" size="12.0" />
-                     </font>
-                  </JFXButton>
-                  <JFXButton fx:id="btn_ProcurarCompra" layoutX="646.0" layoutY="214.0" onAction="#clkBtProcurarCompra" prefHeight="25.0" prefWidth="157.0" text="Procurar Compra">
-                     <font>
-                        <Font name="Century Gothic" size="12.0" />
-                     </font>
-                  </JFXButton>
-                  <JFXButton fx:id="btn_GerarParcelas" layoutX="646.0" layoutY="239.0" onAction="#clkBtGerarParcelas" prefHeight="25.0" prefWidth="157.0" text="Gerar Parcelas">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>

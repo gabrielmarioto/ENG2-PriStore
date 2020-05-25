@@ -119,4 +119,10 @@ public class Compra
         aux = c.get(filtro);
         return aux;
     }
+    
+    public int getMaxPK()
+    {
+        CompraBD c = new CompraBD();
+        return c.getMaxPK();
+    }
 }

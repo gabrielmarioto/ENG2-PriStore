@@ -31,10 +31,10 @@ public class TamanhoBD
 
     public boolean updateTamanho(Tamanho t)
     {
-        String sql = "update tamanho set codProduto = #1, tamanho = '#2', qtde = #3 where codProduto = " + t.getCodProduto().getCod();
-        sql = sql.replaceAll("#1", "" + t.getCodProduto().getCod());
-        sql = sql.replaceAll("#2", "" + t.getTamanho());
+        String sql = "update tamanho set qtde = #3 where codProduto = " + t.getCodProduto().getCod() + "and tamanho like '%"+t.getTamanho()+"%'";
         sql = sql.replaceAll("#3", "" + t.getQtde());
+        
+        System.out.println("Update "+sql);
         return Banco.getCon().manipular(sql);
     }
     
@@ -43,10 +43,11 @@ public class TamanhoBD
         return Banco.getCon().manipular("delete from tamanho where codProduto =" + t.getCodProduto().getCod());
     }    
 
-    public Tamanho getTamanho(String tamanho)
+    public Tamanho getTamanho(String tamanho, int cod)
     {
         Tamanho t = null;
-        ResultSet rs = Banco.getCon().consultar("select * from tamanho where tamanho like " + "'%"+tamanho+"%'");
+        System.out.println("select * from tamanho where tamanho like '%"+tamanho+"%' and codproduto = "+cod);
+        ResultSet rs = Banco.getCon().consultar("select * from tamanho where tamanho like '%"+tamanho+"%' and codproduto = "+cod);
 
         try
         {

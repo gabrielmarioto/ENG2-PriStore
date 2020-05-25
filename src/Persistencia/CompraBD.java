@@ -22,11 +22,13 @@ public class CompraBD
 
     public boolean insertCompra(Compra c)
     {
-        String sql = "insert into compra (codForn, valorTotal, desconto, dataCompra) values (#1, #2, #3, '#4')";
-        sql = sql.replaceAll("#1", "" + c.getCodForn().getCod());
-        sql = sql.replaceAll("#2", "" + c.getValorTotal());
-        sql = sql.replaceAll("#3", "" + c.getDesconto());
-        sql = sql.replaceAll("#4", "" + c.getDataCompra());
+        String sql = "insert into compra (valorTotal, codForn, dataCompra, desconto) values (#1, #2, '#3', #4)";
+        sql = sql.replaceAll("#1", "" + c.getValorTotal());
+        sql = sql.replaceAll("#2", "" + c.getCodForn().getCod());
+        sql = sql.replaceAll("#3", "" + c.getDataCompra());
+        sql = sql.replaceAll("#4", "" + c.getDesconto());        
+        
+        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 
@@ -85,5 +87,10 @@ public class CompraBD
         }
 
         return aux;
+    }
+    
+    public int getMaxPK()
+    {
+       return Banco.getCon().getMaxPK("compra", "codcompra");
     }
 }

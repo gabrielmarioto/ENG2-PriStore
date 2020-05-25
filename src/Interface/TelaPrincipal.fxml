@@ -32,6 +32,7 @@
                   <Menu mnemonicParsing="false" text="_FUNDAMENTAIS">
                      <items>
                         <MenuItem onAction="#clkEfetuarPromocao" text="Efetuar Promoção" />
+                        <MenuItem onAction="#clkEfetuarCompra" text="_Efetuar Compra" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="_FERRAMENTAS">
