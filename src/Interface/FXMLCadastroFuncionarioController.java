@@ -165,8 +165,6 @@ public class FXMLCadastroFuncionarioController implements Initializable
        this.u=u;
        this.ctr=ctr;
     }
-     
-     
     
     private void estadoOriginal()
     {
@@ -223,9 +221,6 @@ public class FXMLCadastroFuncionarioController implements Initializable
         ObservableList<Funcionario> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
-        
-        
-
     }
 
     @FXML

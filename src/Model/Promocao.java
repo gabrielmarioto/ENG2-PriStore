@@ -6,9 +6,13 @@
 package Model;
 
 import Persistencia.PromocaoBD;
+import Util.Banco;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -84,6 +88,9 @@ public class Promocao {
     
     public boolean insertPromocao()
     {
+        codigo = Banco.getCon().getMaxPK("promocao", "cod")+1;
+        if(codigo==0)
+            codigo=1;
         PromocaoBD promo = new PromocaoBD();
         return promo.insertPromocao(this);
     }
@@ -97,7 +104,11 @@ public class Promocao {
     public boolean deletePromocao()
     {
         PromocaoBD promo = new PromocaoBD();
-        return promo.deletePromocao(this);
+        try {
+            return promo.deletePromocao(this);
+        } catch (SQLException ex) {
+           return false;
+        }
     }
 
     public Promocao selectPromocao(int codigo)

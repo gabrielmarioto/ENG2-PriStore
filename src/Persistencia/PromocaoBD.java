@@ -25,31 +25,49 @@ public class PromocaoBD
     //'#1' = STRING
     public boolean insertPromocao(Promocao p)
     {
-        String sql = "insert into (nome,, datainicio, datafinal, tipo,valorpromocao) values ('#2', #4 , #5, '#6', #7)";
+        String sql = "insert into promocao (cod,nome, datainicio, datafinal, tipo,valorpromocao) values (#1,'#2', '#3' , '#4', '#5', #6)";
+        sql = sql.replaceAll("#1", "" + p.getCodigo());
         sql = sql.replaceAll("#2", "" + p.getNome());
         sql = sql.replaceAll("#3", "" + p.getInicio());
-        sql = sql.replaceAll("#5", "" + p.getFim());
-        sql = sql.replaceAll("#6", "" + p.getTipo());
-        sql = sql.replaceAll("#7", "" + p.getValor());
-        
+        sql = sql.replaceAll("#4", "" + p.getFim());
+        sql = sql.replaceAll("#5", "" + p.getTipo());
+        sql = sql.replaceAll("#6", "" + p.getValor());
+        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 
     public boolean updatePromocao(Promocao p)
     {
-        String sql = "update produto set  nome= '#2', datainicio =#4, datafinal =#5, tipo = '#6', valorpromocao = #7 where cod =" + p.getCodigo();
+        String sql = "update promocao set  nome= '#2', datainicio ='#3', datafinal ='#4', tipo = '#5', valorpromocao = #6 where cod =" + p.getCodigo();
          sql = sql.replaceAll("#2", "" + p.getNome());
         sql = sql.replaceAll("#3", "" + p.getInicio());
-        sql = sql.replaceAll("#5", "" + p.getFim());
-        sql = sql.replaceAll("#6", "" + p.getTipo());
-        sql = sql.replaceAll("#7", "" + p.getValor());
+        sql = sql.replaceAll("#4", "" + p.getFim());
+        sql = sql.replaceAll("#5", "" + p.getTipo());
+        sql = sql.replaceAll("#6", "" + p.getValor());
 
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean deletePromocao(Promocao p)
+    public boolean deletePromocao(Promocao p) throws SQLException
     {
-        return Banco.getCon().manipular("delete from promocao where cod =" + p.getCodigo());
+        boolean ok = true;
+        try {
+            Banco.getCon().getConnect().setAutoCommit(false);
+            ResultSet rs = Banco.getCon().consultar("select * from produto where codpromocao ="+p.getCodigo());
+            if(rs.next())
+                ok = Banco.getCon().manipular("update produto set codPromocao= null where codPromocao ="+p.getCodigo());
+            if(ok)
+                ok = Banco.getCon().manipular("delete from promocao where cod =" + p.getCodigo());
+            
+        } catch (SQLException ex) {
+            ok=false;
+        }
+        if(ok)
+            Banco.getCon().getConnect().commit();
+        else
+             Banco.getCon().getConnect().rollback();
+        Banco.getCon().getConnect().setAutoCommit(true);
+        return ok;
     }
 
     public Promocao get(int cod)
@@ -83,7 +101,7 @@ public class PromocaoBD
         {
             while (rs.next())
             {
-                aux.add(new Promocao(rs.getInt("cod"), rs.getString("nome"), rs.getDate("inicio"), rs.getDate("final"),rs.getString("tipo"),rs.getDouble("valorpromocao")));
+                aux.add(new Promocao(rs.getInt("cod"), rs.getString("nome"), rs.getDate("datainicio"), rs.getDate("datafinal"),rs.getString("tipo"),rs.getDouble("valorpromocao")));
             }
         } catch (SQLException ex)
         {

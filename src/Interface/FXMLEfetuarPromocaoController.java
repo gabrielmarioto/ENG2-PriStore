@@ -11,13 +11,20 @@ import Model.Marca;
 import Model.Produto;
 import Model.Promocao;
 import Model.Usuario;
+import Persistencia.PromocaoBD;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import com.sun.javafx.collections.ElementObservableListDecorator;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.Date;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -25,8 +32,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -38,7 +48,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -85,15 +99,13 @@ public class FXMLEfetuarPromocaoController implements Initializable
     @FXML
     private JFXTextField tb_valor;
     @FXML
-    private JFXButton btn_selecionar;
-    @FXML
     private TableColumn<Produto, Integer> codcol;
     @FXML
     private TableColumn<Produto, String> colproduto;
     @FXML
-    private TableColumn<Produto, Double > colpreco;
+    private TableColumn<Produto, Double > colpreco;  
     @FXML
-    private TableColumn<Double, Double> colprecopromo;
+    private TableColumn<Produto, Double> colprecopromo;
     @FXML
     private JFXButton btn_adicionar;
     @FXML
@@ -104,8 +116,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
     private TableColumn<Promocao, String> colpromo;
     @FXML
     private TableColumn<Promocao, Date> coldata;
-    @FXML
-    private TableView<Double> tabela2;
+    
     @FXML
     private TableView<Produto> tabela;
      @FXML
@@ -113,6 +124,9 @@ public class FXMLEfetuarPromocaoController implements Initializable
     
     
     private Usuario u;
+    private List<Produto> lista= new ArrayList<>();
+    @FXML
+    private HBox pnPromo;
    
     /**
      * Initializes the controller class.
@@ -125,7 +139,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
         colproduto.setCellValueFactory(new PropertyValueFactory("nome"));
         colpreco.setCellValueFactory(new PropertyValueFactory("preco"));
         
-        colprecopromo.setCellValueFactory(new PropertyValueFactory("valor"));
+        colprecopromo.setCellValueFactory(new PropertyValueFactory("preco2"));
         
         colcodp.setCellValueFactory(new PropertyValueFactory("codigo"));
         colpromo.setCellValueFactory(new PropertyValueFactory("nome"));
@@ -138,15 +152,23 @@ public class FXMLEfetuarPromocaoController implements Initializable
        this.u=u;
     }
      
+    protected void RecebeLista(List<Produto> lista)
+    {
+        this.lista=lista;
+        carregaTabelaProd("","");
+    }
+        
     private void estadoOriginal()
     {
-        pnpesquisa.setDisable(false);
+        pnpesquisa.setDisable(true);
         pndados.setDisable(true);
         btn_Confirmar.setDisable(true);
         btn_Cancelar.setDisable(false);
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
         btn_Novo.setDisable(false);
+        pnPromo.setDisable(false);
+        TabelaPromo.setDisable(false);
 
         
         ObservableList<Node> componentes = pndados.getChildren(); //”limpa” os componentes
@@ -181,60 +203,102 @@ public class FXMLEfetuarPromocaoController implements Initializable
     {
         Promocao p = new Promocao();
         List<Promocao> res = p.selectPromocao(filtro);
+        if(res.isEmpty())
+            System.out.println("é");
         ObservableList<Promocao> modelo;
         modelo = FXCollections.observableArrayList(res);
         TabelaPromo.setItems(modelo);
+        TabelaPromo.refresh();
     }
     
-    private String verificatipo(JFXComboBox<String> cbb_tipo )
-    {   
-        if(cbb_tipo.getSelectionModel().getSelectedIndex()==0 && tb_valor.getText().length()>0)
+    private String verificatipo()
+    { 
+        if(cbb_tipo.getSelectionModel().getSelectedIndex()==0)
             return "DF";
         if(cbb_tipo.getSelectionModel().getSelectedIndex()==1)
             return "DP";
-        
         return "";
     }
     
-    private void carregaTabelaProd(String filtro)
+    
+    private double CasasDecimais2(double  valor)
     {
-        Produto p = new Produto();
-        List<Produto> res = p.selectProduto(filtro);
-        ObservableList<Produto> modelo;
-        modelo = FXCollections.observableArrayList(res);
-        tabela.setItems(modelo);
-        String tipo = verificatipo(cbb_tipo);
-        double valor =0;  
+        BigDecimal bd = new BigDecimal(valor).setScale(2, RoundingMode.HALF_UP);
+        double novoValor = bd.doubleValue();
+        return novoValor;
         
-        ObservableList<Double> modelo2 = null;
-        if(!tipo.isEmpty() && !tb_valor.getText().isEmpty())   
+    }
+    
+        private void carregaTabelaProd(String fil,String filtro)
+    {
+        List<Produto> listafiltrada = new ArrayList<>();
+        String tipo = verificatipo();
+
+        double valor =0;
+        if(!tipo.isEmpty() && tb_valor.getText().length()>0)   
         {
-            valor = Double.parseDouble(tb_valor.getText());
-            List<Double> res2 = new ArrayList<>();
-            if(tipo=="DF")
+            System.out.println(tb_valor.getText());
+            tb_valor.setText(tb_valor.getText().replace(".", ","));
+            valor = Double.parseDouble(tb_valor.getText().replace(".", "").replace(",", "."));
+            if(tipo.equals("DF"))
             {
-                for(int i=0;i<res.size();i++)  
-                    res2.add(res.get(i).getPreco()-valor);
+                for(int i=0;i<lista.size();i++)  
+                    lista.get(i).setPreco2(CasasDecimais2(lista.get(i).getPreco()-valor));
             }
             else
-                for(int i=0;i<res.size();i++)  
-                    res2.add(res.get(i).getPreco()-res.get(i).getPreco()*valor/100);
-            
-            modelo2 = FXCollections.observableArrayList(res2);
-            tabela2.setItems(modelo2);
+                for(int i=0;i<lista.size();i++)  
+                    lista.get(i).setPreco2(CasasDecimais2(lista.get(i).getPreco()-lista.get(i).getPreco()*valor/100));   
         }
         else
-        tabela2.setItems(modelo2);
+        {
+            for(int i=0;i<lista.size();i++)
+                lista.get(i).setPreco2(CasasDecimais2(lista.get(i).getPreco()));
+        }
+        
+        
+        for(Produto p : lista)
+        {
+            if(fil.equals("categoria"))
+            {
+                if(p.getCodCategoria().getNome().equals(filtro))
+                    listafiltrada.add(p);
+            }
+            else
+            if(fil.equals("Nome"))
+            {
+                if(p.getNome().contains(filtro))
+                    listafiltrada.add(p);
+            }
+            else
+            if(fil.equals("Coleção"))
+            {
+                if(p.getCodColecao().getNome().equals(filtro))
+                    listafiltrada.add(p);
+            } 
+        }
+        ObservableList<Produto> modelo;
+        if(listafiltrada.isEmpty())
+        {
+            modelo = FXCollections.observableArrayList(lista);
+        
+        }
+        else
+            modelo = FXCollections.observableArrayList(listafiltrada); 
+        tabela.setItems(modelo);
+        tabela.refresh();
     }
 
     private void estadoEdicao()
     {
-        pnpesquisa.setDisable(true);
+        pnpesquisa.setDisable(false);
         pndados.setDisable(false);
         btn_Confirmar.setDisable(false);
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
+        pnPromo.setDisable(true);
+        TabelaPromo.setDisable(true);
         tb_Nome.requestFocus();
+        carregaTabelaProd("", "");
     }
 
     @FXML
@@ -246,7 +310,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
     @FXML
     private void clkBtAlterar(ActionEvent event)
     {
-        if (tabela.getSelectionModel().getSelectedItem() != null)
+        if (TabelaPromo.getSelectionModel().getSelectedItem() != null)
         {
             Promocao p = (Promocao) TabelaPromo.getSelectionModel().getSelectedItem();
             tb_Codigo.setText("" + p.getCodigo());
@@ -263,11 +327,12 @@ public class FXMLEfetuarPromocaoController implements Initializable
         if (a.showAndWait().get() == ButtonType.OK)
         {
             Promocao p = new Promocao();
-             p = TabelaPromo.getSelectionModel().getSelectedItem();
+            p = TabelaPromo.getSelectionModel().getSelectedItem();
             if (!p.deletePromocao())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
+                lista.clear();
             }
             carregaTabelaPromo("");
         }
@@ -278,7 +343,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
     private void clkBtConfirmar(ActionEvent event)
     {
         int cod;
-        Marca m = new Marca();
+        Promocao p = new Promocao();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         try
         {
@@ -289,31 +354,112 @@ public class FXMLEfetuarPromocaoController implements Initializable
         }
         if (tb_Nome.getText().length() > 0)
         {
-            m = new Marca(cod, tb_Nome.getText());
-            if (m.getCod() == 0)
+            String tipo = verificatipo();
+            if(!tipo.isEmpty())
             {
-                if (!m.insertMarca())
+                if(tb_valor.getText().length()>0)
                 {
-                    a.setContentText("Problemas ao Gravar");
-                }
-            } else
-            {
-                if (!m.updateMarca())
-                {
-                    a.setContentText("Problemas ao Alterar");
-                    a.showAndWait();
-                }
-            }
-            estadoOriginal();
-        } else
-        {
-            a.setContentText("Informe o nome!");
-            a.showAndWait();
-        }
+                    if(dt_inicial.getValue()!=null && !dt_inicial.getValue().isBefore(LocalDate.now()))
+                    {
+                        if(dt_final.getValue()!=null && dt_final.getValue().isAfter(dt_inicial.getValue()))
+                        {
+                            if(!lista.isEmpty())
+                            {
+                            
+                                p= new Promocao(cod,tb_Nome.getText(),Date.valueOf(dt_inicial.getValue()),Date.valueOf(dt_final.getValue()),
+                                        tipo,Double.parseDouble(tb_valor.getText().replace(".", "").replace(",", ".")));
+                                if (p.getCodigo()== 0) // novo cadastro
+                                {
+                                    if (!p.insertPromocao())
+                                    {                                   
+                                        a.setContentText("Problemas ao Gravar");
+                                        a.showAndWait();
+                                    }
+                                    else
+                                    {
+                                        p= new Promocao().selectPromocao("nome like '%"+p.getNome()+"%'").get(0);
+                                        for(Produto pr : lista)
+                                        {
+                                            pr.setCodPromo(p);
+                                            pr.update();
+                                        }
+                                        a.setContentText("Gravado com Sucesso");
+                                        a.showAndWait();
+                                        lista.clear();
+                                        estadoOriginal();
 
+                                    }
+                                }
+                                else
+                                {
+                                    if (!p.updatePromocao())
+                                    {
+                                        a.setContentText("Problemas ao Alterar");
+                                        a.showAndWait();
+                                    }
+                                    else
+                                    {
+                                        List<Produto> aux = new Produto().selectProduto("codpromocao ="+p.getCodigo());
+                                        aux.removeAll(lista);
+                                        for(Produto pr : aux)
+                                        {
+                                            pr.setCodPromo(null);
+                                            pr.update();
+                                        }
+
+                                        for(Produto pr : lista)
+                                        {
+                                            pr.setCodPromo(p);
+                                            pr.update();
+                                        }
+                                        a.setContentText("Alterado com Sucesso");
+                                        a.showAndWait();
+                                        lista.clear();
+                                        estadoOriginal();
+
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                 a.setContentText("Nenhum produto selecionado!");
+                                a.showAndWait();
+                            }
+                        }
+                        else
+                        {
+                            a.setContentText("Data Final incorreta!");
+                            a.showAndWait();
+                            
+                        }
+                    }
+                    else
+                    {
+                        a.setContentText("Data Inicial incorreta!");
+                        a.showAndWait();                
+                    }
+                }
+                else
+                {
+                    a.setContentText("Dados de Valor promocional incorreto!");
+                        a.showAndWait();    
+                }
+            }else
+            {
+                a.setContentText("Selecione o Tipo de Desconto!");
+                a.showAndWait();       
+            }
+        }
+        else
+        {
+            a.setContentText("Insira o nome da Promoção!");
+            a.showAndWait();  
+        }
+            
         carregaTabelaPromo("");
     }
 
+    @FXML
     private void clkbtcancelar(ActionEvent event)
     {
         if (!pndados.isDisabled()) // encontra em estado de edição
@@ -327,7 +473,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
 
     private void clkTxPesquisa(KeyEvent event)
     {
-        String filtro = "upper("+ cbb_filtro.getValue() + ") ";
+        String filtro =  cbb_filtro.getValue() + ") ";
 
         carregaTabelaPromo(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
@@ -335,14 +481,15 @@ public class FXMLEfetuarPromocaoController implements Initializable
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        String filtro = "upper("+ cbb_filtro.getValue() + ") ";
+        String filtro = cbb_filtro.getValue().toLowerCase();
 
-        carregaTabelaPromo(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
+        carregaTabelaProd(filtro, tb_Pesquisa.getText().toUpperCase().toUpperCase());
     }
 
+    @FXML
     private void clkTabela(MouseEvent event)
     {
-        if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
+        if (event.getClickCount() == 2 && TabelaPromo.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
             if(u.getNivel()>1)
@@ -351,33 +498,65 @@ public class FXMLEfetuarPromocaoController implements Initializable
             if(u.getNivel()>2)
                 btn_Apagar.setDisable(false);
 
-            tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
-            tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
+            tb_Codigo.setText("" + TabelaPromo.getSelectionModel().getSelectedItem().getCodigo());
+            tb_Nome.setText(TabelaPromo.getSelectionModel().getSelectedItem().getNome());
+            tb_valor.setText(String.valueOf(TabelaPromo.getSelectionModel().getSelectedItem().getValor()));
+            
+            dt_inicial.setValue(TabelaPromo.getSelectionModel().getSelectedItem().getInicio().toLocalDate());
+            dt_final.setValue(TabelaPromo.getSelectionModel().getSelectedItem().getFim().toLocalDate());
+            if(TabelaPromo.getSelectionModel().getSelectedItem().getTipo().equals("DF"))
+                cbb_tipo.getSelectionModel().select(0);
+            else
+                cbb_tipo.getSelectionModel().select(1);
+            lista= new Produto().selectProduto("codpromocao="+tb_Codigo.getText());
+            carregaTabelaProd("", "");
         }
     }
 
-    @FXML
-    private void clkBtCancelar(ActionEvent event) {
-    }
 
-    @FXML
-    private void clkseleciona(ActionEvent event) {
-    }
 
     @FXML
     private void clkTxPesquisaPromo(KeyEvent event) {
     }
 
     @FXML
-    private void clkadicionar(ActionEvent event) {
-    }
-
-    @FXML
-    private void clkremover(ActionEvent event) {
-    }
-
-    @FXML
     private void clkBtPesquisarPromo(ActionEvent event) {
     }
+
+    @FXML
+    private void clkAdicionar(ActionEvent event) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLSelecionaProdutos.fxml"));
+            Parent root;
+            try {
+                root = (Parent) loader.load();
+                FXMLSelecionaProdutosController ctr = loader.getController();
+                ctr.RecebeDados(this,this.lista);
+                
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.initStyle(StageStyle.UNDECORATED);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setScene(scene);
+                stage.showAndWait();
+            } catch (IOException ex) {
+                
+            }
+    }
+
+    @FXML
+    private void clkRemover(ActionEvent event) {
+        if(tabela.getSelectionModel().getSelectedIndex()>-1)
+        {
+            lista.remove(tabela.getSelectionModel().getSelectedItem());
+            carregaTabelaProd("","");
+        }   
+        else
+        {
+            Alert a= new Alert(Alert.AlertType.ERROR);
+            a.setContentText("selecione um produto");
+        }
+            
+    }
+
 
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.3911007025761124" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="429.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Interface.FXMLSelecionaProdutosController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+         <children>
+            <JFXTextField fx:id="tb_Nome" focusColor="ORANGE" labelFloat="true" layoutX="14.0" layoutY="17.0" prefHeight="27.0" prefWidth="208.0" promptText="Nome do Produto">
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font>
+            </JFXTextField>
+            <JFXComboBox fx:id="cbb_cat" focusColor="ORANGE" layoutX="14.0" layoutY="55.0" prefHeight="25.0" prefWidth="208.0" promptText="Categoria" />
+            <JFXComboBox fx:id="cbb_cole" focusColor="ORANGE" layoutX="14.0" layoutY="95.0" prefHeight="25.0" prefWidth="208.0" promptText="Coleção" />
+            <JFXTextField fx:id="tb_precomin" focusColor="ORANGE" labelFloat="true" layoutX="352.0" layoutY="31.0" prefHeight="27.0" prefWidth="122.0" promptText="Preço minimo">
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font>
+            </JFXTextField>
+            <JFXTextField fx:id="tb_precomax" focusColor="ORANGE" labelFloat="true" layoutX="352.0" layoutY="94.0" prefHeight="27.0" prefWidth="122.0" promptText="Preço maximo">
+               <font>
+                  <Font name="Century Gothic" size="12.0" />
+               </font>
+            </JFXTextField>
+            <JFXButton fx:id="btn_pesquisar" layoutX="533.0" layoutY="125.0" onAction="#clkPesquisa" prefHeight="25.0" prefWidth="122.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Pesquisar" textFill="ORANGE" />
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="237.0" prefWidth="703.0">
+         <children>
+            <JFXButton fx:id="btn_sair" layoutX="383.0" layoutY="230.0" onAction="#clkSair" prefHeight="25.0" prefWidth="122.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Sair" textFill="ORANGE" />
+            <JFXButton fx:id="btn_confirmar" layoutX="198.0" layoutY="230.0" onAction="#clkConfirma" prefHeight="25.0" prefWidth="122.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Confirmar" textFill="ORANGE" />
+            <TableView fx:id="tabelafiltro" layoutX="-2.0" onMouseClicked="#clkAdiciona" prefHeight="225.0" prefWidth="366.0">
+              <columns>
+                <TableColumn fx:id="colnomefiltro" prefWidth="232.0" text="Produtos filtrados" />
+                  <TableColumn fx:id="colprecofiltro" prefWidth="133.0" text="Preço" />
+              </columns>
+            </TableView>
+            <TableView fx:id="tabelaselec" layoutX="368.0" onMouseClicked="#clkRemove" prefHeight="225.0" prefWidth="336.0">
+               <columns>
+                  <TableColumn fx:id="colnomeselec" prefWidth="238.0" text="Produtos selecionados" />
+                  <TableColumn fx:id="colprecoselec" prefWidth="97.0" text="Preço" />
+               </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+  </items>
+</SplitPane>

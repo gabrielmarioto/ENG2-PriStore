@@ -22,6 +22,8 @@ public class Produto
     private String descricao;
     private Marca codMarca;
     private Colecao codColecao;
+    private Promocao codPromo;
+    private double preco2;
 
     public Produto(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao)
     {
@@ -32,7 +34,21 @@ public class Produto
         this.descricao = descricao;
         this.codMarca = codMarca;
         this.codColecao = codColecao;
+        this.codPromo=null;
     }
+    
+    public Produto(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao,Promocao codPromo)
+    {
+        this.cod = cod;
+        this.codCategoria = codCategoria;
+        this.nome = nome;
+        this.preco = preco;
+        this.descricao = descricao;
+        this.codMarca = codMarca;
+        this.codColecao = codColecao;
+        this.codPromo = codPromo;
+    }
+    
     public Produto()
     {
         
@@ -107,6 +123,24 @@ public class Produto
         this.codColecao = codColecao;
     }
 
+    public Promocao getCodPromo() {
+        return codPromo;
+    }
+
+    public void setCodPromo(Promocao codPromo) {
+        this.codPromo = codPromo;
+    }
+
+    public double getPreco2() {
+        return preco2;
+    }
+
+    public void setPreco2(double preco2) {
+        this.preco2 = preco2;
+    }
+
+    
+    
     public boolean insert()
     {
         ProdutoBD prod = new ProdutoBD();        
@@ -117,6 +151,7 @@ public class Produto
         ProdutoBD prod = new ProdutoBD();      
         return prod.updateProduto(this);
     }
+    
     public boolean delete()
     {
         ProdutoBD prod = new ProdutoBD();      
