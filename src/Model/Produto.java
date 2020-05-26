@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class Produto
 {
+
     private int cod;
     private Categoria codCategoria;
     private String nome;
@@ -25,7 +26,7 @@ public class Produto
     private Promocao codPromo;
     private double preco2;
 
-    public Produto(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao)
+    public Produto(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao, Promocao codPromocao)
     {
         this.cod = cod;
         this.codCategoria = codCategoria;
@@ -51,8 +52,19 @@ public class Produto
     
     public Produto()
     {
-        
+
     }
+
+    public Promocao getCodPromocao()
+    {
+        return codPromocao;
+    }
+
+    public void setCodPromocao(Promocao codPromocao)
+    {
+        this.codPromocao = codPromocao;
+    }
+
     public int getCod()
     {
         return cod;
@@ -81,7 +93,7 @@ public class Produto
     public void setNome(String nome)
     {
         this.nome = nome;
-    }   
+    }
 
     public float getPreco()
     {
@@ -143,37 +155,42 @@ public class Produto
     
     public boolean insert()
     {
-        ProdutoBD prod = new ProdutoBD();        
+        ProdutoBD prod = new ProdutoBD();
         return prod.insertProduto(this);
     }
+
     public boolean update()
     {
-        ProdutoBD prod = new ProdutoBD();      
+        ProdutoBD prod = new ProdutoBD();
         return prod.updateProduto(this);
     }
     
     public boolean delete()
     {
-        ProdutoBD prod = new ProdutoBD();      
+        ProdutoBD prod = new ProdutoBD();
         return prod.deleteProduto(this);
     }
+
     public Produto selectProduto(int cod)
     {
         Produto p;
-        ProdutoBD prod = new ProdutoBD();      
+        ProdutoBD prod = new ProdutoBD();
         p = prod.get(cod);
         return p;
     }
+
     public List<Produto> selectProduto(String filtro)
     {
         List<Produto> aux = new ArrayList();
-        ProdutoBD prod = new ProdutoBD();      
+        ProdutoBD prod = new ProdutoBD();
         aux = prod.get(filtro);
-        
+
         return aux;
     }
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         return nome;
     }
 }

@@ -11,6 +11,7 @@ import Model.Categoria;
 import Model.Colecao;
 import Model.Marca;
 import Model.Produto;
+import Model.Promocao;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -151,15 +152,6 @@ public class FXMLCadastroProdutoController implements Initializable
 
     private void carregaTabela(String filtro)
     {
-//        Produto p = new Produto();
-//        List<Produto> res = p.selectProduto(filtro);
-//        ObservableList<Produto> modelo;
-//        modelo = FXCollections.observableArrayList(res);
-//        tabela.setItems(modelo);
-//        List<Categoria> categorias = new Categoria().selectCategoria("");
-//        cbb_Categoria.setItems(FXCollections.observableArrayList(categorias));
-//        cbb_Colecao.setItems(FXCollections.observableArrayList(new Colecao().selectColecao("")));
-//        cbb_Marca.setItems(FXCollections.observableArrayList(new Marca().selectMarca("")));
         Produto p = new Produto();
         List<Produto> res = p.selectProduto(filtro);
         ObservableList<Produto> modelo;
@@ -252,7 +244,7 @@ public class FXMLCadastroProdutoController implements Initializable
                             if (cbb_Marca.getSelectionModel().getSelectedIndex() != -1)
                             {
                                 p = new Produto(cod, cbb_Categoria.getValue(), tb_Nome.getText(), Float.parseFloat(tb_Preco.getText().replace(".", "").replace(",", ".")),
-                                        tb_Descricao.getText(), cbb_Marca.getValue(), cbb_Colecao.getValue());
+                                        tb_Descricao.getText(), cbb_Marca.getValue(), cbb_Colecao.getValue(), new Promocao());
                                 if (p.getCod() == 0) // novo cadastro
                                 {
                                     if (!p.insert())
@@ -354,5 +346,4 @@ public class FXMLCadastroProdutoController implements Initializable
             cbb_Marca.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodMarca().getCod());
         }
     }
-
 }
