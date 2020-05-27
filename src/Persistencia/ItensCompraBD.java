@@ -43,6 +43,7 @@ public class ItensCompraBD
 
     public boolean deleteItensCompra(ItensCompra c)
     {
+        System.out.println("delete from itensCompra where codCompra = " + c.getCodCompra().getCodCompra() + "and codProduto = "+c.getCodProduto().getCod());
         return Banco.getCon().manipular("delete from itensCompra where codCompra = " + c.getCodCompra().getCodCompra() + "and codProduto = "+c.getCodProduto().getCod());
     }
 

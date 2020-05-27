@@ -37,33 +37,13 @@ public class Produto
         this.codColecao = codColecao;
         this.codPromo=null;
     }
-    
-    public Produto(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao,Promocao codPromo)
-    {
-        this.cod = cod;
-        this.codCategoria = codCategoria;
-        this.nome = nome;
-        this.preco = preco;
-        this.descricao = descricao;
-        this.codMarca = codMarca;
-        this.codColecao = codColecao;
-        this.codPromo = codPromo;
-    }
+
     
     public Produto()
     {
 
     }
 
-    public Promocao getCodPromocao()
-    {
-        return codPromocao;
-    }
-
-    public void setCodPromocao(Promocao codPromocao)
-    {
-        this.codPromocao = codPromocao;
-    }
 
     public int getCod()
     {

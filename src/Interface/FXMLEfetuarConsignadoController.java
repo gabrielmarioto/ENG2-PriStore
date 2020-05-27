@@ -7,8 +7,10 @@ package Interface;
 
 import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
+import Model.Cliente;
 import Model.Compra;
 import Model.Fornecedor;
+import Model.Funcionario;
 import Model.ItensCompra;
 import Model.Produto;
 import Model.Tamanho;
@@ -36,14 +38,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -51,9 +51,9 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author Gabriel
+ * @author Bruno
  */
-public class FXMLEfetuarCompraController implements Initializable
+public class FXMLEfetuarConsignadoController implements Initializable
 {
 
     @FXML
@@ -69,21 +69,11 @@ public class FXMLEfetuarCompraController implements Initializable
     @FXML
     private JFXTextField tb_Codigo;
     @FXML
-    private JFXComboBox<Fornecedor> cbb_Fornecedor;
-    @FXML
     private JFXDatePicker dtp_Data;
     @FXML
     private JFXComboBox<Produto> cbb_Produto;
     @FXML
-    private Button btn_NovoProduto;
-    @FXML
     private JFXComboBox<Tamanho> cbb_Tamanho;
-    @FXML
-    private Button btn_NovoTamanho;
-    @FXML
-    private JFXTextField tb_Quantidade;
-    @FXML
-    private JFXTextField tb_Preco;
     @FXML
     private VBox pnpesquisa;
     @FXML
@@ -102,24 +92,26 @@ public class FXMLEfetuarCompraController implements Initializable
     private JFXButton btn_RemoverItem;
     @FXML
     private JFXButton btn_ProcurarCompra;
-    @FXML
-    private JFXButton btn_GerarParcelas;
 
-    private Usuario u;
-    @FXML
-    private JFXTextField tb_Desconto;
+    
     @FXML
     private JFXTextField tb_ValorTotal;
 
     private List<ItensCompra> aux = new ArrayList();
     private List<ItensCompra> del = new ArrayList();
+    
     private ItensCompra it = null;
     private Compra c;
+    private Usuario u;
     private ObservableList<ItensCompra> modelo;
     private double valor;
     private double desconto;
     
     private static Object compra;
+    @FXML
+    private JFXComboBox<Cliente> cbb_Cliente;
+    @FXML
+    private JFXComboBox<Funcionario> cbb_funcionario;
     /**
      * Initializes the controller class.
      */
@@ -131,11 +123,10 @@ public class FXMLEfetuarCompraController implements Initializable
         colTamanho.setCellValueFactory(new PropertyValueFactory("tamanho"));
         colQuantidade.setCellValueFactory(new PropertyValueFactory("qntd"));
         colPreco.setCellValueFactory(new PropertyValueFactory("valorProduto"));
-        MaskFieldUtil.monetaryField(tb_Preco);
+
         tb_ValorTotal.setDisable(true);
         tb_ValorTotal.setText(double2string(0.0));
-        tb_Desconto.setText(double2string(0.0));
-        MaskFieldUtil.monetaryField(tb_Desconto);
+        
         estadoOriginal();
     }
 
@@ -154,7 +145,6 @@ public class FXMLEfetuarCompraController implements Initializable
 
         btn_AdicionarItem.setDisable(true);
         btn_RemoverItem.setDisable(true);
-        btn_GerarParcelas.setDisable(true);
         btn_ProcurarCompra.setDisable(false);
         tabela.getItems().clear();
         dtp_Data.setDisable(true);
@@ -180,7 +170,6 @@ public class FXMLEfetuarCompraController implements Initializable
         pnpesquisa.setDisable(false);
         pndados.setDisable(false);
         btn_Confirmar.setDisable(false);
-        cbb_Fornecedor.requestFocus();
         btn_AdicionarItem.setDisable(false);
         btn_RemoverItem.setDisable(false);
         dtp_Data.setDisable(false);
@@ -194,36 +183,33 @@ public class FXMLEfetuarCompraController implements Initializable
     
     public void recebeInfo()
     {
-        Compra c = (Compra) FXMLProcurarCompraController.getCompra();
+        /*Compra c = (Compra) FXMLProcurarCompraController.getCompra();
         if (c != null)
         {
             ItensCompraBD it = new ItensCompraBD();
             aux = it.get("codCompra = " + c.getCodCompra());
             tb_Codigo.setText("" + c.getCodCompra());
             dtp_Data.setValue(c.getDataCompra());
-            tb_Desconto.setText(double2string(c.getDesconto()));
-            desconto = myParseDouble(tb_Desconto.getText());
             tb_ValorTotal.setText(double2string(c.getValorTotal()));
             valor = myParseDouble(tb_ValorTotal.getText()) / 10;
-            cbb_Fornecedor.getSelectionModel().select(0);// gambis
-            cbb_Fornecedor.getSelectionModel().select(c.getCodForn().getCod());
             ObservableList<ItensCompra> modelo;
             modelo = FXCollections.observableArrayList(aux);
             tabela.setItems(modelo);
             tabela.refresh();
             btn_ProcurarCompra.setDisable(true);
-            btn_GerarParcelas.setDisable(false);
             estadoEdicao();
         } else
         {
             estadoOriginal();
-        }
+        }*/
     }
 
     private void carregaTabela(String filtro)
     {
-        cbb_Fornecedor.setItems(FXCollections.observableArrayList(new Fornecedor().selectFornecedor("")));
+        cbb_funcionario.setItems(FXCollections.observableArrayList(new Funcionario().selectFuncionario("")));
         cbb_Produto.setItems(FXCollections.observableArrayList(new Produto().selectProduto("")));
+        cbb_Cliente.setItems(FXCollections.observableArrayList(new Cliente().selectCliente("")));
+        cbb_Tamanho.setDisable(true);
     }
 
     @FXML
@@ -233,14 +219,14 @@ public class FXMLEfetuarCompraController implements Initializable
         tb_Codigo.setDisable(true);
         tabela.setDisable(false);
         tb_ValorTotal.setText(double2string(0.0));
-        tb_Desconto.setText(double2string(0.0));
+        //tb_Desconto.setText(double2string(0.0));
         btn_ProcurarCompra.setDisable(true);
     }
 
     @FXML
     private void clkBtConfirmar(ActionEvent event)
     {
-        int cod;
+        /*int cod;
         LocalDate hoje = LocalDate.now();
         Compra c = new Compra();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
@@ -348,7 +334,7 @@ public class FXMLEfetuarCompraController implements Initializable
         }
         carregaTabela("");
         this.desconto = 0.0;
-        this.aux.clear();
+        this.aux.clear();*/
     }
 
     @FXML
@@ -363,7 +349,6 @@ public class FXMLEfetuarCompraController implements Initializable
         }
     }
 
-    @FXML
     private void clkBtNovoP(ActionEvent event)
     {
         try
@@ -385,7 +370,6 @@ public class FXMLEfetuarCompraController implements Initializable
         carregaTabela("");
     }
 
-    @FXML
     private void clkBtNovoT(ActionEvent event)
     {
         try
@@ -410,7 +394,7 @@ public class FXMLEfetuarCompraController implements Initializable
     @FXML
     private void clkBtAdicionarItem(ActionEvent event)
     {
-        if (cbb_Produto.getSelectionModel().getSelectedIndex() != -1)
+        /*if (cbb_Produto.getSelectionModel().getSelectedIndex() != -1)
         {
             if (tb_Preco.getText().length() > 0)
             {
@@ -420,8 +404,8 @@ public class FXMLEfetuarCompraController implements Initializable
                     int p = -1;
                     p = aux.indexOf(it);
                     valor = myParseDouble(tb_ValorTotal.getText());
-                    int quant = Integer.parseInt(tb_Quantidade.getText());
-                    valor += myParseDouble(tb_Preco.getText()) * quant;
+                    //int quant = Integer.parseInt(tb_Quantidade.getText());
+                    //valor += myParseDouble(tb_Preco.getText()) * quant;
                     tb_ValorTotal.setText(double2string(valor));
                     if (p >= 0)
                     {
@@ -439,11 +423,11 @@ public class FXMLEfetuarCompraController implements Initializable
                     tabela.setItems(modelo);
                     tabela.refresh();
 
-                    tb_Preco.setText("");
-                    tb_Quantidade.setText("");
+                    //tb_Preco.setText("");
+                    //tb_Quantidade.setText("");
                 }
             }
-        }
+        }*/
     }
 
     public static Double myParseDouble(String val)
@@ -483,8 +467,8 @@ public class FXMLEfetuarCompraController implements Initializable
                 tb_ValorTotal.setText(double2string(valor));
             }
 
-            tb_Preco.setText("");
-            tb_Quantidade.setText("");
+            //tb_Preco.setText("");
+            //tb_Quantidade.setText("");
         }
     }
 
@@ -496,35 +480,15 @@ public class FXMLEfetuarCompraController implements Initializable
         try
         {
             Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLProcurarCompra.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLProcurarConsignado.fxml"));
             Parent root = (Parent) loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Procurar Compras Realizadas");
+            stage.setTitle("Procurar Consignados Realizados");
             stage.showAndWait();
-            FXMLProcurarCompraController ctr = loader.getController();
+            FXMLProcurarConsignadoController ctr = loader.getController();
             ctr.RecebeDados(u);
             recebeInfo();
-
-        } catch (IOException ex)
-        {
-            System.out.println(ex);
-        }
-    }
-
-    @FXML
-    private void clkBtGerarParcelas(ActionEvent event)
-    {
-        try
-        {
-            compra = new Compra(Integer.parseInt(tb_Codigo.getText()), cbb_Fornecedor.getValue(), myParseDouble(tb_ValorTotal.getText()), myParseDouble(tb_Desconto.getText()), dtp_Data.getValue());
-            Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLGerarParcelas.fxml"));
-            Parent root = (Parent) loader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Gerar Parcelas da Compra "+tb_Codigo.getText());            
-            stage.showAndWait();            
 
         } catch (IOException ex)
         {
@@ -540,5 +504,6 @@ public class FXMLEfetuarCompraController implements Initializable
             cbb_Tamanho.setItems(FXCollections.observableArrayList(new Tamanho().selectTamanho("codProduto =" + cbb_Produto.getValue().getCod())));
         }
     }
+
 
 }

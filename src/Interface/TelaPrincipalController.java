@@ -324,6 +324,7 @@ public class TelaPrincipalController implements Initializable
             FXMLParametrizacaoController ctr = loader.getController();
             ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
+            System.out.println("é null");
 
         } catch (IOException ex)
         {
@@ -357,6 +358,40 @@ public class TelaPrincipalController implements Initializable
             Parent root = (Parent) loader.load();
 
             FXMLEfetuarCompraController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
+
+    @FXML
+    private void clkEfetuarVenda(ActionEvent event) {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLEfetuarVenda.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLEfetuarVendaController ctr = loader.getController();
+            ctr.RecebeDados(usuario);
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
+
+    @FXML
+    private void clkEfetuarConsignado(ActionEvent event) {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLEfetuarConsignado.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLEfetuarConsignadoController ctr = loader.getController();
             ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
 

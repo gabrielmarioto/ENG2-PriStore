@@ -33,7 +33,7 @@ public class PriStore extends Application
             stage.setMaximized(true);
             stage.setTitle(pegaParametros());
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/camiseta.png"))); // SETAR ICONE NA JANELA
-            //pegaParametros();
+            pegaParametros();
             stage.show();           
     }
     private String pegaParametros()

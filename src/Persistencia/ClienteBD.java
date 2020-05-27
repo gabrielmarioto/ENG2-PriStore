@@ -101,7 +101,6 @@ public class ClienteBD {
         {
 
         }
-
         return c;
     }
 }

@@ -5,21 +5,15 @@
  */
 package Interface;
 
-import static Interface.TelaPrincipalController.spnprincipal;
+
 import Mask.MaskFieldUtil;
-import Model.Categoria;
-import Model.Colecao;
-import Model.Compra;
-import Model.Fornecedor;
-import Model.ItensCompra;
-import Model.Marca;
-import Model.Produto;
-import Model.Tamanho;
+
+import Model.Consignado;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import java.io.IOException;
+
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,31 +23,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  * FXML Controller class
  *
  * @author Gabriel
  */
-public class FXMLProcurarCompraController implements Initializable
+public class FXMLProcurarConsignadoController implements Initializable
 {
 
     @FXML
@@ -75,19 +59,20 @@ public class FXMLProcurarCompraController implements Initializable
     @FXML
     private JFXButton btn_Pesquisar;
     @FXML
-    private TableView<Compra> tabela;
+    private TableView<Consignado> tabela;
     @FXML
-    private TableColumn<Compra, Integer> colcod;
+    private TableColumn<Consignado, Integer> colcod;
     @FXML
-    private TableColumn<Compra, Integer> colfornecedor;
+    private TableColumn<Consignado, Double> colvalor;
     @FXML
-    private TableColumn<Compra, Double> colvalor;
+    private TableColumn<Consignado, LocalDate> coldata;
     @FXML
-    private TableColumn<Compra, LocalDate> coldata;
-
+    private TableColumn<Consignado, String> cloNome;
+    
     private Usuario u;
 
-    private static Object compra;
+    private static Object con;
+    
 
     /**
      * Initializes the controller class.
@@ -97,9 +82,9 @@ public class FXMLProcurarCompraController implements Initializable
     {
         // TODO
         colcod.setCellValueFactory(new PropertyValueFactory("codCompra"));
-        colfornecedor.setCellValueFactory(new PropertyValueFactory("codForn"));
         colvalor.setCellValueFactory(new PropertyValueFactory("valorTotal"));
         coldata.setCellValueFactory(new PropertyValueFactory("dataCompra"));
+        cloNome.setCellValueFactory(new PropertyValueFactory("dataCompra"));
         estadoOriginal();
 
     }
@@ -122,16 +107,18 @@ public class FXMLProcurarCompraController implements Initializable
 
     private void carregaTabela(String filtro)
     {
-        Compra c = new Compra();
-        List<Compra> res = c.selectCompra(filtro);
-        ObservableList<Compra> modelo;
+        
+        Consignado c = new Consignado();
+        List<Consignado> res = c.selectConsignado(filtro);
+        ObservableList<Consignado> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
-
+        
+        
         List<String> Filtro = new ArrayList<>();
-        Filtro.add("Valor");
-        Filtro.add("Data");
-        Filtro.add("Codigo");
+        Filtro.add("Nome");
+        Filtro.add("Em Aberto");
+        Filtro.add("Fechada");
         cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
         cbb_filtro.getSelectionModel().select(0);
     }
@@ -139,20 +126,23 @@ public class FXMLProcurarCompraController implements Initializable
     @FXML
     private void clkBtAlterar(ActionEvent event)
     {
-        if (tabela.getSelectionModel().getSelectedIndex() >= 0)
+        /*if (tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
-            Compra c = new Compra(tabela.getSelectionModel().getSelectedItem().getCodCompra(), new Fornecedor().selectFornecedor(tabela.getSelectionModel().getSelectedItem().getCodForn().getCod()), tabela.getSelectionModel().getSelectedItem().getValorTotal(), tabela.getSelectionModel().getSelectedItem().getDesconto(), tabela.getSelectionModel().getSelectedItem().getDataCompra());
+            Compra c = new Compra(tabela.getSelectionModel().getSelectedItem().getCodCompra(),
+                    new Fornecedor().selectFornecedor(tabela.getSelectionModel().getSelectedItem().getCodForn().getCod()),
+                    tabela.getSelectionModel().getSelectedItem().getValorTotal(), tabela.getSelectionModel().getSelectedItem().getDesconto(),
+                    tabela.getSelectionModel().getSelectedItem().getDataCompra());
             compra = c;
 
             Stage stage = (Stage) painel.getScene().getWindow();
             stage.close();
-        }
+        }*/
     }
 
     @FXML
     private void clkBtApagar(ActionEvent event)
     {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+        /*Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setContentText("Confirma a exclusão?");
         if (a.showAndWait().get() == ButtonType.OK)
         {
@@ -169,7 +159,8 @@ public class FXMLProcurarCompraController implements Initializable
                 item.setCodCompra(c);
                 item.deleteItensCompra();
                 temp = temp.select(item.getTamanho().getTamanho(), item.getCodProduto().getCod());
-                t = new Tamanho(item.getCodProduto(), item.getTamanho().getTamanho(), item.getQntd() + temp.getQtde());
+                t = new Tamanho(item.getCodProduto(), item.getTamanho().getTamanho(),
+                    item.getQntd() + temp.getQtde());
                 t.updateTamanho();
             }
             if (!c.deleteCompra())
@@ -179,31 +170,35 @@ public class FXMLProcurarCompraController implements Initializable
             }
         }
         compra = null;
-        ((Button) event.getSource()).getScene().getWindow().hide();
+        ((Button) event.getSource()).getScene().getWindow().hide();*/
     }
 
     @FXML
     private void clkBtSelecionar(ActionEvent event)
     {
-        if (tabela.getSelectionModel().getSelectedIndex() >= 0)
+       /* if (tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
-            Compra c = new Compra(tabela.getSelectionModel().getSelectedItem().getCodCompra(), new Fornecedor().selectFornecedor(tabela.getSelectionModel().getSelectedItem().getCodForn().getCod()), tabela.getSelectionModel().getSelectedItem().getValorTotal(), tabela.getSelectionModel().getSelectedItem().getDesconto(), tabela.getSelectionModel().getSelectedItem().getDataCompra());
+            Compra c = new Compra(tabela.getSelectionModel().getSelectedItem().getCodCompra(),
+        new Fornecedor().selectFornecedor(tabela.getSelectionModel().getSelectedItem().getCodForn().getCod()),
+        tabela.getSelectionModel().getSelectedItem().getValorTotal(),
+        tabela.getSelectionModel().getSelectedItem().getDesconto(),
+        tabela.getSelectionModel().getSelectedItem().getDataCompra());
             compra = c;
 
             Stage stage = (Stage) painel.getScene().getWindow();
             stage.close();
-        }
+        }*/
     }
 
     public static Object getCompra()
     {
-        return compra;
+        return con;
     }
 
     @FXML
     private void clkBtCancelar(ActionEvent event)
     {
-        compra = null;
+        con = null;
         ((Button) event.getSource()).getScene().getWindow().hide();
     }
 
@@ -212,28 +207,24 @@ public class FXMLProcurarCompraController implements Initializable
     {
        
     }
-
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
         String filtro = "";
-        if (cbb_filtro.getValue() == "Valor")
+        /*if (cbb_filtro.getValue() == "Nome")
         {
             filtro = "valorTotal" + " = " + tb_Pesquisa.getText();
-        }
-        if (cbb_filtro.getValue() == "Data")
+        }else 
+        if (cbb_filtro.getValue() == "Em Aberto")
         {
             MaskFieldUtil.dateField(tb_Pesquisa);
-            filtro = "dataCompra" + " = '" + tb_Pesquisa.getText()+"'";
-        }
-        if (cbb_filtro.getValue() == "Codigo")
+            filtro = "status = 'A'";
+        }else // fechado
         {
-            filtro = "codCompra" + " = " + tb_Pesquisa.getText();
+            filtro = "status = 'F'";
         }
-
+*/
         carregaTabela(filtro);
-
-        //carregaTabela("codCompra = " + tb_Pesquisa.getText());
     }
 
 }
