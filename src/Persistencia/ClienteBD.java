@@ -42,9 +42,35 @@ public class ClienteBD {
         {
 
         }
+        return aux;
+    }
+    public List<Cliente> getF(String filtro)
+    {
+        String sql = "select * from cliente cli left join consignacao con on con.codcliente = cli.cli_cod where con.status = 'F' or con.status IS NULL";
+        if (!filtro.isEmpty())
+        {
+            sql += " where " + filtro;
+        }
+        List<Cliente> aux = new ArrayList();
+        ResultSet rs = Banco.getCon().consultar(sql);
+        try
+        {
+            while (rs.next())
+            {
+                
+                aux.add(new Cliente(rs.getInt("cli_cod"), rs.getString("cli_nome")
+                ,rs.getString("cli_cpf"), rs.getString("cli_end"), rs.getString("cli_email")
+                ,rs.getString("cli_telefone"), rs.getString("cli_sexo").charAt(0), rs.getDouble("cli_saldo")
+                , LocalDate.parse(rs.getString("cli_dtNasc"))));
+            }
+        } catch (SQLException ex)
+        {
+
+        }
         System.out.println(sql);
         return aux;
     }
+    
     public boolean insertCliente(Cliente c)
     {
         String sql = "insert into cliente (cli_nome, cli_cpf, cli_end, cli_email, cli_telefone, cli_sexo, cli_saldo, cli_dtNasc)\n" +

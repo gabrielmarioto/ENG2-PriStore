@@ -5,6 +5,10 @@
  */
 package Model;
 
+import Persistencia.ItensConsignadoBD;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author BRUNO
@@ -13,13 +17,17 @@ public class ItensConsignado {
     
     private Produto codProduto;
     private Cliente codCliente;
+    private Tamanho tamanho;
+    private double valorProduto;
 
     public ItensConsignado() {
     }
 
-    public ItensConsignado(Produto codProduto, Cliente codCliente) {
+    public ItensConsignado(Produto codProduto, Cliente codCliente, Tamanho tamanho, double valorProduto) {
         this.codProduto = codProduto;
         this.codCliente = codCliente;
+        this.tamanho = tamanho;
+        this.valorProduto = valorProduto;
     }
 
     public Produto getCodProduto() {
@@ -37,6 +45,27 @@ public class ItensConsignado {
     public void setCodCliente(Cliente codCliente) {
         this.codCliente = codCliente;
     }
-    
-    
+
+    public Tamanho getTamanho() {
+        return tamanho;
+    }
+
+    public void setTamanho(Tamanho tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public double getValorProduto() {
+        return valorProduto;
+    }
+
+    public void setValorProduto(double valorProduto) {
+        this.valorProduto = valorProduto;
+    }
+    public List<ItensConsignado> selectItens(String filtro)
+    {
+        List<ItensConsignado> aux = new ArrayList();
+        ItensConsignadoBD c = new ItensConsignadoBD();
+        aux = c.get(filtro);
+        return aux;
+    }
 }

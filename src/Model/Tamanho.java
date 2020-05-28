@@ -25,6 +25,10 @@ public class Tamanho
         this.tamanho = tamanho;
         this.qtde = qtde;
     }
+    public Tamanho(String tamanho)
+    {
+        this.tamanho = tamanho;
+    }
 
     public Tamanho()
     {

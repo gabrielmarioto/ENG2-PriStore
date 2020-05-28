@@ -32,6 +32,22 @@ public class Consignado {
         this.status = status;
     }
 
+    public int getCod() {
+        return cod;
+    }
+
+    public void setCod(int cod) {
+        this.cod = cod;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Consignado() {
     }
 
@@ -82,6 +98,28 @@ public class Consignado {
         ConsignadoBD c = new ConsignadoBD();
         aux = c.get(filtro);
         return aux;
+    }
+    public boolean insertConsignado()
+    {
+        ConsignadoBD c = new ConsignadoBD();
+        return c.insertConsignado(this);
+    }
+    public boolean insereItens( List<ItensConsignado> aux, int cod)
+    {
+        int ok = 0;
+        ConsignadoBD c = new ConsignadoBD();
+        for ( ItensConsignado i : aux )
+        {
+            c.insertItens(i.getCodProduto().getCod(), cod);
+        }
+        if(ok == 0)
+            return true;
+        return false;
+    }
+    public boolean updateConsignado()
+    {
+        ConsignadoBD c = new ConsignadoBD();
+        return c.updateConsignado(this);
     }
     
 }

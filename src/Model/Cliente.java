@@ -120,6 +120,13 @@ public class Cliente {
         c = cli.get(filtro);
         return c;
     }
+    public List<Cliente> selectClienteSemConsignadoAberto(String filtro)
+    {
+        List<Cliente> c = new ArrayList();
+        ClienteBD cli = new ClienteBD();
+        c = cli.getF(filtro);
+        return c;
+    }
     public String toString() {
         return nome;
     }    
@@ -145,7 +152,7 @@ public class Cliente {
     {
         Cliente c;
         ClienteBD categoria = new ClienteBD();
-        c = categoria.get(cod);
+        c = categoria.get(codigo);
 
         return c;
     }
