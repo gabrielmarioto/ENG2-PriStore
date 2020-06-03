@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Interface;
+package Interface.Basicas;
 
 import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
@@ -124,7 +124,7 @@ public class FXMLCadastroClienteController implements Initializable
         estadoOriginal();
     }
     
-     protected void RecebeDados(Usuario u){
+    public void RecebeDados(Usuario u){
        this.u=u;
     }
     private void estadoOriginal()

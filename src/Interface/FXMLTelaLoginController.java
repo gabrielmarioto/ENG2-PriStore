@@ -22,6 +22,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 /**
@@ -74,5 +76,12 @@ public class FXMLTelaLoginController implements Initializable {
     @FXML
     private void clkSair(ActionEvent event) {
         ((Button)event.getSource()).getScene().getWindow().hide();
+    }
+
+    @FXML
+    private void clkLogarENTER(KeyEvent event) throws Throwable {
+        if(event.getCode() == KeyCode.ENTER)
+           clkLogar(null);
+            
     }
 }

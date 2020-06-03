@@ -5,6 +5,14 @@
  */
 package Interface;
 
+import Interface.Basicas.FXMLCadastroProdutoController;
+import Interface.Basicas.FXMLCadastroColecaoController;
+import Interface.Basicas.FXMLAlteraUsuarioController;
+import Interface.Basicas.FXMLCadastroFornecedorController;
+import Interface.Basicas.FXMLCadastroClienteController;
+import Interface.Basicas.FXMLCadastroFuncionarioController;
+import Interface.Basicas.FXMLCadastroMarcaController;
+import Interface.Basicas.FXMLCadastroCategoriaController;
 import Model.Funcionario;
 import Model.Parametros;
 import Model.Usuario;
@@ -206,7 +214,7 @@ public class TelaPrincipalController implements Initializable
         }
     }
 
-    protected void VoltaLogin()
+    public void VoltaLogin()
      {
          clkLogin(null);
      }

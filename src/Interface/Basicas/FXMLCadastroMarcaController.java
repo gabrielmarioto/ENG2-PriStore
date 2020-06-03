@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Interface;
+package Interface.Basicas;
 
 import static Interface.TelaPrincipalController.spnprincipal;
-import Model.Categoria;
 import Model.Marca;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
@@ -40,7 +39,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Gabriel
  */
-public class FXMLCadastroCategoriaController implements Initializable
+public class FXMLCadastroMarcaController implements Initializable
 {
 
     @FXML
@@ -68,15 +67,14 @@ public class FXMLCadastroCategoriaController implements Initializable
     @FXML
     private JFXButton btn_Pesquisa;
     @FXML
-    private TableView<Categoria> tabela;
+    private TableView<Marca> tabela;
     @FXML
-    private TableColumn<Categoria, Integer> colcod;
+    private TableColumn<Marca, Integer> colcod;
     @FXML
-    private TableColumn<Categoria, String> colnome;
+    private TableColumn<Marca, String> colnome;
     @FXML
     private JFXComboBox<String> cbb_Filtro;
-    
-    private TelaPrincipalController ctr;
+
     private Usuario u;
     /**
      * Initializes the controller class.
@@ -90,7 +88,7 @@ public class FXMLCadastroCategoriaController implements Initializable
         estadoOriginal();
     }
 
-     protected void RecebeDados(Usuario u){
+     public void RecebeDados(Usuario u){
        this.u=u;
     }
      
@@ -122,9 +120,9 @@ public class FXMLCadastroCategoriaController implements Initializable
 
     private void carregaTabela(String filtro)
     {
-        Categoria c = new Categoria();
-        List<Categoria> res = c.selectCategoria(filtro);
-        ObservableList<Categoria> modelo;
+        Marca m = new Marca();
+        List<Marca> res = m.selectMarca(filtro);
+        ObservableList<Marca> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
         List<String> Filtro = new ArrayList<>();
@@ -154,9 +152,9 @@ public class FXMLCadastroCategoriaController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            Categoria c = (Categoria) tabela.getSelectionModel().getSelectedItem();
-            tb_Codigo.setText("" + c.getCod());
-            tb_Nome.setText(c.getNome());
+            Marca m = (Marca) tabela.getSelectionModel().getSelectedItem();
+            tb_Codigo.setText("" + m.getCod());
+            tb_Nome.setText(m.getNome());
             estadoEdicao();
         }
     }
@@ -168,9 +166,9 @@ public class FXMLCadastroCategoriaController implements Initializable
         a.setContentText("Confirma a exclusão?");
         if (a.showAndWait().get() == ButtonType.OK)
         {
-            Categoria c = new Categoria();
-            c = tabela.getSelectionModel().getSelectedItem();
-            if (!c.deleteCategoria())
+            Marca m = new Marca();
+            m = tabela.getSelectionModel().getSelectedItem();
+            if (!m.deleteMarca())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
@@ -184,7 +182,7 @@ public class FXMLCadastroCategoriaController implements Initializable
     private void clkBtConfirmar(ActionEvent event)
     {
         int cod;
-        Categoria c = new Categoria();
+        Marca m = new Marca();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         try
         {
@@ -195,16 +193,16 @@ public class FXMLCadastroCategoriaController implements Initializable
         }
         if (tb_Nome.getText().length() > 0)
         {
-            c = new Categoria(cod, tb_Nome.getText());
-            if (c.getCod() == 0)
+            m = new Marca(cod, tb_Nome.getText());
+            if (m.getCod() == 0)
             {
-                if (!c.insertCategoria())
+                if (!m.insertMarca())
                 {
                     a.setContentText("Problemas ao Gravar");
                 }
             } else
             {
-                if (!c.updateCategoria())
+                if (!m.updateMarca())
                 {
                     a.setContentText("Problemas ao Alterar");
                     a.showAndWait();
@@ -255,10 +253,10 @@ public class FXMLCadastroCategoriaController implements Initializable
         {
             pndados.setDisable(true);
             if(u.getNivel()>1)
-            btn_Alterar.setDisable(false);
+                btn_Alterar.setDisable(false);
             btn_Novo.setDisable(true);
             if(u.getNivel()>2)
-            btn_Apagar.setDisable(false);
+                btn_Apagar.setDisable(false);
 
             tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());

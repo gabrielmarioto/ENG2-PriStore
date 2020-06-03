@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Interface;
+package Interface.Basicas;
 
+import Interface.TelaPrincipalController;
 import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
 import Model.Categoria;
@@ -161,7 +162,7 @@ public class FXMLCadastroFuncionarioController implements Initializable
         
     }
 
-     protected void RecebeDados(Usuario u,TelaPrincipalController ctr){
+     public void RecebeDados(Usuario u,TelaPrincipalController ctr){
        this.u=u;
        this.ctr=ctr;
     }

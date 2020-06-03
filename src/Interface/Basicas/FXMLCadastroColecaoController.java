@@ -3,15 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Interface;
+package Interface.Basicas;
 
 import static Interface.TelaPrincipalController.spnprincipal;
-import Model.Marca;
+import Model.Categoria;
+import Model.Colecao;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -39,7 +43,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Gabriel
  */
-public class FXMLCadastroMarcaController implements Initializable
+public class FXMLCadastroColecaoController implements Initializable
 {
 
     @FXML
@@ -67,11 +71,13 @@ public class FXMLCadastroMarcaController implements Initializable
     @FXML
     private JFXButton btn_Pesquisa;
     @FXML
-    private TableView<Marca> tabela;
+    private TableView<Colecao> tabela;
     @FXML
-    private TableColumn<Marca, Integer> colcod;
+    private TableColumn<Colecao, Integer> colcod;
     @FXML
-    private TableColumn<Marca, String> colnome;
+    private TableColumn<Colecao, String> colnome;
+    @FXML
+    private JFXDatePicker dtp_Inicial;
     @FXML
     private JFXComboBox<String> cbb_Filtro;
 
@@ -88,7 +94,8 @@ public class FXMLCadastroMarcaController implements Initializable
         estadoOriginal();
     }
 
-     protected void RecebeDados(Usuario u){
+     public void RecebeDados(Usuario u){
+        
        this.u=u;
     }
      
@@ -101,7 +108,7 @@ public class FXMLCadastroMarcaController implements Initializable
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
         btn_Novo.setDisable(false);
-
+        dtp_Inicial.setDisable(true);        
         ObservableList<Node> componentes = pndados.getChildren(); //”limpa” os componentes
         for (Node n : componentes)
         {
@@ -120,9 +127,9 @@ public class FXMLCadastroMarcaController implements Initializable
 
     private void carregaTabela(String filtro)
     {
-        Marca m = new Marca();
-        List<Marca> res = m.selectMarca(filtro);
-        ObservableList<Marca> modelo;
+        Colecao c = new Colecao();
+        List<Colecao> res = c.selectColecao(filtro);
+        ObservableList<Colecao> modelo;
         modelo = FXCollections.observableArrayList(res);
         tabela.setItems(modelo);
         List<String> Filtro = new ArrayList<>();
@@ -139,6 +146,7 @@ public class FXMLCadastroMarcaController implements Initializable
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
         tb_Nome.requestFocus();
+        dtp_Inicial.setDisable(false);
     }
 
     @FXML
@@ -152,9 +160,10 @@ public class FXMLCadastroMarcaController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            Marca m = (Marca) tabela.getSelectionModel().getSelectedItem();
-            tb_Codigo.setText("" + m.getCod());
-            tb_Nome.setText(m.getNome());
+            Colecao c = (Colecao) tabela.getSelectionModel().getSelectedItem();
+            tb_Codigo.setText("" + c.getCod());
+            tb_Nome.setText(c.getNome());
+            dtp_Inicial.setValue(c.getDataInicio());
             estadoEdicao();
         }
     }
@@ -166,9 +175,9 @@ public class FXMLCadastroMarcaController implements Initializable
         a.setContentText("Confirma a exclusão?");
         if (a.showAndWait().get() == ButtonType.OK)
         {
-            Marca m = new Marca();
-            m = tabela.getSelectionModel().getSelectedItem();
-            if (!m.deleteMarca())
+            Colecao c = new Colecao();
+            c = tabela.getSelectionModel().getSelectedItem();
+            if (!c.deleteColecao())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
@@ -182,7 +191,8 @@ public class FXMLCadastroMarcaController implements Initializable
     private void clkBtConfirmar(ActionEvent event)
     {
         int cod;
-        Marca m = new Marca();
+        LocalDate dataAtual = LocalDate.now();
+        Colecao c = new Colecao();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         try
         {
@@ -193,28 +203,30 @@ public class FXMLCadastroMarcaController implements Initializable
         }
         if (tb_Nome.getText().length() > 0)
         {
-            m = new Marca(cod, tb_Nome.getText());
-            if (m.getCod() == 0)
+            if (dtp_Inicial.getValue().isBefore(dataAtual))
             {
-                if (!m.insertMarca())
+                c = new Colecao(cod, tb_Nome.getText(), dtp_Inicial.getValue());
+                if (c.getCod() == 0)
                 {
-                    a.setContentText("Problemas ao Gravar");
-                }
-            } else
-            {
-                if (!m.updateMarca())
+                    if (!c.insertColecao())
+                    {
+                        a.setContentText("Problemas ao Gravar");
+                    }
+                } else
                 {
-                    a.setContentText("Problemas ao Alterar");
-                    a.showAndWait();
+                    if (!c.updateColecao())
+                    {
+                        a.setContentText("Problemas ao Alterar");
+                        a.showAndWait();
+                    }
                 }
-            }
-            estadoOriginal();
+            }            
         } else
         {
             a.setContentText("Informe o nome!");
             a.showAndWait();
         }
-
+        estadoOriginal();
         carregaTabela("");
     }
 
@@ -260,6 +272,7 @@ public class FXMLCadastroMarcaController implements Initializable
 
             tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
             tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
+            dtp_Inicial.setValue(tabela.getSelectionModel().getSelectedItem().getDataInicio());
         }
     }
 
