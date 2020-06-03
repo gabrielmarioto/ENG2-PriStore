@@ -88,6 +88,7 @@ public class FuncionarioBD {
         {
             if (rs.next())
             {
+              
                 f = new Funcionario(rs.getInt("fun_cod"), rs.getString("fun_nome"), rs.getString("fun_cpf"),
                         rs.getString("fun_sexo").charAt(0),rs.getDouble("fun_salario"),rs.getString("fun_telefone"),
                         rs.getString("fun_email"), rs.getString("fun_endereco"),rs.getString("fun_bairro"),
@@ -95,7 +96,7 @@ public class FuncionarioBD {
             }
         } catch (SQLException ex)
         {
-
+           
         }
         return f;
     }

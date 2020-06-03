@@ -5,8 +5,6 @@
  */
 package Interface;
 
-import Interface.Basicas.FXMLCadastroProdutoController;
-import Interface.Basicas.FXMLCadastroTamanhoController;
 import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
 import Model.Compra;
@@ -55,7 +53,7 @@ import javafx.stage.Stage;
  *
  * @author Gabriel
  */
-public class FXMLEfetuarCompraController implements Initializable
+public class FXMLEfetuarVendaController implements Initializable
 {
 
     @FXML

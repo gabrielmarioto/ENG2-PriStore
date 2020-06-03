@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -88,11 +86,8 @@ public class FXMLParametrizacaoController implements Initializable
         Parametros teste = new Parametros();
         teste = teste.selectParametro();
         if(teste == null)
+        {
             btn_Alterar.setText("Inserir");
-        try {
-            estadoOriginal();
-        } catch (IOException ex) {
-
         }
     }
     

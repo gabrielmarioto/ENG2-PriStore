@@ -131,6 +131,7 @@ public class FXMLProcurarCompraController implements Initializable
         List<String> Filtro = new ArrayList<>();
         Filtro.add("Valor");
         Filtro.add("Data");
+        Filtro.add("Codigo");
         cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
         cbb_filtro.getSelectionModel().select(0);
     }
@@ -177,6 +178,7 @@ public class FXMLProcurarCompraController implements Initializable
                 a.showAndWait();
             }
         }
+        compra = null;
         ((Button) event.getSource()).getScene().getWindow().hide();
     }
 
@@ -201,19 +203,37 @@ public class FXMLProcurarCompraController implements Initializable
     @FXML
     private void clkBtCancelar(ActionEvent event)
     {
+        compra = null;
         ((Button) event.getSource()).getScene().getWindow().hide();
     }
 
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        carregaTabela("select * from Compra where codCompra = " + tb_Pesquisa.getText());
+       
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        carregaTabela("select * from Compra where codCompra = " + tb_Pesquisa.getText());
+        String filtro = "";
+        if (cbb_filtro.getValue() == "Valor")
+        {
+            filtro = "valorTotal" + " = " + tb_Pesquisa.getText();
+        }
+        if (cbb_filtro.getValue() == "Data")
+        {
+            MaskFieldUtil.dateField(tb_Pesquisa);
+            filtro = "dataCompra" + " = '" + tb_Pesquisa.getText()+"'";
+        }
+        if (cbb_filtro.getValue() == "Codigo")
+        {
+            filtro = "codCompra" + " = " + tb_Pesquisa.getText();
+        }
+
+        carregaTabela(filtro);
+
+        //carregaTabela("codCompra = " + tb_Pesquisa.getText());
     }
 
 }

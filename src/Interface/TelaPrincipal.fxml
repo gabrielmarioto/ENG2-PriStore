@@ -33,6 +33,8 @@
                      <items>
                         <MenuItem onAction="#clkEfetuarPromocao" text="Efetuar Promoção" />
                         <MenuItem onAction="#clkEfetuarCompra" text="_Efetuar Compra" />
+                        <MenuItem onAction="#clkEfetuarVenda" text="_Efetuar Venda" />
+                        <MenuItem onAction="#clkEfetuarConsignado" text="_Efetuar Consignado" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="_FERRAMENTAS">
