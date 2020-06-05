@@ -86,7 +86,7 @@ public class Promocao {
         this.valor = valor;
     }
     
-    public boolean insertPromocao(List<ProdutoPm> lista)
+    public boolean insertPromocao(List<ProdutoPm> lista) throws SQLException
     {
         codigo = Banco.getCon().getMaxPK("promocao", "cod")+1;
         if(codigo==0)

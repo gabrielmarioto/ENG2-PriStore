@@ -43,6 +43,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
@@ -146,7 +147,7 @@ public class FXMLEfetuarConsignadoController implements Initializable
         btn_Confirmar.setDisable(true);
         btn_Cancelar.setDisable(false);
         btn_Novo.setDisable(false);
-
+        btn_apagar.setDisable(true);
         btn_AdicionarItem.setDisable(true);
         btn_RemoverItem.setDisable(true);
         btn_ProcurarCompra.setDisable(false);
@@ -182,6 +183,7 @@ public class FXMLEfetuarConsignadoController implements Initializable
         btn_RemoverItem.setDisable(false);
         dtp_Data.setDisable(false);
         btn_ProcurarCompra.setDisable(true);
+        btn_apagar.setDisable(false);
     }
 
     public static Object getCompra()
@@ -199,7 +201,10 @@ public class FXMLEfetuarConsignadoController implements Initializable
         if (c != null)
         {            
             aux = itens.selectItens("codconsignado = "+c.getCod());
-
+            
+            
+            
+            
             tb_Codigo.setText("" + c.getCod());
             dtp_Data.setValue(c.getDtEntrega());
             cbb_Cliente.getSelectionModel().select(0);// gambis
@@ -209,13 +214,14 @@ public class FXMLEfetuarConsignadoController implements Initializable
             cbb_Produto.getSelectionModel().select(0);// gambis
             cbb_Tamanho.getSelectionModel().select(0);// gambis
 
-            atualizaSaldo();
+            btn_apagar.setDisable(false);
             
             modelo = FXCollections.observableArrayList(aux);
             
             tabela.setItems(modelo);
             tabela.refresh();
             btn_ProcurarCompra.setDisable(true);
+            atualizaSaldo();
             estadoEdicao();
         } else
         {
@@ -275,7 +281,7 @@ public class FXMLEfetuarConsignadoController implements Initializable
                     {
                         if (c.insertConsignado())
                         {
-                            if(!c.insereItens(aux, c.getCod()))
+                            if(!c.insereItens(aux, c.getMaxPK()))
                             {
                                 a.setContentText("Problemas ao Gravar");
                                 a.showAndWait();
@@ -283,9 +289,10 @@ public class FXMLEfetuarConsignadoController implements Initializable
                         }
                     } else
                     {       
-                        //if (c.updateCompra())
+                        if (c.updateConsignado())
                         {
-                            // apagar todos os itens de cod consignado
+                            ItensConsignado itens = new ItensConsignado();
+                            itens.deleteItens(cod);
                             if(!c.insereItens(aux, c.getCod()))
                             {
                                 a.setContentText("Problemas ao Gravar");
@@ -378,7 +385,9 @@ public class FXMLEfetuarConsignadoController implements Initializable
         {
             if (cbb_Tamanho.getSelectionModel().getSelectedIndex() != -1)
             {
-                it = new ItensConsignado(cbb_Produto.getValue(), cbb_Cliente.getValue(),cbb_Tamanho.getValue(), cbb_Produto.getValue().getPreco());
+                it = new ItensConsignado(cbb_Produto.getValue(), cbb_Tamanho.getValue(),
+                        cbb_Produto.getValue().getPreco(), 1);
+                
                 aux.add(it);
 
                 modelo = FXCollections.observableArrayList(aux);
@@ -472,6 +481,28 @@ public class FXMLEfetuarConsignadoController implements Initializable
 
     @FXML
     private void clkBtApagar(ActionEvent event) {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+        a.setContentText("Confirma a exclusão?");
+        if (a.showAndWait().get() == ButtonType.OK)
+        {
+            int cod;
+            try
+            {
+                cod = Integer.parseInt(tb_Codigo.getText());
+            } catch (Exception e)
+            {
+                cod = 0;
+            }
+            ItensConsignado itens = new ItensConsignado();
+            itens.deleteItens(cod);
+            c = new Consignado();
+            if (!c.deleteConsignado(cod))
+            {
+                a.setContentText("Erro ao excluir!");
+                a.showAndWait();
+            }
+            estadoOriginal();
+        }
     }
 
 

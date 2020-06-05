@@ -16,18 +16,18 @@ import java.util.List;
 public class ItensConsignado {
     
     private Produto codProduto;
-    private Cliente codCliente;
     private Tamanho tamanho;
     private double valorProduto;
+    private int quantidade;
 
     public ItensConsignado() {
     }
 
-    public ItensConsignado(Produto codProduto, Cliente codCliente, Tamanho tamanho, double valorProduto) {
+    public ItensConsignado( Produto codProduto, Tamanho tamanho, double valorProduto, int quantidade) {
         this.codProduto = codProduto;
-        this.codCliente = codCliente;
         this.tamanho = tamanho;
         this.valorProduto = valorProduto;
+        this.quantidade = quantidade;
     }
 
     public Produto getCodProduto() {
@@ -36,14 +36,6 @@ public class ItensConsignado {
 
     public void setCodProduto(Produto codProduto) {
         this.codProduto = codProduto;
-    }
-
-    public Cliente getCodCliente() {
-        return codCliente;
-    }
-
-    public void setCodCliente(Cliente codCliente) {
-        this.codCliente = codCliente;
     }
 
     public Tamanho getTamanho() {
@@ -60,6 +52,19 @@ public class ItensConsignado {
 
     public void setValorProduto(double valorProduto) {
         this.valorProduto = valorProduto;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+    public boolean deleteItens(int cod)
+    {
+        ItensConsignadoBD c = new ItensConsignadoBD();
+        return c.deleteItens(cod);
     }
     public List<ItensConsignado> selectItens(String filtro)
     {

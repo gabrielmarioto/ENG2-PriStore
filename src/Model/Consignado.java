@@ -5,6 +5,7 @@
  */
 package Model;
 
+import Persistencia.CompraBD;
 import Persistencia.ConsignadoBD;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class Consignado {
         ConsignadoBD c = new ConsignadoBD();
         for ( ItensConsignado i : aux )
         {
-            c.insertItens(i.getCodProduto().getCod(), cod);
+            c.insertItens(cod, i.getCodProduto().getCod(), i.getTamanho().getTamanho(), i.getValorProduto(), i.getQuantidade());
         }
         if(ok == 0)
             return true;
@@ -120,6 +121,19 @@ public class Consignado {
     {
         ConsignadoBD c = new ConsignadoBD();
         return c.updateConsignado(this);
+    }
+    
+    
+    public int getMaxPK()
+    {
+        ConsignadoBD c = new ConsignadoBD();
+        return c.getMaxPK();
+   }
+
+    public boolean deleteConsignado(int cod)
+    {
+        ConsignadoBD c = new ConsignadoBD();
+        return c.deleteConsignado(cod);
     }
     
 }

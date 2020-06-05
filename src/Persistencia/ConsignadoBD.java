@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Persistencia;
 import Model.Consignado;
 import Model.ItensConsignado;
@@ -57,13 +53,16 @@ public class ConsignadoBD {
         
         return Banco.getCon().manipular(sql);
     }
-    public boolean insertItens(int coditem, int cod)
+    public boolean insertItens(int cod, int coditem, String tamanho, Double valor, int quantidade) 
     {
-        String sql = "insert into itensconsignado (codconsignado, codproduto)"
-                + "values (#1, '#2')";
+        String sql = "insert into itensconsignado (codconsignado, codproduto, tamanho, valorproduto, quantidade)"
+                + "values (#1, #2, '#3', #4, #5)";
         sql = sql.replaceAll("#1", "" + cod);
         sql = sql.replaceAll("#2", "" + coditem);
-        
+        sql = sql.replaceAll("#3", tamanho);
+        sql = sql.replaceAll("#4", "" + valor);
+        sql = sql.replaceAll("#5", "" + quantidade);
+        System.out.println("sql");
         return Banco.getCon().manipular(sql);
     }
     public boolean updateConsignado(Consignado c)
@@ -76,5 +75,14 @@ public class ConsignadoBD {
         sql = sql.replaceAll("#4", c.getCodCliente().getCod()+"");        
         sql = sql.replaceAll("#5", c.getStatus());   
         return Banco.getCon().manipular(sql);
+    }
+    public int getMaxPK()
+    {
+       return Banco.getCon().getMaxPK("consignacao", "cod");
+    }
+     public boolean deleteConsignado(int c)
+    {
+        System.out.println("delete from consignacao where cod = " + c);
+        return Banco.getCon().manipular("delete from consignacao where cod = " + c);
     }
 }

@@ -5,6 +5,7 @@
  */
 package Persistencia;
 
+import Model.Cliente;
 import Model.ItensConsignado;
 import Util.Banco;
 import java.sql.ResultSet;
@@ -35,18 +36,20 @@ public class ItensConsignadoBD {
         {
             while (rs.next())
             {
-                aux.add(new ItensConsignado(
-                            new ProdutoBD().get(rs.getInt("codProduto")),
-                            new ClienteBD().get(rs.getInt("codCliente")),
-                            new TamanhoBD().getTamanho(rs.getString("tamanho"), rs.getInt("codProduto")),
-                            rs.getDouble("valorProduto")));
+                aux.add(new ItensConsignado(new ProdutoBD().get(rs.getInt("codProduto")),
+                        new TamanhoBD().getTamanho(rs.getString("tamanho"), rs.getInt("codProduto")),
+                        rs.getDouble("valorProduto"),
+                        rs.getInt("quantidade")));
             }
         } catch (SQLException ex)
-        {
-
-        }
-
+        {}
+        
         return aux;
     }
+    public boolean deleteItens(int c)
+    {
+        return Banco.getCon().manipular("delete from ItensConsignado where codconsignado = " + c);
+    }
+
     
 }
