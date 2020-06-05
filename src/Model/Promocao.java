@@ -86,13 +86,13 @@ public class Promocao {
         this.valor = valor;
     }
     
-    public boolean insertPromocao()
+    public boolean insertPromocao(List<ProdutoPm> lista)
     {
         codigo = Banco.getCon().getMaxPK("promocao", "cod")+1;
         if(codigo==0)
             codigo=1;
         PromocaoBD promo = new PromocaoBD();
-        return promo.insertPromocao(this);
+        return promo.insertPromocao(this,lista);
     }
 
     public boolean updatePromocao()

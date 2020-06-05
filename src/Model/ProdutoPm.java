@@ -5,18 +5,29 @@
  */
 package Model;
 
+import Persistencia.ProdPromoBD;
+import Persistencia.ProdutoBD;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Arthur
  */
-public class ProdPromo extends Produto{
+public class ProdutoPm extends Produto{
     
     private double preco2;
 
-    public ProdPromo() {
+    public ProdutoPm() {
     }
 
-    public ProdPromo(double preco2, int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao) {
+    public ProdutoPm(int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao) {
+        super(cod, codCategoria, nome, preco, descricao, codMarca, codColecao);
+    }
+    
+    
+    
+    public ProdutoPm(double preco2, int cod, Categoria codCategoria, String nome, float preco, String descricao, Marca codMarca, Colecao codColecao) {
         super(cod, codCategoria, nome, preco, descricao, codMarca, codColecao);
         this.preco2 = preco2;
     }
@@ -28,7 +39,4 @@ public class ProdPromo extends Produto{
     public void setPreco2(double preco2) {
         this.preco2 = preco2;
     }
-    
-    
-    
 }

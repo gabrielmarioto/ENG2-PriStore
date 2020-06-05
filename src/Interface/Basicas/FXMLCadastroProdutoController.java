@@ -244,7 +244,7 @@ public class FXMLCadastroProdutoController implements Initializable
                             if (cbb_Marca.getSelectionModel().getSelectedIndex() != -1)
                             {
                                 p = new Produto(cod, cbb_Categoria.getValue(), tb_Nome.getText(), Float.parseFloat(tb_Preco.getText().replace(".", "").replace(",", ".")),
-                                        tb_Descricao.getText(), cbb_Marca.getValue(), cbb_Colecao.getValue(), new Promocao());
+                                        tb_Descricao.getText(), cbb_Marca.getValue(), cbb_Colecao.getValue());
                                 if (p.getCod() == 0) // novo cadastro
                                 {
                                     if (!p.insert())

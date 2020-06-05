@@ -6,6 +6,8 @@
 package Persistencia;
 
 import Model.Marca;
+import Model.ProdPromo;
+import Model.Produto;
 import Util.Banco;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,48 +18,39 @@ import java.util.List;
  *
  * @author Gabriel
  */
-public class MarcaBD
+public class ProdPromoBD
 {
-    public boolean insertMarca(Marca m)
+    public boolean insert(ProdPromo p)
     {
-        String sql = "insert into marca (nome) values ('#1')";
-        sql = sql.replaceAll("#1", "" + m.getNome());
+        String sql = "insert into prodpromo (prod_cod,promo_cod,ativo,valordesc) values (#1,#2,#3,#4)";
+        sql = sql.replaceAll("#1", "" + p.getCodigoProduto());
+        sql = sql.replaceAll("#2", "" + p.getCodigoPromocao());
+        sql = sql.replaceAll("#3", "true");
+        sql = sql.replaceAll("#4", "" + p.getDesconto());
 
-        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean updateMarca(Marca m)
+    public boolean update(ProdPromo p)
     {
-        String sql = "update marca set nome = '#1' where cod = " + m.getCod();
-        sql = sql.replaceAll("#1", "" + m.getNome());
+        String sql = "update prodpromo set ativo = #1, valordesc= #2 where prod_cod = " + p.getCodigoProduto() + " and promo_cod = "+p.getCodigoPromocao();
+        sql = sql.replaceAll("#1", ""+p.isAtivo());
+        sql = sql.replaceAll("#2", "" + p.getDesconto());
         return Banco.getCon().manipular(sql);
     }
 
-    public boolean deleteMarca(Marca m)
+    public boolean delete(ProdPromo p)
     {
-        return Banco.getCon().manipular("delete from marca where cod =" + m.getCod());
+        return Banco.getCon().manipular("delete from marca where prod_cod = " + p.getCodigoProduto() + " and promo_cod = "+p.getCodigoPromocao());
     }
 
-    public Marca get(int cod)
+    
+    public ProdPromo get(int cod)
     {
-        Marca m = null;
-        ResultSet rs = Banco.getCon().consultar("select * from marca where cod =" + cod);
-
-        try
-        {
-            if (rs.next())
-            {
-                m = new Marca(rs.getInt("cod"), rs.getString("nome"));
-            }
-        } catch (SQLException ex)
-        {
-
-        }
-
-        return m;
+        ProdPromo p = null;
+        String sql = "select * from prodpromo where ";
+        return p;
     }
-
     public List<Marca> get(String filtro)
     {
         String sql = "select * from marca";

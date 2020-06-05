@@ -7,24 +7,21 @@ package Interface;
 
 import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
-import Model.Marca;
+import Model.ProdPromo;
 import Model.Produto;
+import Model.ProdutoPm;
 import Model.Promocao;
 import Model.Usuario;
-import Persistencia.PromocaoBD;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
-import com.sun.javafx.collections.ElementObservableListDecorator;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.Date;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -40,7 +37,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
@@ -99,13 +95,13 @@ public class FXMLEfetuarPromocaoController implements Initializable
     @FXML
     private JFXTextField tb_valor;
     @FXML
-    private TableColumn<Produto, Integer> codcol;
+    private TableColumn<ProdutoPm, Integer> codcol;
     @FXML
-    private TableColumn<Produto, String> colproduto;
+    private TableColumn<ProdutoPm, String> colproduto;
     @FXML
-    private TableColumn<Produto, Double > colpreco;  
+    private TableColumn<ProdutoPm, Double > colpreco;  
     @FXML
-    private TableColumn<Produto, Double> colprecopromo;
+    private TableColumn<ProdutoPm, Double> colprecopromo;
     @FXML
     private JFXButton btn_adicionar;
     @FXML
@@ -118,13 +114,13 @@ public class FXMLEfetuarPromocaoController implements Initializable
     private TableColumn<Promocao, Date> coldata;
     
     @FXML
-    private TableView<Produto> tabela;
+    private TableView<ProdutoPm> tabela;
      @FXML
     private TableView<Promocao> TabelaPromo;
     
     
     private Usuario u;
-    private List<Produto> lista= new ArrayList<>();
+    private List<ProdutoPm> lista= new ArrayList<>();
     @FXML
     private HBox pnPromo;
    
@@ -154,7 +150,11 @@ public class FXMLEfetuarPromocaoController implements Initializable
      
     protected void RecebeLista(List<Produto> lista)
     {
-        this.lista=lista;
+        this.lista.clear();
+        for(Produto p : lista)
+        {
+            this.lista.add(new ProdutoPm(p.getCod(), p.getCodCategoria(), p.getNome(), p.getPreco(), p.getDescricao(), p.getCodMarca(), p.getCodColecao()));
+        }
         carregaTabelaProd("","");
     }
         
@@ -231,9 +231,9 @@ public class FXMLEfetuarPromocaoController implements Initializable
     
         private void carregaTabelaProd(String fil,String filtro)
     {
-        List<Produto> listafiltrada = new ArrayList<>();
+        List<ProdutoPm> listafiltrada = new ArrayList<>();
         String tipo = verificatipo();
-
+        
         double valor =0;
         if(!tipo.isEmpty() && tb_valor.getText().length()>0)   
         {
@@ -256,7 +256,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
         }
         
         
-        for(Produto p : lista)
+        for(ProdutoPm p : lista)
         {
             if(fil.equals("categoria"))
             {
@@ -276,7 +276,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
                     listafiltrada.add(p);
             } 
         }
-        ObservableList<Produto> modelo;
+        ObservableList<ProdutoPm> modelo;
         if(listafiltrada.isEmpty())
         {
             modelo = FXCollections.observableArrayList(lista);
@@ -345,9 +345,11 @@ public class FXMLEfetuarPromocaoController implements Initializable
         int cod;
         Promocao p = new Promocao();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
+        boolean update = false;
         try
         {
             cod = Integer.parseInt(tb_Codigo.getText());
+            update=true;
         } catch (Exception e)
         {
             cod = 0;
@@ -359,7 +361,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
             {
                 if(tb_valor.getText().length()>0)
                 {
-                    if(dt_inicial.getValue()!=null && !dt_inicial.getValue().isBefore(LocalDate.now()))
+                    if(dt_inicial.getValue()!=null && (!dt_inicial.getValue().isBefore(LocalDate.now()) || update))
                     {
                         if(dt_final.getValue()!=null && dt_final.getValue().isAfter(dt_inicial.getValue()))
                         {
@@ -370,28 +372,22 @@ public class FXMLEfetuarPromocaoController implements Initializable
                                         tipo,Double.parseDouble(tb_valor.getText().replace(".", "").replace(",", ".")));
                                 if (p.getCodigo()== 0) // novo cadastro
                                 {
-                                    if (!p.insertPromocao())
+                                    if (!p.insertPromocao(lista))
                                     {                                   
                                         a.setContentText("Problemas ao Gravar");
                                         a.showAndWait();
                                     }
                                     else
                                     {
-                                        p= new Promocao().selectPromocao("nome like '%"+p.getNome()+"%'").get(0);
-                                        for(Produto pr : lista)
-                                        {
-                                            pr.setCodPromo(p);
-                                            pr.update();
-                                        }
                                         a.setContentText("Gravado com Sucesso");
                                         a.showAndWait();
                                         lista.clear();
                                         estadoOriginal();
-
                                     }
                                 }
                                 else
                                 {
+                                    
                                     if (!p.updatePromocao())
                                     {
                                         a.setContentText("Problemas ao Alterar");
@@ -403,13 +399,13 @@ public class FXMLEfetuarPromocaoController implements Initializable
                                         aux.removeAll(lista);
                                         for(Produto pr : aux)
                                         {
-                                            pr.setCodPromo(null);
+                                            
                                             pr.update();
                                         }
 
                                         for(Produto pr : lista)
                                         {
-                                            pr.setCodPromo(p);
+                                            
                                             pr.update();
                                         }
                                         a.setContentText("Alterado com Sucesso");
@@ -508,7 +504,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
                 cbb_tipo.getSelectionModel().select(0);
             else
                 cbb_tipo.getSelectionModel().select(1);
-            lista= new Produto().selectProduto("codpromocao="+tb_Codigo.getText());
+            //lista= new Produto().selectProduto("codpromocao="+tb_Codigo.getText());
             carregaTabelaProd("", "");
         }
     }
@@ -530,7 +526,13 @@ public class FXMLEfetuarPromocaoController implements Initializable
             try {
                 root = (Parent) loader.load();
                 FXMLSelecionaProdutosController ctr = loader.getController();
-                ctr.RecebeDados(this,this.lista);
+                List<Produto> lista = new ArrayList<>();
+                for(ProdutoPm p : this.lista)
+                {
+                   lista.add(new Produto(p.getCod(), p.getCodCategoria(), p.getNome(), p.getPreco(), p.getDescricao(), p.getCodMarca(), p.getCodColecao()));
+                }
+                
+                ctr.RecebeDados(this,lista);
                 
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);

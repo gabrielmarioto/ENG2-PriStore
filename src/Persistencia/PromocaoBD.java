@@ -7,6 +7,7 @@ package Persistencia;
 
 import Model.Marca;
 import Model.Produto;
+import Model.ProdutoPm;
 import Model.Promocao;
 import Util.Banco;
 import java.sql.ResultSet;
@@ -23,23 +24,47 @@ public class PromocaoBD
 
     //#1 = INTEIRO
     //'#1' = STRING
-    public boolean insertPromocao(Promocao p)
+    public boolean insertPromocao(Promocao p,List<ProdutoPm> lista) throws SQLException
     {
-        String sql = "insert into promocao (cod,nome, datainicio, datafinal, tipo,valorpromocao) values (#1,'#2', '#3' , '#4', '#5', #6)";
-        sql = sql.replaceAll("#1", "" + p.getCodigo());
-        sql = sql.replaceAll("#2", "" + p.getNome());
-        sql = sql.replaceAll("#3", "" + p.getInicio());
-        sql = sql.replaceAll("#4", "" + p.getFim());
-        sql = sql.replaceAll("#5", "" + p.getTipo());
-        sql = sql.replaceAll("#6", "" + p.getValor());
-        System.out.println(sql);
-        return Banco.getCon().manipular(sql);
+        boolean ok= false;
+        try{
+            Banco.getCon().getConnect().setAutoCommit(false);
+            String sql = "insert into promocao (cod,nome, datainicio, datafinal, tipo,valorpromocao) values (#1,'#2', '#3' , '#4', '#5', #6)";
+            sql = sql.replaceAll("#1", "" + p.getCodigo());
+            sql = sql.replaceAll("#2", "" + p.getNome());
+            sql = sql.replaceAll("#3", "" + p.getInicio());
+            sql = sql.replaceAll("#4", "" + p.getFim());
+            sql = sql.replaceAll("#5", "" + p.getTipo());
+            sql = sql.replaceAll("#6", "" + p.getValor());
+            ok=Banco.getCon().manipular(sql);
+            int i=0;
+            while(ok && i<lista.size())
+            {
+                sql = "insert into prodpromo (prod_cod,promo_cod,ativo,valordesc) values (#1,#2,#3,#4)";
+                sql = sql.replaceAll("#1", "" + (lista.get(i).getCod()));
+                sql = sql.replaceAll("#2", "" + p.getCodigo());
+                sql = sql.replaceAll("#3", "true");
+                sql = sql.replaceAll("#4", "" + (lista.get(i).getPreco()-lista.get(i).getPreco2()));
+                ok = Banco.getCon().manipular(sql);
+                i++;
+            }
+        }
+        catch(SQLException ex)
+        {
+            ok=false;
+        }
+        if(ok)
+            Banco.getCon().getConnect().commit();
+        else
+             Banco.getCon().getConnect().rollback();
+        Banco.getCon().getConnect().setAutoCommit(true);
+        return ok;
     }
 
     public boolean updatePromocao(Promocao p)
     {
         String sql = "update promocao set  nome= '#2', datainicio ='#3', datafinal ='#4', tipo = '#5', valorpromocao = #6 where cod =" + p.getCodigo();
-         sql = sql.replaceAll("#2", "" + p.getNome());
+        sql = sql.replaceAll("#2", "" + p.getNome());
         sql = sql.replaceAll("#3", "" + p.getInicio());
         sql = sql.replaceAll("#4", "" + p.getFim());
         sql = sql.replaceAll("#5", "" + p.getTipo());
@@ -53,9 +78,9 @@ public class PromocaoBD
         boolean ok = true;
         try {
             Banco.getCon().getConnect().setAutoCommit(false);
-            ResultSet rs = Banco.getCon().consultar("select * from produto where codpromocao ="+p.getCodigo());
+            ResultSet rs = Banco.getCon().consultar("select promo_cod from prodpromo where promo_cod ="+p.getCodigo());
             if(rs.next())
-                ok = Banco.getCon().manipular("update produto set codPromocao= null where codPromocao ="+p.getCodigo());
+                ok = Banco.getCon().manipular("delete from prodpromo where promo_cod="+p.getCodigo());
             if(ok)
                 ok = Banco.getCon().manipular("delete from promocao where cod =" + p.getCodigo());
             

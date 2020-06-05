@@ -32,13 +32,6 @@ public class ProdutoBD
         sql = sql.replaceAll("#5", "" + p.getDescricao());
         sql = sql.replaceAll("#6", "" + p.getCodMarca().getCod());
         sql = sql.replaceAll("#7", "" + p.getCodColecao().getCod());
-        
-        if(p.getCodPromo()==null)
-            sql=sql = sql.replaceAll("#8", "null");
-        else
-        sql = sql.replaceAll("#8", "" + p.getCodPromo().getCodigo());
-        
-        System.out.println(sql);
         return Banco.getCon().manipular(sql);
     }
 
@@ -51,11 +44,6 @@ public class ProdutoBD
         sql = sql.replaceAll("#4", "" + p.getDescricao());
         sql = sql.replaceAll("#5", "" + p.getCodMarca().getCod());
         sql = sql.replaceAll("#6", "" + p.getCodColecao().getCod());  
-        if(p.getCodPromo()==null)
-            sql=sql = sql.replaceAll("#7", "null");
-        else
-            sql = sql.replaceAll("#7", "" + p.getCodPromo().getCodigo());
-
         return Banco.getCon().manipular(sql);
     }
     
@@ -75,7 +63,7 @@ public class ProdutoBD
             {
                 p = new Produto(rs.getInt("cod"), new CategoriaBD().get(rs.getInt("codCategoria")), rs.getString("nome"),
                         rs.getFloat("preco"), rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")),
-                        new ColecaoBD().get(rs.getInt("codColecao")), new PromocaoBD().get(rs.getInt("codPromocao")));
+                        new ColecaoBD().get(rs.getInt("codColecao")));
             }
         } catch (SQLException ex)
         {
@@ -99,7 +87,7 @@ public class ProdutoBD
             while (rs.next())
             {
                 aux.add(new Produto(rs.getInt("cod"), new CategoriaBD().get(rs.getInt("codCategoria")), rs.getString("nome"), rs.getFloat("preco"),
-                        rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")), new ColecaoBD().get(rs.getInt("codColecao")), new PromocaoBD().get(rs.getInt("codPromocao"))));
+                        rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")), new ColecaoBD().get(rs.getInt("codColecao"))));
             }
         } catch (SQLException ex)
         {
