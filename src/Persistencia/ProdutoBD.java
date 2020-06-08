@@ -25,7 +25,8 @@ public class ProdutoBD
     //'#1' = STRING
     public boolean insertProduto(Produto p)
     {
-        String sql = "insert into produto (codCategoria, nome, preco, descricao, codMarca, codColecao,codPromocao) values (#2, '#3', #4, '#5', #6, #7,#8)";
+        String sql = "insert into produto (cod,codCategoria, nome, preco, descricao, codMarca, codColecao) values (#1,#2, '#3', #4, '#5', #6, #7)";
+        sql = sql.replaceAll("#1", "" + p.getCod());
         sql = sql.replaceAll("#2", "" + p.getCodCategoria().getCod());
         sql = sql.replaceAll("#3", "" + p.getNome());
         sql = sql.replaceAll("#4", "" + p.getPreco());
@@ -37,7 +38,7 @@ public class ProdutoBD
 
     public boolean updateProduto(Produto p)
     {
-        String sql = "update produto set codCategoria=#1, nome= '#2', preco =#3, descricao ='#4', codMarca = #5, codColecao = #6 ,codPromocao = #7 where cod =" + p.getCod();
+        String sql = "update produto set codCategoria=#1, nome= '#2', preco =#3, descricao ='#4', codMarca = #5, codColecao = #6 where cod =" + p.getCod();
         sql = sql.replaceAll("#1", "" + p.getCodCategoria().getCod());
         sql = sql.replaceAll("#2", "" + p.getNome());
         sql = sql.replaceAll("#3", "" + p.getPreco());
@@ -89,6 +90,7 @@ public class ProdutoBD
                 aux.add(new Produto(rs.getInt("cod"), new CategoriaBD().get(rs.getInt("codCategoria")), rs.getString("nome"), rs.getFloat("preco"),
                         rs.getString("descricao"), new MarcaBD().get(rs.getInt("codMarca")), new ColecaoBD().get(rs.getInt("codColecao"))));
             }
+            
         } catch (SQLException ex)
         {
 

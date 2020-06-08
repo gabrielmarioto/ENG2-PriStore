@@ -80,21 +80,33 @@ public class ProdPromo {
         return prod.delete(this);
     }
 
-    public Produto selectProduto(int cod)
+    public ProdPromo selectPorProduto(int cod)
     {
-        Produto p;
-        ProdutoBD prod = new ProdutoBD();
-        p = prod.get(cod);
+        ProdPromo p;
+        ProdPromoBD prod = new ProdPromoBD();
+        p = prod.getPorProduto(cod);
         return p;
     }
 
-    public List<Produto> selectProduto(String filtro)
+    public List<ProdPromo> selectPorProduto(String filtro)
     {
-        List<Produto> aux = new ArrayList();
-        ProdutoBD prod = new ProdutoBD();
+        List<ProdPromo> aux = new ArrayList();
+        ProdPromoBD prod = new ProdPromoBD();
         aux = prod.get(filtro);
 
         return aux;
     }
     
+    public List<ProdutoPm> selectProdutos(String filtro)
+    {
+        List<ProdutoPm> p;
+        p=new ProdPromoBD().getProdutos(filtro);
+        return p;
+    }
+    
+    public void updateAtivo(int cod,boolean ativo)
+    {
+        ProdPromoBD prod = new ProdPromoBD();
+        prod.updateAtivo(cod,ativo);
+    }
 }

@@ -5,8 +5,6 @@
  */
 package Interface;
 
-import Interface.Basicas.FXMLCadastroProdutoController;
-import Interface.Basicas.FXMLCadastroTamanhoController;
 import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
 import Model.Compra;

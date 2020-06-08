@@ -6,6 +6,7 @@
 package Model;
 
 import Persistencia.ProdutoBD;
+import Util.Banco;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +116,9 @@ public class Produto
     
     public boolean insert()
     {
+        cod= Banco.getCon().getMaxPK("Produto", "cod")+1;
+        if(cod==0)
+            cod=1;
         ProdutoBD prod = new ProdutoBD();
         return prod.insertProduto(this);
     }

@@ -3,20 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Interface.Basicas;
+package Interface;
 
 import static Interface.TelaPrincipalController.spnprincipal;
-import Mask.MaskFieldUtil;
 import Model.Categoria;
 import Model.Colecao;
-import Model.Marca;
-import Model.Produto;
-import Model.Tamanho;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -44,7 +43,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Gabriel
  */
-public class FXMLCadastroTamanhoController implements Initializable
+public class FXMLCadastroColecaoController implements Initializable
 {
 
     @FXML
@@ -62,30 +61,27 @@ public class FXMLCadastroTamanhoController implements Initializable
     @FXML
     private AnchorPane pndados;
     @FXML
-    private JFXComboBox<Produto> cbb_Produto;
+    private JFXTextField tb_Codigo;
     @FXML
-    private JFXTextField tb_Tamanho;
-    @FXML
-    private JFXTextField tb_Quantidade;
+    private JFXTextField tb_Nome;
     @FXML
     private VBox pnpesquisa;
     @FXML
     private JFXTextField tb_Pesquisa;
     @FXML
-    private JFXComboBox<String> cbb_Filtro;
-    @FXML
     private JFXButton btn_Pesquisa;
     @FXML
-    private TableView<Tamanho> tabela;
+    private TableView<Colecao> tabela;
     @FXML
-    private TableColumn<Tamanho, Integer> colproduto;
+    private TableColumn<Colecao, Integer> colcod;
     @FXML
-    private TableColumn<Tamanho, String> coltamanho;
+    private TableColumn<Colecao, String> colnome;
     @FXML
-    private TableColumn<Tamanho, Integer> colqtde;
+    private JFXDatePicker dtp_Inicial;
+    @FXML
+    private JFXComboBox<String> cbb_Filtro;
 
     private Usuario u;
-
     /**
      * Initializes the controller class.
      */
@@ -93,17 +89,16 @@ public class FXMLCadastroTamanhoController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
-        colproduto.setCellValueFactory(new PropertyValueFactory("codProduto"));
-        coltamanho.setCellValueFactory(new PropertyValueFactory("tamanho"));
-        colqtde.setCellValueFactory(new PropertyValueFactory("qtde"));
+        colcod.setCellValueFactory(new PropertyValueFactory("cod"));
+        colnome.setCellValueFactory(new PropertyValueFactory("nome"));
         estadoOriginal();
     }
 
-    public void RecebeDados(Usuario u)
-    {
-        this.u = u;
+     public void RecebeDados(Usuario u){
+        
+       this.u=u;
     }
-
+     
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
@@ -113,7 +108,7 @@ public class FXMLCadastroTamanhoController implements Initializable
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
         btn_Novo.setDisable(false);
-
+        dtp_Inicial.setDisable(true);        
         ObservableList<Node> componentes = pndados.getChildren(); //”limpa” os componentes
         for (Node n : componentes)
         {
@@ -130,6 +125,19 @@ public class FXMLCadastroTamanhoController implements Initializable
         carregaTabela("");
     }
 
+    private void carregaTabela(String filtro)
+    {
+        Colecao c = new Colecao();
+        List<Colecao> res = c.selectColecao(filtro);
+        ObservableList<Colecao> modelo;
+        modelo = FXCollections.observableArrayList(res);
+        tabela.setItems(modelo);
+        List<String> Filtro = new ArrayList<>();
+        Filtro.add("Nome");
+        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_Filtro.getSelectionModel().select(0);
+    }
+
     private void estadoEdicao()
     {
         pnpesquisa.setDisable(true);
@@ -137,24 +145,8 @@ public class FXMLCadastroTamanhoController implements Initializable
         btn_Confirmar.setDisable(false);
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
-        cbb_Produto.requestFocus();
-    }
-
-    private void carregaTabela(String filtro)
-    {
-        Tamanho t = new Tamanho();
-        List<Tamanho> res = t.selectTamanho(filtro);
-        ObservableList<Tamanho> modelo;
-        modelo = FXCollections.observableArrayList(res);
-        tabela.setItems(modelo);
-        cbb_Produto.setItems(FXCollections.observableArrayList(new Produto().selectProduto("")));
-
-        List<String> Filtro = new ArrayList<>();
-        Filtro.add("Produto");
-        Filtro.add("Tamanho");
-        Filtro.add("Qtde");
-        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
-        cbb_Filtro.getSelectionModel().select(0);
+        tb_Nome.requestFocus();
+        dtp_Inicial.setDisable(false);
     }
 
     @FXML
@@ -168,12 +160,11 @@ public class FXMLCadastroTamanhoController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            Tamanho t = (Tamanho) tabela.getSelectionModel().getSelectedItem();
-            tb_Tamanho.setText(t.getTamanho());
-            tb_Quantidade.setText("" + t.getQtde());
+            Colecao c = (Colecao) tabela.getSelectionModel().getSelectedItem();
+            tb_Codigo.setText("" + c.getCod());
+            tb_Nome.setText(c.getNome());
+            dtp_Inicial.setValue(c.getDataInicio());
             estadoEdicao();
-            cbb_Produto.getSelectionModel().select(0);// gambis           
-            cbb_Produto.getSelectionModel().select(t.getCodProduto().getCod());
         }
     }
 
@@ -184,9 +175,9 @@ public class FXMLCadastroTamanhoController implements Initializable
         a.setContentText("Confirma a exclusão?");
         if (a.showAndWait().get() == ButtonType.OK)
         {
-            Tamanho t = new Tamanho();
-            t = tabela.getSelectionModel().getSelectedItem();
-            if (!t.deleteTamanho())
+            Colecao c = new Colecao();
+            c = tabela.getSelectionModel().getSelectedItem();
+            if (!c.deleteColecao())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
@@ -199,34 +190,43 @@ public class FXMLCadastroTamanhoController implements Initializable
     @FXML
     private void clkBtConfirmar(ActionEvent event)
     {
-        Tamanho t;
+        int cod;
+        LocalDate dataAtual = LocalDate.now();
+        Colecao c = new Colecao();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
-        if(cbb_Produto.getSelectionModel().getSelectedIndex() != -1)
+        try
         {
-            if(tb_Tamanho.getText().length() > 0 && tb_Tamanho.getText().length() <= 3)
+            cod = Integer.parseInt(tb_Codigo.getText());
+        } catch (Exception e)
+        {
+            cod = 0;
+        }
+        if (tb_Nome.getText().length() > 0)
+        {
+            if (dtp_Inicial.getValue().isBefore(dataAtual))
             {
-                if(tb_Quantidade.getText().length() > 0)
+                c = new Colecao(cod, tb_Nome.getText(), dtp_Inicial.getValue());
+                if (c.getCod() == 0)
                 {
-                    t = new Tamanho(cbb_Produto.getValue(), tb_Tamanho.getText(), Integer.parseInt(tb_Quantidade.getText()));
-                    if(!t.insertTamanho())
+                    if (!c.insertColecao())
+                    {
                         a.setContentText("Problemas ao Gravar");
-                    estadoOriginal();
-                }
-                else
+                    }
+                } else
                 {
-                     a.setContentText("Informe a quantidade!");
+                    if (!c.updateColecao())
+                    {
+                        a.setContentText("Problemas ao Alterar");
+                        a.showAndWait();
+                    }
                 }
-            }
-            else
-            {
-                 a.setContentText("Informe o tamanho!");
-            }
-        }
-        else
+            }            
+        } else
         {
-             a.setContentText("Informe o produto!");
-             a.showAndWait();
+            a.setContentText("Informe o nome!");
+            a.showAndWait();
         }
+        estadoOriginal();
         carregaTabela("");
     }
 
@@ -245,14 +245,16 @@ public class FXMLCadastroTamanhoController implements Initializable
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        String filtro = "upper(" + cbb_Filtro.getValue() + ") ";
+        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        String filtro = "upper(" + cbb_Filtro.getValue() + ") ";
+        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
+
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
@@ -262,23 +264,16 @@ public class FXMLCadastroTamanhoController implements Initializable
         if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
-            if (u.getNivel() > 1)
-            {
+            if(u.getNivel()>1)
                 btn_Alterar.setDisable(false);
-            }
             btn_Novo.setDisable(true);
-            if (u.getNivel() > 2)
-            {
+            if(u.getNivel()>2)
                 btn_Apagar.setDisable(false);
-            }
 
-            
-            tb_Tamanho.setText(tabela.getSelectionModel().getSelectedItem().getTamanho());
-            tb_Quantidade.setText(""+tabela.getSelectionModel().getSelectedItem().getQtde());
-            
-            //FAZER COMBOBOX (GAMBIS COPIADA DO PROFESSOR)
-            cbb_Produto.getSelectionModel().select(0);// gambis           
-            cbb_Produto.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodProduto().getCod());            
+            tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
+            tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
+            dtp_Inicial.setValue(tabela.getSelectionModel().getSelectedItem().getDataInicio());
         }
     }
+
 }

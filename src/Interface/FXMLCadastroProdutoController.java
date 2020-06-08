@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Interface.Basicas;
+package Interface;
 
 import static Interface.TelaPrincipalController.spnprincipal;
 import Mask.MaskFieldUtil;
@@ -250,7 +250,7 @@ public class FXMLCadastroProdutoController implements Initializable
                                     if (!p.insert())
                                     {
                                         a.setContentText("Problemas ao Gravar");
-                                        // a.showAndWait();
+                                        a.showAndWait();
                                     }
                                 } else //alteração de cadastro
                                 {

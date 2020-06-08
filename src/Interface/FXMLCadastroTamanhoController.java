@@ -3,10 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Interface.Basicas;
+package Interface;
 
 import static Interface.TelaPrincipalController.spnprincipal;
+import Mask.MaskFieldUtil;
+import Model.Categoria;
+import Model.Colecao;
 import Model.Marca;
+import Model.Produto;
+import Model.Tamanho;
 import Model.Usuario;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -39,7 +44,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Gabriel
  */
-public class FXMLCadastroMarcaController implements Initializable
+public class FXMLCadastroTamanhoController implements Initializable
 {
 
     @FXML
@@ -57,25 +62,30 @@ public class FXMLCadastroMarcaController implements Initializable
     @FXML
     private AnchorPane pndados;
     @FXML
-    private JFXTextField tb_Codigo;
+    private JFXComboBox<Produto> cbb_Produto;
     @FXML
-    private JFXTextField tb_Nome;
+    private JFXTextField tb_Tamanho;
+    @FXML
+    private JFXTextField tb_Quantidade;
     @FXML
     private VBox pnpesquisa;
     @FXML
     private JFXTextField tb_Pesquisa;
     @FXML
+    private JFXComboBox<String> cbb_Filtro;
+    @FXML
     private JFXButton btn_Pesquisa;
     @FXML
-    private TableView<Marca> tabela;
+    private TableView<Tamanho> tabela;
     @FXML
-    private TableColumn<Marca, Integer> colcod;
+    private TableColumn<Tamanho, Integer> colproduto;
     @FXML
-    private TableColumn<Marca, String> colnome;
+    private TableColumn<Tamanho, String> coltamanho;
     @FXML
-    private JFXComboBox<String> cbb_Filtro;
+    private TableColumn<Tamanho, Integer> colqtde;
 
     private Usuario u;
+
     /**
      * Initializes the controller class.
      */
@@ -83,15 +93,17 @@ public class FXMLCadastroMarcaController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         // TODO
-        colcod.setCellValueFactory(new PropertyValueFactory("cod"));
-        colnome.setCellValueFactory(new PropertyValueFactory("nome"));
+        colproduto.setCellValueFactory(new PropertyValueFactory("codProduto"));
+        coltamanho.setCellValueFactory(new PropertyValueFactory("tamanho"));
+        colqtde.setCellValueFactory(new PropertyValueFactory("qtde"));
         estadoOriginal();
     }
 
-     public void RecebeDados(Usuario u){
-       this.u=u;
+    public void RecebeDados(Usuario u)
+    {
+        this.u = u;
     }
-     
+
     private void estadoOriginal()
     {
         pnpesquisa.setDisable(false);
@@ -118,19 +130,6 @@ public class FXMLCadastroMarcaController implements Initializable
         carregaTabela("");
     }
 
-    private void carregaTabela(String filtro)
-    {
-        Marca m = new Marca();
-        List<Marca> res = m.selectMarca(filtro);
-        ObservableList<Marca> modelo;
-        modelo = FXCollections.observableArrayList(res);
-        tabela.setItems(modelo);
-        List<String> Filtro = new ArrayList<>();
-        Filtro.add("Nome");
-        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
-        cbb_Filtro.getSelectionModel().select(0);
-    }
-
     private void estadoEdicao()
     {
         pnpesquisa.setDisable(true);
@@ -138,7 +137,24 @@ public class FXMLCadastroMarcaController implements Initializable
         btn_Confirmar.setDisable(false);
         btn_Apagar.setDisable(true);
         btn_Alterar.setDisable(true);
-        tb_Nome.requestFocus();
+        cbb_Produto.requestFocus();
+    }
+
+    private void carregaTabela(String filtro)
+    {
+        Tamanho t = new Tamanho();
+        List<Tamanho> res = t.selectTamanho(filtro);
+        ObservableList<Tamanho> modelo;
+        modelo = FXCollections.observableArrayList(res);
+        tabela.setItems(modelo);
+        cbb_Produto.setItems(FXCollections.observableArrayList(new Produto().selectProduto("")));
+
+        List<String> Filtro = new ArrayList<>();
+        Filtro.add("Produto");
+        Filtro.add("Tamanho");
+        Filtro.add("Qtde");
+        cbb_Filtro.setItems(FXCollections.observableArrayList(Filtro));
+        cbb_Filtro.getSelectionModel().select(0);
     }
 
     @FXML
@@ -152,10 +168,12 @@ public class FXMLCadastroMarcaController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            Marca m = (Marca) tabela.getSelectionModel().getSelectedItem();
-            tb_Codigo.setText("" + m.getCod());
-            tb_Nome.setText(m.getNome());
+            Tamanho t = (Tamanho) tabela.getSelectionModel().getSelectedItem();
+            tb_Tamanho.setText(t.getTamanho());
+            tb_Quantidade.setText("" + t.getQtde());
             estadoEdicao();
+            cbb_Produto.getSelectionModel().select(0);// gambis           
+            cbb_Produto.getSelectionModel().select(t.getCodProduto().getCod());
         }
     }
 
@@ -166,9 +184,9 @@ public class FXMLCadastroMarcaController implements Initializable
         a.setContentText("Confirma a exclusão?");
         if (a.showAndWait().get() == ButtonType.OK)
         {
-            Marca m = new Marca();
-            m = tabela.getSelectionModel().getSelectedItem();
-            if (!m.deleteMarca())
+            Tamanho t = new Tamanho();
+            t = tabela.getSelectionModel().getSelectedItem();
+            if (!t.deleteTamanho())
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
@@ -181,40 +199,34 @@ public class FXMLCadastroMarcaController implements Initializable
     @FXML
     private void clkBtConfirmar(ActionEvent event)
     {
-        int cod;
-        Marca m = new Marca();
+        Tamanho t;
         Alert a = new Alert(Alert.AlertType.INFORMATION);
-        try
+        if(cbb_Produto.getSelectionModel().getSelectedIndex() != -1)
         {
-            cod = Integer.parseInt(tb_Codigo.getText());
-        } catch (Exception e)
-        {
-            cod = 0;
-        }
-        if (tb_Nome.getText().length() > 0)
-        {
-            m = new Marca(cod, tb_Nome.getText());
-            if (m.getCod() == 0)
+            if(tb_Tamanho.getText().length() > 0 && tb_Tamanho.getText().length() <= 3)
             {
-                if (!m.insertMarca())
+                if(tb_Quantidade.getText().length() > 0)
                 {
-                    a.setContentText("Problemas ao Gravar");
+                    t = new Tamanho(cbb_Produto.getValue(), tb_Tamanho.getText(), Integer.parseInt(tb_Quantidade.getText()));
+                    if(!t.insertTamanho())
+                        a.setContentText("Problemas ao Gravar");
+                    estadoOriginal();
                 }
-            } else
-            {
-                if (!m.updateMarca())
+                else
                 {
-                    a.setContentText("Problemas ao Alterar");
-                    a.showAndWait();
+                     a.setContentText("Informe a quantidade!");
                 }
             }
-            estadoOriginal();
-        } else
-        {
-            a.setContentText("Informe o nome!");
-            a.showAndWait();
+            else
+            {
+                 a.setContentText("Informe o tamanho!");
+            }
         }
-
+        else
+        {
+             a.setContentText("Informe o produto!");
+             a.showAndWait();
+        }
         carregaTabela("");
     }
 
@@ -233,16 +245,14 @@ public class FXMLCadastroMarcaController implements Initializable
     @FXML
     private void clkTxPesquisa(KeyEvent event)
     {
-        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
-
+        String filtro = "upper(" + cbb_Filtro.getValue() + ") ";
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
     @FXML
     private void clkBtPesquisar(ActionEvent event)
     {
-        String filtro = "upper("+ cbb_Filtro.getValue() + ") ";
-
+        String filtro = "upper(" + cbb_Filtro.getValue() + ") ";
         carregaTabela(filtro + " like '%" + tb_Pesquisa.getText().toUpperCase() + "%'");
     }
 
@@ -252,15 +262,23 @@ public class FXMLCadastroMarcaController implements Initializable
         if (event.getClickCount() == 2 && tabela.getSelectionModel().getSelectedIndex() >= 0)
         {
             pndados.setDisable(true);
-            if(u.getNivel()>1)
+            if (u.getNivel() > 1)
+            {
                 btn_Alterar.setDisable(false);
+            }
             btn_Novo.setDisable(true);
-            if(u.getNivel()>2)
+            if (u.getNivel() > 2)
+            {
                 btn_Apagar.setDisable(false);
+            }
 
-            tb_Codigo.setText("" + tabela.getSelectionModel().getSelectedItem().getCod());
-            tb_Nome.setText(tabela.getSelectionModel().getSelectedItem().getNome());
+            
+            tb_Tamanho.setText(tabela.getSelectionModel().getSelectedItem().getTamanho());
+            tb_Quantidade.setText(""+tabela.getSelectionModel().getSelectedItem().getQtde());
+            
+            //FAZER COMBOBOX (GAMBIS COPIADA DO PROFESSOR)
+            cbb_Produto.getSelectionModel().select(0);// gambis           
+            cbb_Produto.getSelectionModel().select(tabela.getSelectionModel().getSelectedItem().getCodProduto().getCod());            
         }
     }
-
 }

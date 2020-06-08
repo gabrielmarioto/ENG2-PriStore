@@ -95,10 +95,11 @@ public class Promocao {
         return promo.insertPromocao(this,lista);
     }
 
-    public boolean updatePromocao()
+    public boolean updatePromocao(List<ProdutoPm> lista) throws SQLException
     {
         PromocaoBD promo = new PromocaoBD();
-        return promo.updatePromocao(this);
+        
+        return promo.updatePromocao(this,lista);
     }
 
     public boolean deletePromocao()
@@ -114,8 +115,8 @@ public class Promocao {
     public Promocao selectPromocao(int codigo)
     {
         Promocao p;
-        PromocaoBD marca = new PromocaoBD();
-        p = marca.get(codigo);
+        PromocaoBD promo = new PromocaoBD();
+        p = promo.get(codigo);
 
         return p;
     }

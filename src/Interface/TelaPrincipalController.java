@@ -5,16 +5,10 @@
  */
 package Interface;
 
-import Interface.Basicas.FXMLCadastroProdutoController;
-import Interface.Basicas.FXMLCadastroColecaoController;
-import Interface.Basicas.FXMLAlteraUsuarioController;
-import Interface.Basicas.FXMLCadastroFornecedorController;
-import Interface.Basicas.FXMLCadastroClienteController;
-import Interface.Basicas.FXMLCadastroFuncionarioController;
-import Interface.Basicas.FXMLCadastroMarcaController;
-import Interface.Basicas.FXMLCadastroCategoriaController;
 import Model.Funcionario;
 import Model.Parametros;
+import Model.ProdPromo;
+import Model.Promocao;
 import Model.Usuario;
 import Persistencia.ParametrizacaoBD;
 import Persistencia.UsuarioBD;
@@ -24,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,7 +75,11 @@ public class TelaPrincipalController implements Initializable
         {
             clkLogin(null);
         }
-        
+       List<Promocao> lista = new Promocao().selectPromocao(" datafinal < '"+LocalDate.now().toString()+"'");
+       for(Promocao p : lista)
+       {
+           new ProdPromo().updateAtivo(p.getCodigo(),false);
+       }
     }
    
     protected void setLogin(Usuario usuario)
@@ -166,7 +166,7 @@ public class TelaPrincipalController implements Initializable
             FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroProduto.fxml"));
             Parent root = (Parent) loader.load();
 
-           FXMLCadastroProdutoController ctr = loader.getController();
+            FXMLCadastroProdutoController ctr = loader.getController();
             ctr.RecebeDados(usuario);
             pnprincipal.setCenter(root);
 

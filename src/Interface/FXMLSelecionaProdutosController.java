@@ -9,7 +9,9 @@ import Mask.MaskFieldUtil;
 import Model.Categoria;
 import Model.Colecao;
 import Model.Funcionario;
+import Model.ProdPromo;
 import Model.Produto;
+import Model.Promocao;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -66,6 +68,13 @@ public class FXMLSelecionaProdutosController implements Initializable {
 
     private List<Produto> selecionados;
     private FXMLEfetuarPromocaoController ctr;
+    private Promocao p;
+    @FXML
+    private JFXButton btn_Limpa;
+    @FXML
+    private JFXButton btn_adiciona;
+    @FXML
+    private JFXButton btn_remove;
     
     /**
      * Initializes the controller class.
@@ -88,17 +97,22 @@ public class FXMLSelecionaProdutosController implements Initializable {
         //AtualizaTabelas();
     }    
 
-    protected void RecebeDados(FXMLEfetuarPromocaoController ctr,List<Produto> lista){
+    protected void RecebeDados(FXMLEfetuarPromocaoController ctr,List<Produto> lista,Promocao p){
        this.ctr=ctr;
        this.selecionados=lista;
-        clkPesquisa(null);
+       if(p!=null)
+           this.p=p;
+        
+       clkPesquisa(null);
+     
+     
        AtualizaTabelas();
     }
       
     
     @FXML
     private void clkPesquisa(ActionEvent event) {
-        String filtro="codPromocao is null ";
+        String filtro=" descricao like '%'";
         if(tb_Nome.getText().length()>0)
             filtro+=" and nome like '%"+tb_Nome.getText()+"%' ";
         if(cbb_cat.getSelectionModel().getSelectedIndex()>-1)
@@ -112,10 +126,30 @@ public class FXMLSelecionaProdutosController implements Initializable {
         Produto p = new Produto();
         List<Produto> res = p.selectProduto(filtro);
         if(!selecionados.isEmpty())
+        {
             for(Produto pr : selecionados)
             {
                 res.remove(pr);
+            }  
+            
+        }
+        String filtro1="ativo=true ";
+        if(this.p!=null)
+        {
+            filtro1+=" and promo_cod!="+this.p.getCodigo();
+        }
+        List<ProdPromo> pp = new ProdPromo().selectPorProduto(filtro1);
+        for(int i=0;i<pp.size();i++)
+        {
+            for(int j=0;j<res.size();j++)
+            {
+                if(pp.get(i).getCodigoProduto()==res.get(j).getCod())
+                {
+                    res.remove(j); 
+                    j=res.size();
+                }
             }
+        }
         
         ObservableList<Produto> modelo;
         modelo = FXCollections.observableArrayList(res);
@@ -133,6 +167,7 @@ public class FXMLSelecionaProdutosController implements Initializable {
     @FXML
     private void clkSair(ActionEvent event) {
         ((Button)event.getSource()).getScene().getWindow().hide();
+        
     }
 
     @FXML
@@ -165,6 +200,50 @@ public class FXMLSelecionaProdutosController implements Initializable {
             selecionados.remove(tabelaselec.getSelectionModel().getSelectedIndex());
             AtualizaTabelas();
         }
+    }
+
+    @FXML
+    private void clkAdicionarTodos(ActionEvent event) {
+        if(tabelafiltro.getItems().size()>0)
+        {
+            boolean flag=true;
+            List<Produto> prod = tabelafiltro.getItems();
+            for(Produto pr : prod)
+            {
+                for(Produto p : selecionados)
+                {
+                    
+                    if(pr.getNome().equals(p.getNome()))
+                    {
+                        flag=false;
+                    }             
+                }
+                if(flag)
+                {
+                   selecionados.add(pr); 
+                }
+                 flag=true;  
+            }
+            AtualizaTabelas();
+        }
+        
+        
+    }
+
+    @FXML
+    private void clkRemoveTodos(ActionEvent event) {
+        selecionados.clear();
+        AtualizaTabelas();
+    }
+
+    @FXML
+    private void clkLimpa(ActionEvent event) {
+        tb_Nome.clear();
+        tb_precomax.clear();
+        tb_precomin.clear();
+        cbb_cat.getSelectionModel().select(-1);
+        cbb_cole.getSelectionModel().select(-1);
+        
     }
     
 }

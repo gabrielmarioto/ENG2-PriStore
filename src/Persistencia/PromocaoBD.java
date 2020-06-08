@@ -12,6 +12,7 @@ import Model.Promocao;
 import Util.Banco;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,16 +62,60 @@ public class PromocaoBD
         return ok;
     }
 
-    public boolean updatePromocao(Promocao p)
+    public boolean updatePromocao(Promocao p,List<ProdutoPm> lista) throws SQLException
     {
-        String sql = "update promocao set  nome= '#2', datainicio ='#3', datafinal ='#4', tipo = '#5', valorpromocao = #6 where cod =" + p.getCodigo();
-        sql = sql.replaceAll("#2", "" + p.getNome());
-        sql = sql.replaceAll("#3", "" + p.getInicio());
-        sql = sql.replaceAll("#4", "" + p.getFim());
-        sql = sql.replaceAll("#5", "" + p.getTipo());
-        sql = sql.replaceAll("#6", "" + p.getValor());
-
-        return Banco.getCon().manipular(sql);
+        boolean ok= false;
+        try{
+            Banco.getCon().getConnect().setAutoCommit(false);
+            boolean flag=true;
+            if(p.getFim().toLocalDate().isBefore(LocalDate.now()))
+                            flag=!flag;
+            String sql = "update promocao set  nome= '#2', datainicio ='#3', datafinal ='#4', tipo = '#5', valorpromocao = #6 where cod =" + p.getCodigo();
+            sql = sql.replaceAll("#2", "" + p.getNome());
+            sql = sql.replaceAll("#3", "" + p.getInicio());
+            sql = sql.replaceAll("#4", "" + p.getFim());
+            sql = sql.replaceAll("#5", "" + p.getTipo());
+            sql = sql.replaceAll("#6", "" + p.getValor());
+            ok=Banco.getCon().manipular(sql);
+            int i=0;
+            
+            ResultSet rs = Banco.getCon().consultar("select promo_cod from prodpromo where promo_cod ="+p.getCodigo());   
+                if(rs.next())
+                {
+                    sql = "delete from prodpromo where promo_cod= "+p.getCodigo(); 
+                    ok = Banco.getCon().manipular(sql);
+                }
+            while(ok && i<lista.size())
+            {
+                 rs = Banco.getCon().consultar("select promo_cod from prodpromo where ativo= true and prod_cod ="+lista.get(i).getCod());
+                 
+                 if(rs.next())
+                 {
+                      ok = Banco.getCon().manipular("delete from prodpromo where ativo=true and prod_cod ="+lista.get(i).getCod());
+                 }      
+                if(ok)
+                {
+                        sql = "insert into prodpromo (prod_cod,promo_cod,ativo,valordesc) values (#1,#2,#3,#4)";
+                        sql = sql.replaceAll("#1", "" + lista.get(i).getCod());
+                        sql = sql.replaceAll("#2", "" + p.getCodigo());                     
+                        sql = sql.replaceAll("#3", ""+flag);
+                        sql = sql.replaceAll("#4", "" + (lista.get(i).getPreco()-lista.get(i).getPreco2()));
+                        ok = Banco.getCon().manipular(sql); 
+                }
+                 i++;
+            }
+        }
+        catch(SQLException ex)
+        {
+            ok=false;
+        }
+        if(ok)
+            Banco.getCon().getConnect().commit();
+        else
+             Banco.getCon().getConnect().rollback();
+        Banco.getCon().getConnect().setAutoCommit(true);
+        return ok;
+       
     }
 
     public boolean deletePromocao(Promocao p) throws SQLException
@@ -103,7 +148,7 @@ public class PromocaoBD
         {
             if (rs.next())
             {
-                p = new Promocao(rs.getInt("cod"), rs.getString("nome"), rs.getDate("inicio"), rs.getDate("final"),rs.getString("tipo"),rs.getDouble("valorpromocao"));
+                p = new Promocao(rs.getInt("cod"), rs.getString("nome"), rs.getDate("datainicio"), rs.getDate("datafinal"),rs.getString("tipo"),rs.getDouble("valorpromocao"));
             }
         } catch (SQLException ex)
         {

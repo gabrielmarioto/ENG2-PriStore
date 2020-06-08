@@ -21,9 +21,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,6 +37,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -123,6 +126,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
     private List<ProdutoPm> lista= new ArrayList<>();
     @FXML
     private HBox pnPromo;
+    private Promocao p;
    
     /**
      * Initializes the controller class.
@@ -141,6 +145,8 @@ public class FXMLEfetuarPromocaoController implements Initializable
         colpromo.setCellValueFactory(new PropertyValueFactory("nome"));
         coldata.setCellValueFactory(new PropertyValueFactory("fim"));
         MaskFieldUtil.monetaryField(tb_valor);
+        MaskFieldUtil.dateField(dt_inicial.getEditor());
+        MaskFieldUtil.dateField(dt_final.getEditor());
         estadoOriginal();
     }
 
@@ -195,7 +201,10 @@ public class FXMLEfetuarPromocaoController implements Initializable
         cbb_tipo.setItems(FXCollections.observableArrayList(Tipo));
         cbb_filtro.setItems(FXCollections.observableArrayList(Filtro));
         cbb_filtro.getSelectionModel().select(0);
-
+        dt_inicial.setValue(null);
+        dt_final.setValue(null);
+        lista.clear();
+        carregaTabelaProd("","");
         carregaTabelaPromo("");
     }
 
@@ -203,8 +212,6 @@ public class FXMLEfetuarPromocaoController implements Initializable
     {
         Promocao p = new Promocao();
         List<Promocao> res = p.selectPromocao(filtro);
-        if(res.isEmpty())
-            System.out.println("é");
         ObservableList<Promocao> modelo;
         modelo = FXCollections.observableArrayList(res);
         TabelaPromo.setItems(modelo);
@@ -237,7 +244,6 @@ public class FXMLEfetuarPromocaoController implements Initializable
         double valor =0;
         if(!tipo.isEmpty() && tb_valor.getText().length()>0)   
         {
-            System.out.println(tb_valor.getText());
             tb_valor.setText(tb_valor.getText().replace(".", ","));
             valor = Double.parseDouble(tb_valor.getText().replace(".", "").replace(",", "."));
             if(tipo.equals("DF"))
@@ -304,6 +310,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
     @FXML
     private void clkBtNovo(ActionEvent event)
     {
+        p=null;
         estadoEdicao();
     }
 
@@ -312,7 +319,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
     {
         if (TabelaPromo.getSelectionModel().getSelectedItem() != null)
         {
-            Promocao p = (Promocao) TabelaPromo.getSelectionModel().getSelectedItem();
+            this.p = (Promocao) TabelaPromo.getSelectionModel().getSelectedItem();
             tb_Codigo.setText("" + p.getCodigo());
             tb_Nome.setText(p.getNome());
             estadoEdicao();
@@ -340,12 +347,12 @@ public class FXMLEfetuarPromocaoController implements Initializable
     }
 
     @FXML
-    private void clkBtConfirmar(ActionEvent event)
+    private void clkBtConfirmar(ActionEvent event) throws SQLException
     {
         int cod;
         Promocao p = new Promocao();
         Alert a = new Alert(Alert.AlertType.INFORMATION);
-        boolean update = false;
+        boolean update=false;
         try
         {
             cod = Integer.parseInt(tb_Codigo.getText());
@@ -361,13 +368,12 @@ public class FXMLEfetuarPromocaoController implements Initializable
             {
                 if(tb_valor.getText().length()>0)
                 {
-                    if(dt_inicial.getValue()!=null && (!dt_inicial.getValue().isBefore(LocalDate.now()) || update))
+                    if(dt_inicial.getValue()!=null && DataUtil(dt_inicial.getValue().toString()) && (!dt_inicial.getValue().isBefore(LocalDate.now()) || update))
                     {
-                        if(dt_final.getValue()!=null && dt_final.getValue().isAfter(dt_inicial.getValue()))
+                        if(dt_final.getValue()!=null && DataUtil(dt_inicial.getValue().toString()) && dt_final.getValue().isAfter(dt_inicial.getValue()))
                         {
                             if(!lista.isEmpty())
                             {
-                            
                                 p= new Promocao(cod,tb_Nome.getText(),Date.valueOf(dt_inicial.getValue()),Date.valueOf(dt_final.getValue()),
                                         tipo,Double.parseDouble(tb_valor.getText().replace(".", "").replace(",", ".")));
                                 if (p.getCodigo()== 0) // novo cadastro
@@ -386,28 +392,39 @@ public class FXMLEfetuarPromocaoController implements Initializable
                                     }
                                 }
                                 else
-                                {
+                                {       
+                                        List<ProdPromo> pp=new ProdPromo().selectPorProduto("ativo=true and promo_cod !="+p.getCodigo());
+                                        if(!pp.isEmpty())
+                                        {
+                                            Alert ab = new Alert(Alert.AlertType.WARNING);
+                                            ab.setContentText("Produtos desta promoção estão em outra promoção ativada, deseja ativar nesta e desativar na outra?");
+                                            ab.getButtonTypes().clear(); 
+                                            ab.getButtonTypes().addAll(new ButtonType("Sim",ButtonBar.ButtonData.YES),new ButtonType("Não",ButtonBar.ButtonData.NO));
+                                            Optional<ButtonType> result = ab.showAndWait();
+                                            if(result.get()==ButtonType.NO)
+                                            {
+                                                for(int i=0;i<pp.size();i++)
+                                                {
+                                                    for(int j=0;j<lista.size();j++)
+                                                    {
+                                                        if(pp.get(i).getCodigoProduto()==lista.get(j).getCod())
+                                                        {
+                                                            lista.remove(j); 
+                                                            j=lista.size();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     
-                                    if (!p.updatePromocao())
+                                    if (!p.updatePromocao(lista))
                                     {
                                         a.setContentText("Problemas ao Alterar");
                                         a.showAndWait();
                                     }
                                     else
                                     {
-                                        List<Produto> aux = new Produto().selectProduto("codpromocao ="+p.getCodigo());
-                                        aux.removeAll(lista);
-                                        for(Produto pr : aux)
-                                        {
-                                            
-                                            pr.update();
-                                        }
-
-                                        for(Produto pr : lista)
-                                        {
-                                            
-                                            pr.update();
-                                        }
+                                        
                                         a.setContentText("Alterado com Sucesso");
                                         a.showAndWait();
                                         lista.clear();
@@ -418,38 +435,53 @@ public class FXMLEfetuarPromocaoController implements Initializable
                             }
                             else
                             {
-                                 a.setContentText("Nenhum produto selecionado!");
+                                a.setContentText("Nenhum produto selecionado!");
                                 a.showAndWait();
                             }
                         }
                         else
                         {
+                            if(dt_final==null)
+                            {
+                                a.setContentText("Data Final Não informada!");
+                            }
+                            else
                             a.setContentText("Data Final incorreta!");
                             a.showAndWait();
+                            dt_final.requestFocus();
                             
                         }
                     }
                     else
                     {
-                        a.setContentText("Data Inicial incorreta!");
-                        a.showAndWait();                
+                        if(dt_inicial==null)
+                        {
+                            a.setContentText("Data Inicial Não informada!");
+                        }
+                        else
+                                a.setContentText("Data Inicial Invalida!");
+                        a.showAndWait();    
+                        dt_inicial.requestFocus();
                     }
                 }
                 else
                 {
                     a.setContentText("Dados de Valor promocional incorreto!");
-                        a.showAndWait();    
+                    a.showAndWait();    
+                    tb_valor.requestFocus();
                 }
             }else
             {
                 a.setContentText("Selecione o Tipo de Desconto!");
-                a.showAndWait();       
+                a.showAndWait();  
+                cbb_tipo.requestFocus();
             }
         }
         else
         {
             a.setContentText("Insira o nome da Promoção!");
             a.showAndWait();  
+            tb_Nome.requestFocus();
         }
             
         carregaTabelaPromo("");
@@ -458,7 +490,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
     @FXML
     private void clkbtcancelar(ActionEvent event)
     {
-        if (!pndados.isDisabled()) // encontra em estado de edição
+        if (!pndados.isDisabled() || !tb_Codigo.getText().isEmpty()) // encontra em estado de edição
         {
             estadoOriginal();
         } else
@@ -504,7 +536,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
                 cbb_tipo.getSelectionModel().select(0);
             else
                 cbb_tipo.getSelectionModel().select(1);
-            //lista= new Produto().selectProduto("codpromocao="+tb_Codigo.getText());
+            lista= new ProdPromo().selectProdutos(" promo_cod="+tb_Codigo.getText());
             carregaTabelaProd("", "");
         }
     }
@@ -531,8 +563,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
                 {
                    lista.add(new Produto(p.getCod(), p.getCodCategoria(), p.getNome(), p.getPreco(), p.getDescricao(), p.getCodMarca(), p.getCodColecao()));
                 }
-                
-                ctr.RecebeDados(this,lista);
+                ctr.RecebeDados(this,lista,this.p);
                 
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
@@ -540,6 +571,7 @@ public class FXMLEfetuarPromocaoController implements Initializable
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setScene(scene);
                 stage.showAndWait();
+                p=null;
             } catch (IOException ex) {
                 
             }
@@ -560,5 +592,19 @@ public class FXMLEfetuarPromocaoController implements Initializable
             
     }
 
-
+    private boolean DataUtil(String data)
+    {
+        String[] datas = data.split("-");
+        int ano =Integer.valueOf(datas[0]);
+        int mes = Integer.valueOf(datas[1]);
+        int dia = Integer.valueOf(datas[2]);
+        if(dia>31 || dia<1)
+            return false;
+        if(mes<0 || mes>12)
+            return false;
+        if(ano<1000)
+            return false;
+        
+        return true;
+    }
 }
