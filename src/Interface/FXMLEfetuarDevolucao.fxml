@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.3181818181818182" orientation="VERTICAL" prefHeight="459.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Interface.FXMLEfetuarDevolucaoController">
+   <items>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="236.0" prefWidth="743.0">
+         <children>
+            <JFXComboBox fx:id="cbb_cli" focusColor="ORANGE" layoutX="14.0" layoutY="35.0" prefHeight="25.0" prefWidth="208.0" promptText="Cliente" />
+            <JFXButton fx:id="btn_confirma" layoutX="607.0" layoutY="87.0" onAction="#clkDevolucao" prefHeight="25.0" prefWidth="122.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Efetuar Devolução" textFill="ORANGE" />
+            <JFXButton fx:id="btn_sair" layoutX="607.0" layoutY="48.0" onAction="#clkSair" prefHeight="25.0" prefWidth="122.0" ripplerFill="WHITE" style="-fx-background-color: black;" text="Sair" textFill="ORANGE" />
+         </children>
+      </AnchorPane>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="250.0" prefWidth="769.0">
+         <children>
+            <HBox alignment="CENTER" layoutY="20.0" prefHeight="41.0" prefWidth="743.0" spacing="40.0" style="-fx-background-color: #DDDDDD;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <JFXTextField fx:id="tb_Pesquisa" focusColor="ORANGE" onKeyTyped="#clkTxPesquisaPromo" prefHeight="25.0" prefWidth="299.0" promptText="Informe os dados para busca">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </JFXTextField>
+                  <JFXComboBox fx:id="cbb_filtro" focusColor="ORANGE" labelFloat="true" prefHeight="25.0" prefWidth="137.0" promptText="Filtro" />
+                  <JFXButton fx:id="btn_Pesquisar" onAction="#clkBtPesquisar" text="Pesquisar">
+                     <font>
+                        <Font name="Century Gothic" size="12.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <TableView fx:id="tabela" layoutY="92.0" onMouseClicked="#clkTabela" prefHeight="204.0" prefWidth="743.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <columns>
+                  <TableColumn fx:id="colCod" prefWidth="61.0" text="Codigo" />
+                  <TableColumn fx:id="colProd" prefWidth="429.0" text="Produto" />
+                  <TableColumn fx:id="colPreco" minWidth="0.0" prefWidth="77.0" text="Preço" />
+                  <TableColumn fx:id="coltam" minWidth="0.0" prefWidth="63.0" text="Tamanho" />
+                  <TableColumn fx:id="colData" minWidth="0.0" prefWidth="112.0" text="Data Efetuada" />
+               </columns>
+            </TableView>
+            <Label layoutX="268.0" layoutY="2.0" text="Produtos Disponiveis para a Devolução" />
+            <Label layoutX="529.0" layoutY="270.0" prefHeight="25.0" prefWidth="208.0" text="Total da Devolução:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </items>
+</SplitPane>
