@@ -14,9 +14,12 @@ import Model.Fornecedor;
 import Model.Funcionario;
 import Model.ItensCompra;
 import Model.ItensConsignado;
+import Model.ItensVenda;
+import Model.ParcelasAPagar;
 import Model.Produto;
 import Model.Tamanho;
 import Model.Usuario;
+import Model.Venda;
 import Persistencia.ConsignadoBD;
 import Persistencia.ItensCompraBD;
 import com.jfoenix.controls.JFXButton;
@@ -29,6 +32,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,12 +46,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -81,41 +88,63 @@ public class FXMLEfetuarVendaController implements Initializable
     @FXML
     private VBox pnpesquisa;
     @FXML
-    private TableView<ItensConsignado> tabela;
+    private TableView<ItensVenda> tabela;
     @FXML
-    private TableColumn<ItensConsignado, Integer> colProduto;
+    private TableColumn<ItensVenda, Integer> colProduto;
     @FXML
-    private TableColumn<ItensConsignado, String> colTamanho;
+    private TableColumn<ItensVenda, String> colTamanho;
     @FXML
-    private TableColumn<ItensConsignado, Double> colPreco;
+    private TableColumn<ItensVenda, Double> colPreco;
     @FXML
     private JFXButton btn_AdicionarItem;
     @FXML
-    private JFXButton btn_RemoverItem;
-    @FXML
-    private JFXButton btn_ProcurarCompra;
-
-    
+    private JFXButton btn_RemoverItem;    
     @FXML
     private JFXTextField tb_ValorTotal;
 
-    private List<ItensConsignado> aux = new ArrayList();
-    private List<ItensConsignado> del = new ArrayList();
+    private List<ItensVenda> aux = new ArrayList();
+    private List<ItensVenda> del = new ArrayList();
+    private List<ParcelasAPagar> Lparcelas = new ArrayList();
     
-    private ItensConsignado it = null;
-    private Consignado c;
+    private ItensVenda it = null;
+    private Venda v;
     private Usuario u;
-    private ObservableList<ItensConsignado> modelo;
+    private ObservableList<ItensVenda> modelo;
+    private ObservableList<ParcelasAPagar> modeloParcela;
     private double valor;
     private double desconto;
-    
     private static Object compra;
+    
     @FXML
     private JFXComboBox<Cliente> cbb_Cliente;
     @FXML
-    private JFXComboBox<Funcionario> cbb_funcionario;
-    @FXML
     private JFXButton btn_apagar;
+    @FXML
+    private JFXButton btn_ProcurarVenda;
+    @FXML
+    private TableView<ParcelasAPagar> tabelaParcelas;
+    @FXML
+    private TableColumn<ParcelasAPagar, Double> colValor;
+    @FXML
+    private JFXTextField tb_valor;
+    @FXML
+    private CheckBox cb_avista;
+    @FXML
+    private JFXButton btn_adicionarParcela;
+    @FXML
+    private JFXButton btn_removerParcela;
+    @FXML
+    private TableColumn<ItensVenda, Integer> colQuantidade;
+    @FXML
+    private JFXTextField tb_Quantidade;
+    @FXML
+    private Label tx_totalParcelas;
+    @FXML
+    private TableColumn<ItensVenda, Double> colTotal;
+    @FXML
+    private TableColumn<ItensVenda, LocalDate> colVencimento;
+    @FXML
+    private JFXDatePicker dtp_DataParcela;
     /**
      * Initializes the controller class.
      */
@@ -126,7 +155,12 @@ public class FXMLEfetuarVendaController implements Initializable
         colProduto.setCellValueFactory(new PropertyValueFactory("codProduto"));
         colTamanho.setCellValueFactory(new PropertyValueFactory("tamanho"));
         colPreco.setCellValueFactory(new PropertyValueFactory("valorProduto"));
-
+        colQuantidade.setCellValueFactory(new PropertyValueFactory("quantidade"));
+        colTotal.setCellValueFactory(new PropertyValueFactory("valorTotal"));
+        
+        colValor.setCellValueFactory(new PropertyValueFactory("valor"));
+        colVencimento.setCellValueFactory(new PropertyValueFactory("vencimento"));
+        MaskFieldUtil.numericField(tb_Quantidade);
         tb_ValorTotal.setDisable(true);
         tb_ValorTotal.setText(double2string(0.0));
         
@@ -148,7 +182,7 @@ public class FXMLEfetuarVendaController implements Initializable
         btn_apagar.setDisable(true);
         btn_AdicionarItem.setDisable(true);
         btn_RemoverItem.setDisable(true);
-        btn_ProcurarCompra.setDisable(false);
+        Lparcelas.clear();
         //tabela.getItems().clear();
         if(modelo != null)
         {
@@ -180,7 +214,6 @@ public class FXMLEfetuarVendaController implements Initializable
         btn_AdicionarItem.setDisable(false);
         btn_RemoverItem.setDisable(false);
         dtp_Data.setDisable(false);
-        btn_ProcurarCompra.setDisable(true);
         btn_apagar.setDisable(false);
     }
 
@@ -191,36 +224,37 @@ public class FXMLEfetuarVendaController implements Initializable
     
     public void recebeInfo()
     {
-        Consignado c = (Consignado) FXMLProcurarConsignadoController.getConsignado();
+        Venda v = (Venda) FXMLProcurarVendaController.getVenda();
         //ItensConsignadoBD bd = new ConsignadoBD();
         
-        ItensConsignado itens = new ItensConsignado();
-        
-        if (c != null)
+        ItensVenda itens = new ItensVenda();
+        ParcelasAPagar parcelas = new ParcelasAPagar();
+        if (v != null)
         {            
-            aux = itens.selectItens("codconsignado = "+c.getCod());
-            
-            
-            
-            
-            tb_Codigo.setText("" + c.getCod());
-            dtp_Data.setValue(c.getDtEntrega());
+            aux = itens.selectItens("codVenda = "+v.getCod());
+            Lparcelas = parcelas.selectParcelas("codVenda = "+v.getCod());
+
+            tb_Codigo.setText("" + v.getCod());
+            dtp_Data.setValue(v.getData());
             cbb_Cliente.getSelectionModel().select(0);// gambis
-            cbb_Cliente.getSelectionModel().select(c.getCodCliente().getCod());
-            cbb_funcionario.getSelectionModel().select(0);// gambis
-            cbb_funcionario.getSelectionModel().select(c.getCodFuncionario().getCodigo());
-            cbb_Produto.getSelectionModel().select(0);// gambis
-            cbb_Tamanho.getSelectionModel().select(0);// gambis
+            cbb_Cliente.getSelectionModel().select(v.getCliente().getCod());
+            cbb_Produto.getSelectionModel().select(-1);// gambis
+            cbb_Tamanho.getSelectionModel().select(-1);// gambis
 
             btn_apagar.setDisable(false);
             
             modelo = FXCollections.observableArrayList(aux);
+            modeloParcela = FXCollections.observableArrayList(Lparcelas);
             
             tabela.setItems(modelo);
+            tabelaParcelas.setItems(modeloParcela);
             tabela.refresh();
-            btn_ProcurarCompra.setDisable(true);
+            tabelaParcelas.refresh();
+            
+            tb_ValorTotal.setText(somaParcela().toString());
             atualizaSaldo();
             estadoEdicao();
+            
         } else
         {
             estadoOriginal();
@@ -229,7 +263,6 @@ public class FXMLEfetuarVendaController implements Initializable
 
     private void carregaTabela(String filtro)
     {
-        cbb_funcionario.setItems(FXCollections.observableArrayList(new Funcionario().selectFuncionario("")));
         cbb_Produto.setItems(FXCollections.observableArrayList(new Produto().selectProduto("")));
         cbb_Cliente.setItems(FXCollections.observableArrayList(new Cliente().selectClienteSemConsignadoAberto("")));
     }
@@ -241,22 +274,19 @@ public class FXMLEfetuarVendaController implements Initializable
         tb_Codigo.setDisable(true);
         tabela.setDisable(false);
         tb_ValorTotal.setText(double2string(0.0));
-        btn_ProcurarCompra.setDisable(true);
     }
-    
-    
-    
+
     @FXML
     private void clkBtConfirmar(ActionEvent event)
     {
-       
         int cod;
         LocalDate dataAtual = LocalDate.now();
-        LocalDate dataDevolucao = dtp_Data.getValue();
-        dataDevolucao.plusDays(3);
         Alert a = new Alert(Alert.AlertType.INFORMATION);
+        Venda v;
+        ParcelasAPagar p =  new ParcelasAPagar();
+        ItensVenda i = new ItensVenda();
+        String tipoPgto;
         
-        Produto p = new Produto();
         try
         {
             cod = Integer.parseInt(tb_Codigo.getText());
@@ -264,58 +294,100 @@ public class FXMLEfetuarVendaController implements Initializable
         {
             cod = 0;
         }
-        
-        if (dtp_Data.getValue().isBefore(dataAtual))
+        if(dtp_Data.getValue() != null)
         {
-            if (cbb_Cliente.getSelectionModel().getSelectedIndex() != -1)
+            if (dtp_Data.getValue().isBefore(dataAtual) || dtp_Data.getValue().isEqual(dataAtual))
             {
-                if (cbb_funcionario.getSelectionModel().getSelectedIndex() != -1)
+                if (cbb_Cliente.getSelectionModel().getSelectedIndex() != -1)
                 {
-                    c = new Consignado(cod, cbb_funcionario.getValue(),
-                            dtp_Data.getValue(), dataDevolucao,
-                            cbb_Cliente.getValue(),
-                            "A");
-                    if (cod == 0)
+                    if (!tabela.getItems().isEmpty())
                     {
-                        if (c.insertConsignado())
+                        if(cb_avista.isSelected() || tb_ValorTotal.getText().compareTo(tx_totalParcelas.getText()) == 0)
                         {
-                            if(!c.insereItens(aux, c.getMaxPK()))
+                            if(cb_avista.isSelected())
                             {
-                                a.setContentText("Problemas ao Gravar");
-                                a.showAndWait();
+                                tipoPgto = "V";
+                                Lparcelas.clear();
+                                p = new ParcelasAPagar(Double.parseDouble(tb_ValorTotal.getText()),dtp_DataParcela.getValue());
+                                Lparcelas.add(p);
                             }
+                            else
+                                tipoPgto = "P";
+
+                            v = new Venda(cod,
+                                    dtp_Data.getValue(),
+                                    cbb_Cliente.getValue(),
+                                    tipoPgto);
+
+                            Lparcelas.forEach((k) -> {
+                                k.setStatus("A");
+                                k.setVenda(v);
+                            });
+                            if (cod == 0)
+                            {
+                                if (v.insertVenda())
+                                {   
+                                    int max = v.getMaxPK();
+                                    if(!p.insereParcelas(Lparcelas, max))
+                                    {
+                                        a.setContentText("Problemas ao Gravar");
+                                        a.showAndWait();
+                                    }
+                                    if(!i.insereItens(aux, max))
+                                    {
+                                        a.setContentText("Problemas ao Gravar");
+                                        a.showAndWait();
+                                    }
+                                }else{
+                                    a.setContentText("Problemas ao Gravar");
+                                    a.showAndWait();
+                                }
+                            } else
+                            {       
+                                if (v.updateVenda())
+                                {
+                                    p.deleteParcelas(cod);
+                                    i.deleteItens(cod);
+                                    if(!p.insereParcelas(Lparcelas, cod))
+                                    {
+                                        a.setContentText("Problemas ao Gravar");
+                                        a.showAndWait();
+                                    }
+                                    if(!i.insereItens(aux, cod))
+                                    {
+                                        a.setContentText("Problemas ao Gravar");
+                                        a.showAndWait();
+                                    }
+                                }
+                            }
+                            estadoOriginal();
+                            //this.aux.clear();
+                        }else
+                        {
+                            a.setContentText("Parcelas incorretas");
+                            a.showAndWait();
                         }
                     } else
-                    {       
-                        if (c.updateConsignado())
-                        {
-                            ItensConsignado itens = new ItensConsignado();
-                            itens.deleteItens(cod);
-                            if(!c.insereItens(aux, c.getCod()))
-                            {
-                                a.setContentText("Problemas ao Gravar");
-                                a.showAndWait();
-                            }
-                        }
+                    {
+                        a.setContentText("Informe os itens para realizar a venda!");
+                        a.showAndWait();
                     }
-                    estadoOriginal();
-                    
                 } else
                 {
-                    a.setContentText("Informe o funcionário!");
+                    a.setContentText("Informe o cliente!");
+                    a.showAndWait();
                 }
+
             } else
             {
-                a.setContentText("Informe o cliente!");
+                a.setContentText("Data inválida!");
+                a.showAndWait();
             }
-
-        } else
+        }else
         {
-            a.setContentText("Informe o fornecedor!");
+            a.setContentText("Data inválida!");
             a.showAndWait();
         }
-        carregaTabela("");
-        this.aux.clear();
     }
     
 
@@ -331,47 +403,6 @@ public class FXMLEfetuarVendaController implements Initializable
         }
     }
 
-    private void clkBtNovoP(ActionEvent event)
-    {
-        try
-        {
-            Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroProduto.fxml"));
-            Parent root = (Parent) loader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Cadastro de Produtos");
-            stage.showAndWait();
-            FXMLCadastroProdutoController ctr = loader.getController();
-            ctr.RecebeDados(u);
-
-        } catch (IOException ex)
-        {
-            System.out.println(ex);
-        }
-        carregaTabela("");
-    }
-
-    private void clkBtNovoT(ActionEvent event)
-    {
-        try
-        {
-            Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLCadastroTamanho.fxml"));
-            Parent root = (Parent) loader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Cadastro de Tamanhos");
-            stage.showAndWait();
-            FXMLCadastroTamanhoController ctr = loader.getController();
-            ctr.RecebeDados(u);
-
-        } catch (IOException ex)
-        {
-            System.out.println(ex);
-        }
-        carregaTabela("");
-    }
 
     @FXML
     private void clkBtAdicionarItem(ActionEvent event)
@@ -383,8 +414,11 @@ public class FXMLEfetuarVendaController implements Initializable
         {
             if (cbb_Tamanho.getSelectionModel().getSelectedIndex() != -1)
             {
-                it = new ItensConsignado(cbb_Produto.getValue(), cbb_Tamanho.getValue(),
-                        cbb_Produto.getValue().getPreco(), 1);
+                it = new ItensVenda(
+                        cbb_Produto.getValue(), cbb_Tamanho.getValue(),
+                        cbb_Produto.getValue().getPreco(), Integer.parseInt(tb_Quantidade.getText()), 
+                        cbb_Produto.getValue().getPreco() * Integer.parseInt(tb_Quantidade.getText())
+                );
                 
                 aux.add(it);
 
@@ -424,9 +458,10 @@ public class FXMLEfetuarVendaController implements Initializable
     private void atualizaSaldo()
     {
         double saldo = 0;
-        for (ItensConsignado i : modelo)
+        somaParcela();
+        for (ItensVenda i : modelo)
         {
-            saldo = saldo + i.getValorProduto();
+            saldo = saldo + (i.getValorProduto() * i.getQuantidade());
         }
         tb_ValorTotal.setText(saldo+"");
     }
@@ -435,12 +470,15 @@ public class FXMLEfetuarVendaController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            
-            
-            modelo.remove(tabela.getSelectionModel().getSelectedItem());
-            aux.remove(tabela.getSelectionModel().getSelectedItem());
+            int index = tabela.getSelectionModel().getSelectedIndex();
+            modelo.remove(index);
+            aux.remove(index);
             atualizaSaldo();
             tabela.setItems(modelo);
+            
+            Lparcelas.clear();
+            modeloParcela = FXCollections.observableArrayList(Lparcelas);
+            tabelaParcelas.setItems(modeloParcela);
         }
     }
 
@@ -452,13 +490,13 @@ public class FXMLEfetuarVendaController implements Initializable
         try
         {
             Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLProcurarConsignado.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLProcurarVenda.fxml"));
             Parent root = (Parent) loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Procurar Consignados Realizados");
             stage.showAndWait();
-            FXMLProcurarConsignadoController ctr = loader.getController();
+            FXMLProcurarVendaController ctr = loader.getController();
             ctr.RecebeDados(u);
             recebeInfo();
 
@@ -481,6 +519,7 @@ public class FXMLEfetuarVendaController implements Initializable
     private void clkBtApagar(ActionEvent event) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setContentText("Confirma a exclusão?");
+        
         if (a.showAndWait().get() == ButtonType.OK)
         {
             int cod;
@@ -491,15 +530,107 @@ public class FXMLEfetuarVendaController implements Initializable
             {
                 cod = 0;
             }
-            ItensConsignado itens = new ItensConsignado();
-            itens.deleteItens(cod);
-            c = new Consignado();
-            if (!c.deleteConsignado(cod))
+            
+            ItensVenda i = new ItensVenda();     
+            ParcelasAPagar p = new ParcelasAPagar();
+            p.deleteParcelas(cod);
+            i.deleteItens(cod);
+            
+            v = new Venda();
+            if (!v.deleteVenda(cod))
             {
                 a.setContentText("Erro ao excluir!");
                 a.showAndWait();
             }
             estadoOriginal();
+        }
+    }
+
+    @FXML
+    private void onClickaVista(MouseEvent event) {
+        if (cb_avista.isSelected())
+        {
+            btn_adicionarParcela.setDisable(true);
+            btn_removerParcela.setDisable(true);
+            tb_valor.setDisable(true);
+            tabelaParcelas.setDisable(true);
+            tx_totalParcelas.setText("");
+            tx_totalParcelas.setDisable(true);
+        }else
+        {
+            btn_adicionarParcela.setDisable(false);
+            btn_removerParcela.setDisable(false);
+            tb_valor.setDisable(false);
+            tabelaParcelas.setDisable(false);
+            tx_totalParcelas.setText(somaParcela().toString());
+            tx_totalParcelas.setDisable(false);
+        }
+    }
+    private Double somaParcela()
+    {
+        double total = 0;
+        for ( ParcelasAPagar p : Lparcelas)
+        {
+            total = total +p.getValor();
+        }
+        return total;
+    }
+
+    @FXML
+    private void clkBtnAdicionarIParcela(ActionEvent event) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        LocalDate dtAtual = LocalDate.now();
+        
+        double valor = 0;
+
+        try
+        {
+            valor = Double.parseDouble(tb_valor.getText());
+            if (somaParcela()+Double.parseDouble(tb_valor.getText()) <= Double.parseDouble(tb_ValorTotal.getText()) && valor > 0)
+            {
+                if (dtp_DataParcela.getValue().isAfter(dtAtual) || dtp_DataParcela.getValue().isEqual(dtAtual))
+                {
+                    ParcelasAPagar p;
+                    p = new ParcelasAPagar(
+                            Double.parseDouble(tb_valor.getText())
+                            ,dtp_DataParcela.getValue()
+                    );
+
+                    Lparcelas.add(p);
+
+                    modeloParcela = FXCollections.observableArrayList(Lparcelas);
+
+                    tabelaParcelas.setItems(modeloParcela);
+                    tx_totalParcelas.setText(somaParcela().toString());
+                    tb_valor.setText("");
+                }else
+                {
+                   a.setContentText("Data inválida");
+                   a.show();
+                }
+            }else
+            {
+               a.setContentText("Valor maior que o total");
+               a.show();
+            }
+        } catch (Exception e)
+        {
+            a.setContentText("Erro no valor da parcela"+ e);
+            a.show();
+        }
+        somaParcela();
+    }
+
+    @FXML
+    private void clkBtnRemoverIParcela(ActionEvent event) {
+        if (tabelaParcelas.getSelectionModel().getSelectedItem() != null)
+        {
+            int index = tabelaParcelas.getSelectionModel().getSelectedIndex();
+            Lparcelas.remove(index);
+            modeloParcela = FXCollections.observableArrayList(Lparcelas);
+            tabelaParcelas.setItems(modeloParcela);
+            tx_totalParcelas.setText(somaParcela().toString());
+            tabelaParcelas.setItems(modeloParcela);
         }
     }
 

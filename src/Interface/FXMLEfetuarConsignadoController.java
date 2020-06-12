@@ -265,7 +265,7 @@ public class FXMLEfetuarConsignadoController implements Initializable
             cod = 0;
         }
         
-        if (dtp_Data.getValue().isBefore(dataAtual))
+        if (dtp_Data.getValue().isBefore(dataAtual) || dtp_Data.getValue().isEqual(dataAtual))
         {
             if (cbb_Cliente.getSelectionModel().getSelectedIndex() != -1)
             {
@@ -435,10 +435,9 @@ public class FXMLEfetuarConsignadoController implements Initializable
     {
         if (tabela.getSelectionModel().getSelectedItem() != null)
         {
-            
-            
-            modelo.remove(tabela.getSelectionModel().getSelectedItem());
-            aux.remove(tabela.getSelectionModel().getSelectedItem());
+            int index = tabela.getSelectionModel().getSelectedIndex();
+            modelo.remove(index);
+            aux.remove(index);
             atualizaSaldo();
             tabela.setItems(modelo);
         }

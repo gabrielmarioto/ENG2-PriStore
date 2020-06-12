@@ -125,7 +125,7 @@ public class ClienteBD {
             }
         } catch (SQLException ex)
         {
-
+            System.out.println("erro no cliente");
         }
         return c;
     }
