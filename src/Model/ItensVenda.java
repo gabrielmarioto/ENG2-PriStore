@@ -14,6 +14,7 @@ import java.util.List;
  * @author BRUNO
  */
 public class ItensVenda {
+    private int codvenda;
     private Produto codProduto;
     private Tamanho tamanho;
     private double valorProduto;
@@ -23,7 +24,8 @@ public class ItensVenda {
     public ItensVenda() {
     }
 
-    public ItensVenda(Produto codProduto, Tamanho tamanho, double valorProduto, int quantidade, double valorTotal) {
+    public ItensVenda(int codvenda,Produto codProduto, Tamanho tamanho, double valorProduto, int quantidade, double valorTotal) {
+        this.codvenda = codvenda;
         this.codProduto = codProduto;
         this.tamanho = tamanho;
         this.valorProduto = valorProduto;
@@ -31,7 +33,15 @@ public class ItensVenda {
         this.valorTotal = valorTotal;
     }
 
+    public int getCodvenda() {
+        return codvenda;
+    }
 
+    public void setCodvenda(int codvenda) {
+        this.codvenda = codvenda;
+    }
+
+    
 
     public Produto getCodProduto() {
         return codProduto;
@@ -72,7 +82,13 @@ public class ItensVenda {
     public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
     }
-
+    
+    public boolean insereItem()
+    {
+        ItensVendaBD c = new ItensVendaBD();
+        return c.insertItens(codvenda, codProduto.getCod(), getTamanho().getTamanho(), getValorProduto(), quantidade);
+    }
+    
     public boolean insereItens( List<ItensVenda> aux, int cod)
     {
         int ok = 0;
@@ -90,6 +106,18 @@ public class ItensVenda {
     {
         ItensVendaBD c = new ItensVendaBD();
         return c.deleteItens(cod);
+    }
+    
+    public boolean updateItem()
+    {
+        ItensVendaBD c = new ItensVendaBD();
+        return c.updateItem(this);
+    }
+    
+    public boolean deleteItem()
+    {
+        ItensVendaBD c = new ItensVendaBD();
+        return c.deleteItem(this);
     }
     public List<ItensVenda> selectItens(String filtro)
     {

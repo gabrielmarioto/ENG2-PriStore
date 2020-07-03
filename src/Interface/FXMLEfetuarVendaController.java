@@ -414,7 +414,7 @@ public class FXMLEfetuarVendaController implements Initializable
         {
             if (cbb_Tamanho.getSelectionModel().getSelectedIndex() != -1)
             {
-                it = new ItensVenda(
+                it = new ItensVenda(0,
                         cbb_Produto.getValue(), cbb_Tamanho.getValue(),
                         cbb_Produto.getValue().getPreco(), Integer.parseInt(tb_Quantidade.getText()), 
                         cbb_Produto.getValue().getPreco() * Integer.parseInt(tb_Quantidade.getText())

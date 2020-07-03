@@ -15,19 +15,20 @@ public class TableDevolucao {
     private int codigo;
     private String nome;
     private double preco;
-    private Date data;
-    private int tamanho;
+    private int qtde;
+    private String tamanho;
     private int codVenda;
 
     public TableDevolucao() {
     }
 
-    public TableDevolucao(int codigo, String nome, double preco, Date data,int tamanho) {
+    public TableDevolucao(int codigo, String nome, double preco, int qtde,String tamanho,int codVenda) {
         this.codigo = codigo;
         this.nome = nome;
         this.preco = preco;
-        this.data = data;
+        this.qtde = qtde;
         this.tamanho = tamanho;
+        this.codVenda=codVenda;
     }
 
     public int getCodigo() {
@@ -54,19 +55,19 @@ public class TableDevolucao {
         this.preco = preco;
     }
 
-    public Date getData() {
-        return data;
+    public int getQtde() {
+        return qtde;
     }
 
-    public void setData(Date data) {
-        this.data = data;
+    public void setQtde(int qtde) {
+        this.qtde = qtde;
     }
 
-    public int getTamanho() {
+    public String getTamanho() {
         return tamanho;
     }
 
-    public void setTamanho(int tamanho) {
+    public void setTamanho(String tamanho) {
         this.tamanho = tamanho;
     }
     
@@ -76,9 +77,14 @@ public class TableDevolucao {
         this.nome=p.getNome();
         this.preco=p.getPreco(); 
     }
-    
-    
-    
+
+    public int getCodVenda() {
+        return codVenda;
+    }
+
+    public void setCodVenda(int codVenda) {
+        this.codVenda = codVenda;
+    }
     public boolean insere()
     {
         return true;

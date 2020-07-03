@@ -7,10 +7,14 @@ package Model;
 
 import Persistencia.ParcelasAPagarBD;
 import Persistencia.VendaBD;
+import Util.Banco;
 import com.jfoenix.controls.JFXTextField;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -74,10 +78,34 @@ public class ParcelasAPagar {
         int ok = 0;
         ParcelasAPagarBD c = new ParcelasAPagarBD();
         aux.forEach((i) -> {
-            System.out.println(""+cod+ i.getValor()+ i.getStatus()+ i.getVencimento());
             c.insertParcelas(cod, i.getValor(), i.getStatus(), i.getVencimento());
         });
         return true;
+    }
+    
+    public boolean updateParcelas(List<ParcelasAPagar> aux) throws SQLException
+    {
+        ParcelasAPagarBD c = new ParcelasAPagarBD();
+        boolean flag=true;
+        try {
+            Banco.getCon().getConnect().setAutoCommit(false);
+            int i=0; 
+            while(i<aux.size() && flag)
+            {
+            flag=c.updateParcelas(aux.get(i));
+            i++;
+            }
+        } catch (SQLException ex) {
+            flag=false;
+        }
+       if(flag)
+            Banco.getCon().getConnect().commit();
+        else
+             Banco.getCon().getConnect().rollback();
+        Banco.getCon().getConnect().setAutoCommit(true);
+        return flag;
+            
+        
     }
     public boolean deleteParcelas(int cod)
     {

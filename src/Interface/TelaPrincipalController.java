@@ -408,5 +408,21 @@ public class TelaPrincipalController implements Initializable
             System.out.println(ex);
         }
     }
+
+    @FXML
+    private void clkEfetuarDevolucao(ActionEvent event) {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLEfetuarDevolucao.fxml"));
+            Parent root = (Parent) loader.load();
+
+            FXMLEfetuarDevolucaoController ctr = loader.getController();
+            pnprincipal.setCenter(root);
+
+        } catch (IOException ex)
+        {
+            System.out.println(ex);
+        }
+    }
     
 }

@@ -31,7 +31,7 @@ public class ItensVendaBD {
         {
             while (rs.next())
             {
-                aux.add(new ItensVenda(new ProdutoBD().get(rs.getInt("codProduto")),
+                aux.add(new ItensVenda(rs.getInt("codvenda"),new ProdutoBD().get(rs.getInt("codProduto")),
                         new TamanhoBD().getTamanho(rs.getString("tamanho"), rs.getInt("codProduto")),
                         rs.getDouble("valorProduto"),
                         rs.getInt("quantidade"),
@@ -54,6 +54,22 @@ public class ItensVendaBD {
         sql = sql.replaceAll("#5", "" + quantidade);
         return Banco.getCon().manipular(sql);
     }
+    
+    public boolean updateItem(ItensVenda i)
+    {
+        String sql = "update itensvenda set tamanho='#2',valorProduto=#3, quantidade=#4 where codVenda="+i.getCodvenda()+" and codproduto="+i.getCodProduto().getCod();
+        sql = sql.replaceAll("#2", "" + i.getTamanho().getTamanho());
+        sql = sql.replaceAll("#3", ""+ i.getValorProduto());
+        sql = sql.replaceAll("#4", "" + i.getQuantidade());
+        System.out.println(sql);
+        return Banco.getCon().manipular(sql);
+    }
+    
+    public boolean deleteItem(ItensVenda i)
+    {
+        return Banco.getCon().manipular("delete from itensVenda where codVenda = " + i.getCodvenda()+" and codproduto="+i.getCodProduto());
+    }
+            
     public boolean deleteItens(int v)
     {
         return Banco.getCon().manipular("delete from itensVenda where codVenda = " + v);

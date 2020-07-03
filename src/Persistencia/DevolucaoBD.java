@@ -6,8 +6,12 @@
 package Persistencia;
 
 import Model.Devolucao;
+import Model.ItensVenda;
+import Model.ParcelasAPagar;
+import Model.ProdPromo;
 import Model.Produto;
 import Model.TableDevolucao;
+import Model.Tamanho;
 import Util.Banco;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -22,21 +26,60 @@ import java.util.List;
  */
 public class DevolucaoBD {
     
-    public boolean insertProduto(Devolucao d) throws SQLException
+    public boolean insertDevolucao(Devolucao d,String tamanho) throws SQLException
     {
         boolean ok= false;
+        
         try{
             Banco.getCon().getConnect().setAutoCommit(false);
-            String sql = "insert into promocao (cod,codVenda, codProdutoant,codprodutonovo datadevolucao) values (#1,#2, #3 , '#4','#5')";
-            sql = sql.replaceAll("#1", "" + d.getCodigo());
-            sql = sql.replaceAll("#2", "" + d.getCodigoVenda());
-            sql = sql.replaceAll("#3", "" + d.getCodigoProduto());
-            sql = sql.replaceAll("#4", "" + d.getCodigoProduto());
-            sql = sql.replaceAll("#5", "" + Date.valueOf(LocalDate.now()));
-            ok=Banco.getCon().manipular(sql);
-            int i=0;
-           
-            
+                String sql = "insert into devolucao (cod,codVenda, codProdutoant,codprodutonovo, datadevolucao) values (#1,#2, #3 , #4,'#5')";
+                sql = sql.replaceAll("#1", "" + d.getCodigo());
+                sql = sql.replaceAll("#2", "" + d.getCodigoVenda());
+                sql = sql.replaceAll("#3", "" + d.getCodigoProdutoant());
+                if(d.getCodigoProdutonovo()==0)
+                    sql = sql.replaceAll("#4", "null");
+                else
+                    sql = sql.replaceAll("#4", "" + d.getCodigoProdutonovo());
+                sql = sql.replaceAll("#5", "" + d.getDatadevolucao());
+                ok=Banco.getCon().manipular(sql);
+            int i=0; 
+            if(ok)
+            {
+                ItensVenda item = new ItensVenda().selectItens("codVenda="+d.getCodigoVenda()+" and codproduto="+d.getCodigoProdutoant()).get(0);
+                if(d.getCodigoProdutonovo()!=0)//vai inserir o novo produto
+                {
+                    List<ItensVenda> existe = new ItensVenda().selectItens("codVenda="+d.getCodigoVenda()+" and codproduto="+d.getCodigoProdutoant());
+                    if(existe.isEmpty())
+                    {
+                        double valor = (new Produto().selectProduto(d.getCodigoProdutonovo()).getPreco());
+                        ProdPromo pd = new ProdPromo().selectPorProduto(d.getCodigoProdutonovo());
+                        if(pd!=null)
+                            valor=pd.getDesconto();
+                        ItensVenda novoItem = new ItensVenda(d.getCodigoVenda(),new Produto().selectProduto(d.getCodigoProdutonovo()),new Tamanho(tamanho),valor,1,valor);
+                        ok=novoItem.insereItem();
+                      }
+                      else
+                      {
+                          existe.get(0).setQuantidade(existe.get(0).getQuantidade()+1);
+                          existe.get(0).setValorTotal(existe.get(0).getQuantidade()*existe.get(0).getValorProduto());
+                          ok=existe.get(0).updateItem();
+
+                      }
+                }
+              if(ok)
+              {
+                  if(item.getQuantidade()==1)
+                  {
+                      ok=item.deleteItem();
+                  }
+                  else
+                {
+                  item.setQuantidade(item.getQuantidade()-1);
+                  item.setValorTotal(item.getValorProduto()*item.getQuantidade());
+                  ok=item.updateItem();
+                 }
+              }  
+          }  
         }
         catch(SQLException ex)
         {
@@ -50,20 +93,74 @@ public class DevolucaoBD {
         return ok;
     }
 
-    public boolean updateProduto(Produto p)
+     public boolean insertDevolucoes(Devolucao d,String tamanho) throws SQLException
     {
-        String sql = "update produto set codCategoria=#1, nome= '#2', preco =#3, descricao ='#4', codMarca = #5, codColecao = #6 where cod =" + p.getCod();
-        sql = sql.replaceAll("#1", "" + p.getCodCategoria().getCod());
-        sql = sql.replaceAll("#2", "" + p.getNome());
-        sql = sql.replaceAll("#3", "" + p.getPreco());
-        sql = sql.replaceAll("#4", "" + p.getDescricao());
-        sql = sql.replaceAll("#5", "" + p.getCodMarca().getCod());
-        sql = sql.replaceAll("#6", "" + p.getCodColecao().getCod());  
+        boolean ok= false;
+        
+        String sql = "insert into devolucao (cod,codVenda, codProdutoant,codprodutonovo, datadevolucao) values (#1,#2, #3 , #4,'#5')";
+        sql = sql.replaceAll("#1", "" + d.getCodigo());
+        sql = sql.replaceAll("#2", "" + d.getCodigoVenda());
+        sql = sql.replaceAll("#3", "" + d.getCodigoProdutoant());
+        if(d.getCodigoProdutonovo()==0)
+            sql = sql.replaceAll("#4", "null");
+        else
+        sql = sql.replaceAll("#4", "" + d.getCodigoProdutonovo());
+        sql = sql.replaceAll("#5", "" + d.getDatadevolucao());
+        ok=Banco.getCon().manipular(sql);
+ 
+        int i=0;
+        if(ok)
+        {
+            ItensVenda item = new ItensVenda().selectItens("codVenda="+d.getCodigoVenda()+" and codproduto="+d.getCodigoProdutoant()).get(0);
+            if(d.getCodigoProdutonovo()!=0)//vai inserir o novo produto
+            {
+                List<ItensVenda> existe = new ItensVenda().selectItens("codVenda="+d.getCodigoVenda()+" and codproduto="+d.getCodigoProdutoant());
+                if(existe.isEmpty())
+                {
+                    double valor = (new Produto().selectProduto(d.getCodigoProdutonovo()).getPreco());
+                    ProdPromo pd = new ProdPromo().selectPorProduto(d.getCodigoProdutonovo());
+                    if(pd!=null)
+                        valor=pd.getDesconto();
+                    ItensVenda novoItem = new ItensVenda(d.getCodigoVenda(),new Produto().selectProduto(d.getCodigoProdutonovo()),new Tamanho(tamanho),valor,1,valor);
+                    ok=novoItem.insereItem();
+                }
+                else
+                {
+                    existe.get(0).setQuantidade(existe.get(0).getQuantidade()+1);
+                    existe.get(0).setValorTotal(existe.get(0).getQuantidade()*existe.get(0).getValorProduto());
+                    ok=existe.get(0).updateItem(); 
+                    
+                }
+            }
+            if(ok)
+            {
+                if(item.getQuantidade()==1)
+                {
+                    ok=item.deleteItem();
+                }
+                else
+                {
+                    item.setQuantidade(item.getQuantidade()-1);
+                    item.setValorTotal(item.getValorProduto()*item.getQuantidade());
+                    ok=item.updateItem();
+                }
+            }
+        }
+        return ok;
+    }
+
+    public boolean updateDevolucao(Devolucao d)
+    {
+        String sql = "update devolucao set codProdutoant=#1, codprodutonovo= #2, datadevolucao ='#3' where cod =" + d.getCodigo() +" and codvenda ="+ d.getCodigoVenda();
+           
+            sql = sql.replaceAll("#1", "" + d.getCodigoProdutoant());
+            sql = sql.replaceAll("#2", "" + d.getCodigoProdutonovo());
+            sql = sql.replaceAll("#3", "" + d.getDatadevolucao());
         return Banco.getCon().manipular(sql);
     }
     
     
-    public boolean deleteProduto(Produto p)
+    public boolean deleteDevolucao(Produto p)
     {
         return Banco.getCon().manipular("delete from produto where cod =" + p.getCod());
     }

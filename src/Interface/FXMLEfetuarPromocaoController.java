@@ -528,7 +528,8 @@ public class FXMLEfetuarPromocaoController implements Initializable
 
             tb_Codigo.setText("" + TabelaPromo.getSelectionModel().getSelectedItem().getCodigo());
             tb_Nome.setText(TabelaPromo.getSelectionModel().getSelectedItem().getNome());
-            tb_valor.setText(String.valueOf(TabelaPromo.getSelectionModel().getSelectedItem().getValor()));
+            String valor = double2string(TabelaPromo.getSelectionModel().getSelectedItem().getValor());
+            tb_valor.setText(valor);
             
             dt_inicial.setValue(TabelaPromo.getSelectionModel().getSelectedItem().getInicio().toLocalDate());
             dt_final.setValue(TabelaPromo.getSelectionModel().getSelectedItem().getFim().toLocalDate());
@@ -541,7 +542,10 @@ public class FXMLEfetuarPromocaoController implements Initializable
         }
     }
 
-
+    public static String double2string(double v)
+    {
+        return String.format("%,.2f", v);
+    }
 
     @FXML
     private void clkTxPesquisaPromo(KeyEvent event) {

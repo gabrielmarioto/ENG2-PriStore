@@ -35,7 +35,7 @@ public class VendaBD {
                 aux.add(new Venda(
                             rs.getInt("codVenda"),
                             LocalDate.parse(rs.getString("data")),
-                            new ClienteBD().get(rs.getInt("codCliente")),
+                            new ClienteBD().get(rs.getInt("codcliente")),
                             rs.getString("tipo")
                 ));
             }
@@ -55,10 +55,10 @@ public class VendaBD {
             if (rs.next())
             {
                 c = new Venda(
-                        rs.getInt("cod"),
+                        rs.getInt("codvenda"),
                         LocalDate.parse(rs.getString("data")),
-                        new ClienteBD().get(rs.getInt("cliente")),
-                        rs.getString("tipopgto")
+                        new ClienteBD().get(rs.getInt("codcliente")),
+                        rs.getString("tipo")
                 );
             }
         } catch (SQLException ex)

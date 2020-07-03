@@ -46,6 +46,17 @@ public class ParcelasAPagarBD {
         
         return aux;
     }
+    
+    public boolean updateParcelas(ParcelasAPagar p)
+    {
+        String sql = "update parcelasapagar set valor=#2,status='#3', vencimento='#4' where codVenda="+p.getVenda().getCod();
+        sql = sql.replaceAll("#2", "" + p.getValor());
+        sql = sql.replaceAll("#3", ""+ p.getStatus());
+        sql = sql.replaceAll("#4", "" + p.getVencimento());
+        System.out.println(sql);
+        return Banco.getCon().manipular(sql);
+    }
+    
     public boolean deleteParcela(int p)
     {
         return Banco.getCon().manipular("delete from parcelasAPagar where codVenda = " + p);

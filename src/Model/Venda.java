@@ -7,6 +7,7 @@ package Model;
 
 import Persistencia.VendaBD;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,11 @@ public class Venda {
         aux = v.get(filtro);
         return aux;
     }
+    
+    public Venda selectVenda(int cod)
+    {
+        return new VendaBD().get(cod);
+    }
     public boolean insertVenda()
     {
         VendaBD v = new VendaBD();
@@ -91,5 +97,14 @@ public class Venda {
         VendaBD c = new VendaBD();
         return c.deleteVenda(cod);
     }
+
+    @Override
+    public String toString() {
+        
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                return ""+data.format(formatter);
+    }
+    
+    
     
 }
